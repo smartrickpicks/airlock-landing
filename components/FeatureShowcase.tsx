@@ -48,8 +48,8 @@ const features = [
     icon: GitBranch,
     title: 'Patch Workflow',
     description:
-      'Data correction proposals with structured evidence (when/then/because clauses). 12 states, 20 valid transitions, self-approval prevention, and optimistic locking.',
-    stats: ['12 states', '20 transitions', 'Evidence packs'],
+      'Data correction proposals with structured evidence (when/then/because clauses). Defined state machine with role-gated transitions and audit trail for every change.',
+    stats: ['State machine', 'Role-gated', 'Evidence packs'],
     color: 'var(--chamber-review)',
   },
   {

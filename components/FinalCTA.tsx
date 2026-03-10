@@ -93,10 +93,9 @@ export default function FinalCTA() {
           className="mt-12 flex flex-wrap items-center justify-center gap-8"
         >
           {[
-            { label: 'AES-256 Encrypted', mono: true },
-            { label: 'SOC 2 Compliant', mono: true },
+            { label: 'AES-128 Encrypted', mono: true },
             { label: 'RBAC + RLS', mono: true },
-            { label: '99.9% Uptime SLA', mono: true },
+            { label: 'Tenant Isolation', mono: true },
           ].map((badge) => (
             <span
               key={badge.label}

@@ -324,8 +324,8 @@ function SocialProof() {
     >
       {[
         { label: 'AI-Native', icon: '~' },
-        { label: 'SOC 2 Ready', icon: '>' },
-        { label: 'Enterprise Grade', icon: '#' },
+        { label: 'Encrypted at Rest', icon: '>' },
+        { label: 'Enterprise Architecture', icon: '#' },
       ].map((item) => (
         <div
           key={item.label}

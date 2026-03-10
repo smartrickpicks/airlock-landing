@@ -19,7 +19,7 @@ const faqs = [
   {
     question: 'How is my data secured?',
     answer:
-      'Envelope encryption (DEK/KEK) per vault, PostgreSQL row-level security for tenant isolation, and crypto-shredding for GDPR-compliant data erasure. The application layer never trusts the persistence layer — every byte at rest is ciphertext.',
+      'Fernet symmetric encryption (AES-128-CBC + HMAC-SHA256) for sensitive tokens at rest, PostgreSQL row-level security for tenant isolation, and role-based access control across five permission levels. All data is soft-deleted with full audit trails.',
   },
   {
     question: 'Can I self-host Airlock?',

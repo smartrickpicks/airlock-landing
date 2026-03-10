@@ -7,8 +7,8 @@ import { staggerContainer, staggerItem, viewportConfig } from '@/lib/animations'
 const trustItems = [
   {
     icon: Lock,
-    label: 'Envelope Encryption',
-    sub: 'DEK/KEK per vault — rotate keys without re-encrypting data',
+    label: 'Token Encryption',
+    sub: 'Fernet (AES-128-CBC + HMAC-SHA256) for all sensitive tokens at rest',
   },
   {
     icon: Building2,
@@ -17,8 +17,8 @@ const trustItems = [
   },
   {
     icon: ScrollText,
-    label: 'Crypto-Shredding',
-    sub: 'Destroy a key, destroy all data — GDPR erasure in milliseconds',
+    label: 'Soft Deletes + Audit Trail',
+    sub: 'Append-only event log — every action recorded, nothing hard-deleted',
   },
   {
     icon: Key,
@@ -27,13 +27,13 @@ const trustItems = [
   },
   {
     icon: Shield,
-    label: 'Stateless Infrastructure',
-    sub: 'Abandon and rebuild from cold backups + key material',
+    label: 'Stateless Architecture',
+    sub: 'Containerized services — rebuild from backups + key material',
   },
   {
     icon: Zap,
-    label: 'Real-Time Sync',
-    sub: 'WebSocket-powered with optimistic locking on every write',
+    label: 'Human-in-the-Loop AI',
+    sub: 'AI proposes, humans approve — no autonomous actions, ever',
   },
 ]
 
@@ -58,7 +58,7 @@ export default function Trust() {
             Enterprise security by default.
           </h2>
           <p className="text-[var(--text-secondary)] text-lg mt-4 max-w-xl mx-auto">
-            The application layer never trusts the persistence layer. Every byte at rest is ciphertext — if an attacker steals the disk, they get noise.
+            Security is architectural, not bolted on. Sensitive tokens are encrypted at rest, tenants are isolated at the database level, and AI never acts without human approval.
           </p>
         </motion.div>
 
