@@ -7,7 +7,7 @@ const footerLinks = {
     { label: 'Features', href: '#features' },
     { label: 'How It Works', href: '#how-it-works' },
     { label: 'Modules', href: '#modules' },
-    { label: 'Docs', href: 'https://docs.doyoulikedags.xyz' },
+    { label: 'Docs', href: '/docs' },
   ],
   Company: [
     { label: 'About', href: '#' },
@@ -34,9 +34,14 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <p className="font-mono font-semibold tracking-wider text-[var(--text-primary)] text-lg mb-2">
-              AIRLOCK
-            </p>
+            <div className="flex items-center gap-2.5 mb-3">
+              <div className="w-6 h-6 rounded-md bg-gradient-to-br from-[var(--accent-primary)] to-[var(--accent-secondary)] flex items-center justify-center">
+                <div className="w-2.5 h-2.5 border-[1.5px] border-white rounded-sm" />
+              </div>
+              <span className="font-mono font-bold tracking-wider text-[var(--text-primary)] text-sm">
+                AIRLOCK
+              </span>
+            </div>
             <p className="text-xs text-[var(--text-muted)] leading-relaxed">
               Enterprise operations, orchestrated.
             </p>
@@ -45,10 +50,10 @@ export default function Footer() {
           {/* Link columns */}
           {Object.entries(footerLinks).map(([heading, links]) => (
             <div key={heading}>
-              <p className="text-sm font-semibold text-[var(--text-primary)] mb-4">
+              <p className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider mb-4">
                 {heading}
               </p>
-              <ul className="space-y-2">
+              <ul className="space-y-2.5">
                 {links.map((link) => (
                   <li key={link.label}>
                     <a
@@ -77,9 +82,9 @@ export default function Footer() {
                   key={social.label}
                   href={social.href}
                   aria-label={social.label}
-                  className="text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+                  className="text-[var(--text-muted)] hover:text-[var(--accent-primary)] transition-colors"
                 >
-                  <Icon className="w-5 h-5" />
+                  <Icon className="w-4 h-4" />
                 </a>
               )
             })}

@@ -32,14 +32,19 @@ export default function EmailCapture({ variant = 'hero' }: EmailCaptureProps) {
             key="success"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="flex items-center justify-center gap-3 text-[var(--accent-primary)]"
+            className="flex items-center justify-center gap-3"
           >
-            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-[var(--accent-primary)]/10">
-              <Check className="w-5 h-5" />
+            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[var(--chamber-ship)]/10 border border-[var(--chamber-ship)]/20">
+              <Check className="w-5 h-5 text-[var(--chamber-ship)]" />
             </div>
-            <span className="text-lg font-medium text-[var(--text-primary)]">
-              {"You're on the list!"}
-            </span>
+            <div className="text-left">
+              <span className="text-lg font-semibold text-[var(--text-primary)] block">
+                {"You're on the list!"}
+              </span>
+              <span className="text-sm text-[var(--text-muted)]">
+                {"We'll be in touch soon."}
+              </span>
+            </div>
           </motion.div>
         ) : (
           <motion.form
@@ -55,19 +60,19 @@ export default function EmailCapture({ variant = 'hero' }: EmailCaptureProps) {
                 setEmail(e.target.value)
                 if (status === 'error') setStatus('idle')
               }}
-              className="bg-[var(--bg-sunken)] border border-[var(--border-primary)] rounded-lg h-12 px-4 text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:ring-2 focus:ring-[var(--accent-primary)]/30 focus:border-[var(--accent-primary)] w-full sm:w-72 outline-none transition-all"
+              className="bg-[var(--bg-raised)] border border-[var(--border-primary)] rounded-xl h-12 px-4 text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:ring-2 focus:ring-[var(--accent-primary)]/30 focus:border-[var(--accent-primary)]/50 w-full sm:w-80 outline-none transition-all"
               aria-label="Email address"
             />
             <button
               type="submit"
               disabled={status === 'loading'}
-              className="bg-[var(--accent-primary)] text-[var(--bg-base)] font-semibold rounded-lg h-12 px-6 hover:brightness-110 transition-all flex items-center justify-center gap-2 w-full sm:w-auto disabled:opacity-70"
+              className="bg-gradient-to-r from-[var(--accent-primary)] to-[var(--accent-secondary)] text-white font-semibold rounded-xl h-12 px-7 hover:brightness-110 transition-all flex items-center justify-center gap-2 w-full sm:w-auto disabled:opacity-70 btn-shimmer shadow-lg shadow-[var(--accent-primary)]/20"
             >
               {status === 'loading' ? (
-                <div className="w-5 h-5 border-2 border-[var(--bg-base)]/30 border-t-[var(--bg-base)] rounded-full animate-spin" />
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
                 <>
-                  Join Waitlist
+                  Get Early Access
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}

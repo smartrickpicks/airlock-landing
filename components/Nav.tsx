@@ -8,22 +8,23 @@ const navLinks = [
   { label: 'Features', href: '#features' },
   { label: 'How It Works', href: '#how-it-works' },
   { label: 'Modules', href: '#modules' },
-  { label: 'Docs', href: 'https://docs.doyoulikedags.xyz', external: true },
-  { label: 'Waitlist', href: '#waitlist' },
+  { label: 'Docs', href: '/docs' },
 ]
 
 export default function Nav() {
   const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 h-16 backdrop-blur-xl bg-[rgba(11,14,20,0.8)] border-b border-[var(--border-subtle)]">
+    <nav className="fixed top-0 left-0 right-0 z-50 h-16 backdrop-blur-xl bg-[var(--bg-base)]/80 border-b border-[var(--border-subtle)]">
       <div className="max-w-[1200px] mx-auto h-full px-6 flex items-center justify-between">
         {/* Logo */}
-        <a
-          href="#"
-          className="font-mono font-semibold tracking-wider text-[var(--text-primary)] text-lg"
-        >
-          AIRLOCK
+        <a href="#" className="flex items-center gap-2.5">
+          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[var(--accent-primary)] to-[var(--accent-secondary)] flex items-center justify-center">
+            <div className="w-3 h-3 border-2 border-white rounded-sm" />
+          </div>
+          <span className="font-mono font-bold tracking-wider text-[var(--text-primary)] text-base">
+            AIRLOCK
+          </span>
         </a>
 
         {/* Desktop Links */}
@@ -33,7 +34,7 @@ export default function Nav() {
               key={link.href}
               href={link.href}
               {...('external' in link && link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-              className="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+              className="text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
             >
               {link.label}
             </a>
@@ -43,9 +44,9 @@ export default function Nav() {
         {/* Desktop CTA */}
         <a
           href="#waitlist"
-          className="hidden md:inline-flex bg-[var(--accent-primary)] text-[var(--bg-base)] font-semibold rounded-lg px-4 py-2 text-sm hover:brightness-110 transition-all"
+          className="hidden md:inline-flex items-center gap-2 bg-[var(--accent-primary)] text-[var(--bg-base)] font-semibold rounded-lg px-4 py-2 text-sm hover:brightness-110 transition-all btn-shimmer"
         >
-          Join Waitlist
+          Get Early Access
         </a>
 
         {/* Mobile Hamburger */}
@@ -84,7 +85,7 @@ export default function Nav() {
                 onClick={() => setMobileOpen(false)}
                 className="bg-[var(--accent-primary)] text-[var(--bg-base)] font-semibold rounded-lg px-6 py-3 text-lg hover:brightness-110 transition-all"
               >
-                Join Waitlist
+                Get Early Access
               </a>
             </div>
           </motion.div>
