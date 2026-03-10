@@ -26,7 +26,7 @@ export interface DocsNavigation {
 
 // ── Path to airlock-docs repo ────────────────────────────────────────────────
 
-const DOCS_ROOT = path.resolve(process.cwd(), '..', 'repos', 'airlock-docs')
+const DOCS_ROOT = path.resolve(process.cwd(), 'docs-content')
 
 export function getDocsRoot() {
   return DOCS_ROOT
