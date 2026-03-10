@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Surfaces */
+  --bg-base: #0B0E14;
+  --bg-raised: #0F1219;
+  --bg-overlay: #151923;
+  --bg-sunken: #080A0F;
+
+  /* Borders */
+  --border-primary: #1E2330;
+  --border-subtle: #161B25;
+
+  /* Text */
+  --text-primary: #E2E8F0;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+
+  /* Accent */
+  --accent-primary: #00D1FF;
+  --accent-secondary: #6366F1;
+
+  /* Chamber Colors (lifecycle stages) */
+  --chamber-discover: #EF4444;
+  --chamber-build: #EAB308;
+  --chamber-review: #A855F7;
+  --chamber-ship: #22C55E;
+
+  /* Glass */
+  --glass-surface: rgba(21, 25, 35, 0.72);
+  --glass-border: rgba(30, 35, 48, 0.5);
+  --glass-highlight: rgba(255, 255, 255, 0.04);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+}
+
+/* Scroll progress gradient */
+.scroll-progress-gradient {
+  background: linear-gradient(
+    to right,
+    var(--chamber-discover),
+    var(--chamber-build),
+    var(--chamber-review),
+    var(--chamber-ship)
+  );
+}
+
+/* Floating animation for triptych mockup */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Focus styles */
+*:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* Selection */
+::selection {
+  background-color: rgba(0, 209, 255, 0.2);
+  color: var(--text-primary);
+}
