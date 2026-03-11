@@ -870,7 +870,7 @@ function TryOttoAlpha() {
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-[var(--text-primary)] mb-2">Clone the skill into your Claude Code skills directory</p>
                 <div className="group relative bg-[var(--bg-sunken)] border border-[var(--border-primary)] rounded-lg p-3 font-mono text-sm text-[var(--text-secondary)] overflow-x-auto">
-                  <code>git clone https://github.com/smartrickpicks/agent-otto.git ~/.claude/skills/agent-otto</code>
+                  <code>git clone https://github.com/airlockdev/otto-skill.git ~/.claude/skills/agent-otto</code>
                 </div>
               </div>
             </div>
