@@ -11,21 +11,19 @@ const footerLinks = {
     { label: 'Docs', href: '/docs' },
   ],
   Company: [
-    { label: 'About', href: '#' },
-    { label: 'Blog', href: '#' },
-    { label: 'Careers', href: '#' },
+    { label: 'About', href: '/docs/company/about' },
+    { label: 'Blog', href: '/docs' },
   ],
   Legal: [
-    { label: 'Privacy', href: '#' },
-    { label: 'Terms', href: '#' },
-    { label: 'Security', href: '#' },
+    { label: 'Privacy', href: '/docs/legal/privacy' },
+    { label: 'Terms', href: '/docs/legal/terms' },
   ],
 }
 
 const socialLinks = [
-  { icon: Twitter, label: 'Twitter', href: '#' },
-  { icon: Github, label: 'GitHub', href: '#' },
-  { icon: Linkedin, label: 'LinkedIn', href: '#' },
+  { icon: Twitter, label: 'Twitter', href: 'https://x.com/airlockdev' },
+  { icon: Github, label: 'GitHub', href: 'https://github.com/airlockdev' },
+  { icon: Linkedin, label: 'LinkedIn', href: 'https://linkedin.com/company/airlock-dev' },
 ]
 
 export default function Footer() {
@@ -86,6 +84,8 @@ export default function Footer() {
                 <a
                   key={social.label}
                   href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label={social.label}
                   className="text-[var(--text-muted)] hover:text-[var(--accent-primary)] transition-colors"
                 >
