@@ -1,7 +1,6 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Home, Workflow } from 'lucide-react'
 import Image from 'next/image'
 import { staggerContainer, staggerItem, viewportConfig } from '@/lib/animations'
 
@@ -11,12 +10,12 @@ const coreModules = [
   { iconSrc: '/brand/icons/mod-triage.png', name: 'Tasks', desc: 'Cross-module task views \u00b7 Gate-linked', sub: 'Task views that span modules. Linked to playbook gates so nothing falls through the cracks.', color: 'var(--accent-primary)' },
   { iconSrc: '/brand/icons/mod-calendar.png', name: 'Calendar', desc: 'Auto-surfaced deadlines \u00b7 SLA alerts', sub: 'Auto-surfaces contract deadlines, renewal dates, and SLA alerts. No manual event creation needed.', color: 'var(--chamber-review)' },
   { iconSrc: '/brand/icons/mod-documents.png', name: 'Documents', desc: 'TipTap editor \u00b7 Variable binding \u00b7 Diffs', sub: 'Rich text editing with live variable binding, clause blocks, version diffing, and annotation overlays.', color: 'var(--chamber-ship)' },
-  { iconSrc: '/brand/icons/mod-contracts.png', name: 'Overlay', desc: 'Admin \u00b7 Lanes \u00b7 Extraction rules \u00b7 Roles', sub: 'Workspace configuration. RBAC roles, extraction rule sets, lane management, and audit settings.', color: 'var(--text-muted)' },
+  { iconSrc: '/brand/icons/admin-overlay.png', name: 'Overlay', desc: 'Admin \u00b7 Lanes \u00b7 Extraction rules \u00b7 Roles', sub: 'Workspace configuration. RBAC roles, extraction rule sets, lane management, and audit settings.', color: 'var(--text-muted)' },
 ]
 
 const workspaceTools = [
-  { icon: Home, name: 'Dispatch', desc: 'Signal-dominant Triptych homepage', sub: 'Your command center. Signal feed, orchestration panel, and control view in one split-screen layout.', color: 'var(--accent-secondary)' },
-  { icon: Workflow, name: 'Forge', desc: 'DAG canvas \u00b7 Playbook builder \u00b7 Wires', sub: 'Visual workflow builder. Drag nodes, wire connections, set gates, configure triggers and automations.', color: 'var(--accent-tertiary)' },
+  { iconSrc: '/brand/icons/concept-dispatch.png', name: 'Dispatch', desc: 'Signal-dominant Triptych homepage', sub: 'Your command center. Signal feed, orchestration panel, and control view in one split-screen layout.', color: 'var(--accent-secondary)' },
+  { iconSrc: '/brand/icons/concept-forge.png', name: 'Forge', desc: 'DAG canvas \u00b7 Playbook builder \u00b7 Wires', sub: 'Visual workflow builder. Drag nodes, wire connections, set gates, configure triggers and automations.', color: 'var(--accent-tertiary)' },
 ]
 
 export default function Modules() {
@@ -95,9 +94,7 @@ export default function Modules() {
           viewport={viewportConfig}
           className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-5xl mx-auto"
         >
-          {workspaceTools.map((mod) => {
-            const Icon = mod.icon
-            return (
+          {workspaceTools.map((mod) => (
               <motion.div
                 key={mod.name}
                 variants={staggerItem}
@@ -111,13 +108,19 @@ export default function Modules() {
                 />
                 <div className="flex items-center gap-3 mb-3">
                   <div
-                    className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-110"
+                    className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-110 overflow-hidden"
                     style={{
                       backgroundColor: `color-mix(in srgb, ${mod.color} 10%, transparent)`,
                       border: `1px solid color-mix(in srgb, ${mod.color} 20%, transparent)`,
                     }}
                   >
-                    <Icon className="w-5 h-5" style={{ color: mod.color }} />
+                    <Image
+                      src={mod.iconSrc}
+                      alt={mod.name}
+                      width={32}
+                      height={32}
+                      className="rounded"
+                    />
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-[var(--text-primary)]">{mod.name}</p>
@@ -126,8 +129,7 @@ export default function Modules() {
                 </div>
                 <p className="text-xs text-[var(--text-muted)] leading-relaxed">{mod.sub}</p>
               </motion.div>
-            )
-          })}
+          ))}
         </motion.div>
       </div>
     </section>
