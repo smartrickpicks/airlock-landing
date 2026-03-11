@@ -5,11 +5,9 @@ import LogoCloud from '@/components/LogoCloud'
 import ProblemSolution from '@/components/ProblemSolution'
 import CompetitiveMatrix from '@/components/CompetitiveMatrix'
 import ChamberTimeline from '@/components/ChamberTimeline'
-import FeatureShowcase from '@/components/FeatureShowcase'
-import MeetOtto from '@/components/MeetOtto'
-import PlaybookEngine from '@/components/PlaybookEngine'
 import Modules from '@/components/Modules'
-import Metrics from '@/components/Metrics'
+import FeatureShowcase from '@/components/FeatureShowcase'
+import OttoTeaser from '@/components/OttoTeaser'
 import Trust from '@/components/Trust'
 import Constellation from '@/components/Constellation'
 import FAQ from '@/components/FAQ'
@@ -26,11 +24,9 @@ export default function Home() {
       <ProblemSolution />
       <CompetitiveMatrix />
       <ChamberTimeline />
-      <FeatureShowcase />
-      <MeetOtto />
-      <PlaybookEngine />
       <Modules />
-      <Metrics />
+      <FeatureShowcase />
+      <OttoTeaser />
       <Trust />
       <Constellation />
       <FAQ />

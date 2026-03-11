@@ -4,10 +4,10 @@ import { motion } from 'framer-motion'
 import {
   FileText,
   Scan,
-  GitBranch,
-  Columns3,
   AlertTriangle,
-  Layers,
+  Workflow,
+  FileBarChart,
+  Activity,
 } from 'lucide-react'
 import { staggerContainer, staggerItem, viewportConfig } from '@/lib/animations'
 
@@ -24,7 +24,7 @@ const features = [
     icon: Scan,
     title: 'Extraction Engine',
     description:
-      '9 extractor types — date, text, currency, percentage, number, boolean, pattern, picklist, and split — pull structured data from unstructured PDFs and documents automatically.',
+      '9 extractor types \u2014 date, text, currency, percentage, number, boolean, pattern, picklist, and split \u2014 pull structured data from unstructured PDFs and documents automatically.',
     stats: ['442 fields', '9 extractors', '79 CUAD labels'],
     color: 'var(--accent-primary)',
   },
@@ -37,27 +37,27 @@ const features = [
     color: 'var(--chamber-build)',
   },
   {
-    icon: Columns3,
-    title: 'Triptych Workspace',
+    icon: Workflow,
+    title: 'Playbook Engine',
     description:
-      'Signal, Orchestrate, and Control — three persistent panels that show your event feed, primary workspace, and contextual metadata simultaneously. Everything inline, no page navigation.',
-    stats: ['Signal feed', 'Orchestrate', 'Control panel'],
+      'DAG-based workflow automation. Trigger a playbook, and Otto walks your team through extraction, risk scoring, routing, and approval \u2014 with human gates at every critical node.',
+    stats: ['DAG workflows', 'Auto-routing', 'Gate enforcement'],
     color: 'var(--accent-secondary)',
   },
   {
-    icon: GitBranch,
-    title: 'Patch Workflow',
+    icon: FileBarChart,
+    title: 'Brief System',
     description:
-      'Data correction proposals with structured evidence (when/then/because clauses). Defined state machine with role-gated transitions and audit trail for every change.',
-    stats: ['State machine', 'Role-gated', 'Evidence packs'],
+      'Otto-authored intelligence briefs for every context: Vault Briefs summarize deal state, Play Briefs track playbook progress, Team Briefs surface roster gaps, Gate Briefs explain why you were stopped.',
+    stats: ['Vault Brief', 'Play Brief', 'Gate Brief'],
     color: 'var(--chamber-review)',
   },
   {
-    icon: Layers,
-    title: 'Document Suite',
+    icon: Activity,
+    title: 'Pulse Health Scoring',
     description:
-      'TipTap-powered rich text with live variable binding ({{TERRITORY}}, {{TERM}}), clause blocks with risk badges, version diffing with color-coded changes, and annotation overlays.',
-    stats: ['Live binding', 'Version diff', 'Annotations'],
+      'Continuous 0\u2013100 health scores across deals, contracts, and team workload. Pulse aggregates extraction confidence, clause risk, deadline proximity, and gate throughput into one number.',
+    stats: ['0\u2013100 score', 'Real-time', 'Multi-signal'],
     color: 'var(--chamber-ship)',
   },
 ]

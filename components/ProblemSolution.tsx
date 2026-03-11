@@ -1,23 +1,30 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { X, Check, ArrowRight } from 'lucide-react'
+import { X, Check } from 'lucide-react'
 import { viewportConfig } from '@/lib/animations'
 
-const beforeItems = [
-  'Contracts scattered across email, Drive, and Dropbox — no single source of truth',
-  'Approvals lost in Slack threads with no audit trail or accountability',
-  'Deal status tracked in spreadsheets that are outdated the moment they are saved',
-  'Manual extraction from PDFs — copy-pasting clause data into yet another tool',
-  'Context switching between 5+ apps to process a single deal',
-]
-
-const afterItems = [
-  'One Vault per deal — contracts, events, approvals, and documents in a single record',
-  'Gates enforce quality at every stage with preflight validation and role-based access',
-  'AI-powered extraction pulls structured data from contracts — 9 extractor types, zero copy-paste',
-  '188-clause library generates contracts across 24 types and 5 entertainment verticals',
-  'Full audit trail — every action logged, every approval traced, every patch versioned',
+const comparisonRows = [
+  {
+    old: 'Contracts in email, Drive, Dropbox',
+    new: 'One Vault per deal — everything in one',
+  },
+  {
+    old: 'Approvals lost in Slack threads',
+    new: 'Gates with preflight + audit trail',
+  },
+  {
+    old: 'Spreadsheets outdated instantly',
+    new: 'Real-time Pulse scores (0\u2013100)',
+  },
+  {
+    old: 'Copy-pasting clause data between tools',
+    new: '9 extractors pull structured data',
+  },
+  {
+    old: '5+ apps to process one deal',
+    new: 'Triptych \u2014 Signal | Orchestrate | Control',
+  },
 ]
 
 export default function ProblemSolution() {
@@ -55,10 +62,10 @@ export default function ProblemSolution() {
           className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mb-12"
         >
           {[
-            { value: '9.2%', label: 'Revenue lost', sub: 'to poor contract mgmt' },
-            { value: '25x', label: 'App switches', sub: 'per day per worker' },
-            { value: '30%', label: 'CRM data decay', sub: 'per year without maintenance' },
-            { value: '130+', label: 'SaaS apps', sub: 'average enterprise stack' },
+            { value: '9.2%', label: 'Revenue lost', sub: 'to poor contract management' },
+            { value: '25x', label: 'App switches', sub: 'daily per knowledge worker' },
+            { value: '30%', label: 'CRM decay', sub: 'per year without maintenance' },
+            { value: '130+', label: 'SaaS apps', sub: 'in average enterprise stack' },
           ].map((stat) => (
             <div
               key={stat.label}
@@ -71,66 +78,52 @@ export default function ProblemSolution() {
           ))}
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          {/* Before Card */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={viewportConfig}
-            transition={{ duration: 0.6 }}
-            className="bg-[var(--bg-raised)] border border-[var(--border-primary)] rounded-2xl p-8 relative overflow-hidden glow-card"
-          >
-            {/* Red accent glow */}
-            <div
-              className="absolute top-0 left-0 w-full h-[2px]"
-              style={{ background: 'linear-gradient(90deg, #EF4444, transparent)' }}
-            />
-            <p className="text-red-400/80 text-xs font-mono uppercase tracking-wider mb-6">
-              Before Airlock
-            </p>
-            <div className="space-y-4">
-              {beforeItems.map((item, i) => (
-                <div key={i} className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-red-500/10 flex items-center justify-center shrink-0 mt-0.5">
-                    <X className="w-3 h-3 text-red-400" />
-                  </div>
-                  <span className="text-[var(--text-secondary)] text-sm leading-relaxed">{item}</span>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Arrow (desktop) */}
-          <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+        {/* Row-based comparison */}
+        <div className="max-w-4xl mx-auto space-y-3">
+          {/* Header row */}
+          <div className="grid grid-cols-2 gap-4 px-4 mb-2">
+            <p className="text-xs font-mono text-red-400/80 uppercase tracking-wider">Old Way</p>
+            <p className="text-xs font-mono text-[var(--accent-primary)]/80 uppercase tracking-wider">Airlock Way</p>
           </div>
 
-          {/* After Card */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={viewportConfig}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="bg-[var(--bg-raised)] border border-[var(--border-primary)] rounded-2xl p-8 relative overflow-hidden glow-card"
-          >
-            {/* Cyan accent glow */}
-            <div
-              className="absolute top-0 left-0 w-full h-[2px]"
-              style={{ background: 'linear-gradient(90deg, var(--accent-primary), transparent)' }}
-            />
-            <p className="text-[var(--accent-primary)]/80 text-xs font-mono uppercase tracking-wider mb-6">
-              With Airlock
-            </p>
-            <div className="space-y-4">
-              {afterItems.map((item, i) => (
-                <div key={i} className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-[var(--accent-primary)]/10 flex items-center justify-center shrink-0 mt-0.5">
-                    <Check className="w-3 h-3 text-[var(--accent-primary)]" />
-                  </div>
-                  <span className="text-[var(--text-secondary)] text-sm leading-relaxed">{item}</span>
+          {comparisonRows.map((row, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={viewportConfig}
+              transition={{ duration: 0.4, delay: i * 0.08 }}
+              className="grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-4 rounded-xl overflow-hidden"
+            >
+              {/* Old way */}
+              <div className="flex items-center gap-3 bg-[var(--bg-raised)] border border-red-500/10 rounded-t-xl md:rounded-l-xl md:rounded-tr-none p-4 relative">
+                <div
+                  className="absolute inset-0 pointer-events-none rounded-t-xl md:rounded-l-xl md:rounded-tr-none"
+                  style={{
+                    background: 'linear-gradient(90deg, rgba(239,68,68,0.04), transparent 60%)',
+                  }}
+                />
+                <div className="w-5 h-5 rounded-full bg-red-500/10 flex items-center justify-center shrink-0 relative z-10">
+                  <X className="w-3 h-3 text-red-400" />
                 </div>
-              ))}
-            </div>
-          </motion.div>
+                <span className="text-sm text-[var(--text-secondary)] relative z-10">{row.old}</span>
+              </div>
+
+              {/* Airlock way */}
+              <div className="flex items-center gap-3 bg-[var(--bg-raised)] border border-[var(--accent-primary)]/10 rounded-b-xl md:rounded-r-xl md:rounded-bl-none p-4 relative">
+                <div
+                  className="absolute inset-0 pointer-events-none rounded-b-xl md:rounded-r-xl md:rounded-bl-none"
+                  style={{
+                    background: 'linear-gradient(90deg, rgba(0,209,255,0.04), transparent 60%)',
+                  }}
+                />
+                <div className="w-5 h-5 rounded-full bg-[var(--accent-primary)]/10 flex items-center justify-center shrink-0 relative z-10">
+                  <Check className="w-3 h-3 text-[var(--accent-primary)]" />
+                </div>
+                <span className="text-sm text-[var(--text-secondary)] relative z-10">{row.new}</span>
+              </div>
+            </motion.div>
+          ))}
         </div>
       </div>
     </section>

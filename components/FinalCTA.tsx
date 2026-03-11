@@ -58,7 +58,7 @@ export default function FinalCTA() {
             className="font-bold"
             style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)' }}
           >
-            <span className="gradient-text">Your contracts deserve better.</span>
+            <span className="gradient-text">Your deals deserve better.</span>
           </h2>
         </motion.div>
 
@@ -69,7 +69,7 @@ export default function FinalCTA() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="text-[var(--text-secondary)] text-lg mt-4 mb-10 max-w-lg mx-auto"
         >
-          {'One vault per deal. AI that assists without acting alone. Enterprise security from day one. Join the teams building the future of contract operations.'}
+          {"Every tool your deal team needs. One workspace that adapts to how they work. That's not a pitch. That's what we built."}
         </motion.p>
 
         <motion.div

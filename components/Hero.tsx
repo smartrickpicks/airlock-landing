@@ -44,7 +44,7 @@ function OrbBackground() {
 
 /* ── Rotating headline words ──────────────────────────────────────────────── */
 
-const rotatingWords = ['Every deal.', 'Every team.', 'Every workflow.', 'Every contract.']
+const rotatingWords = ['Contracts.', 'CRM.', 'Tasks.', 'Calendar.', 'Documents.']
 
 function RotatingWord() {
   const [index, setIndex] = useState(0)
@@ -323,9 +323,9 @@ function SocialProof() {
       className="flex flex-wrap items-center justify-center gap-6 mt-8"
     >
       {[
-        { label: 'AI-Native', icon: '~' },
-        { label: 'Encrypted at Rest', icon: '>' },
-        { label: 'Enterprise Architecture', icon: '#' },
+        { label: 'AES-128 Encrypted', icon: '>' },
+        { label: 'RBAC + RLS', icon: '#' },
+        { label: 'Tenant Isolation', icon: '~' },
       ].map((item) => (
         <div
           key={item.label}
@@ -372,9 +372,9 @@ export default function Hero() {
           className="font-sans font-bold max-w-4xl mx-auto leading-[1.08] tracking-tight"
           style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)' }}
         >
-          <span className="gradient-text-white">One workspace. </span>
-          <br className="hidden sm:block" />
           <RotatingWord />
+          <br className="hidden sm:block" />
+          <span className="gradient-text-white">One workspace that knows your team.</span>
         </motion.h1>
 
         {/* Subheading */}
@@ -384,9 +384,10 @@ export default function Hero() {
           transition={{ duration: 0.7, delay: 0.25 }}
           className="text-[var(--text-secondary)] text-lg md:text-xl max-w-2xl mx-auto mt-6 leading-relaxed"
         >
-          Airlock unifies contract lifecycle, CRM, and project management in a
-          Discord-like workspace powered by AI agents — so your team stops
-          context-switching and starts closing.
+          Contracts, CRM, tasks, calendar, documents — unified in a workspace
+          that actually knows who{"'"}s on your team. I{"'"}m Otto. I mapped your
+          behavioral drives before you opened the app. The tools are yours.
+          The intelligence is mine.
         </motion.p>
 
         {/* CTA */}

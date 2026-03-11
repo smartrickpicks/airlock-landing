@@ -11,6 +11,10 @@ import {
   GitFork,
   Layout,
   Users,
+  Shield,
+  Cpu,
+  DollarSign,
+  Rocket,
 } from 'lucide-react'
 import { viewportConfig } from '@/lib/animations'
 
@@ -185,7 +189,7 @@ export default function Constellation() {
             Built on <span className="gradient-text">Constellation.</span>
           </h2>
           <p className="text-[var(--text-secondary)] text-lg mt-4 max-w-2xl mx-auto">
-            8 interconnected repositories — not a monolith. Each repo owns a
+            9 interconnected repositories — not a monolith. Each repo owns a
             clear domain. Deploy together or independently.
           </p>
         </motion.div>
@@ -196,25 +200,67 @@ export default function Constellation() {
         {/* Mobile grid fallback */}
         <MobileGrid />
 
-        {/* Market context */}
+        {/* Why it matters */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={viewportConfig}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto"
+          className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto"
         >
           {[
-            { value: '$5.65B', label: 'CLM market by 2030', sub: '13% CAGR' },
-            { value: '$50B+', label: 'AI agent market by 2030', sub: 'from $7.6B in 2025' },
-            { value: '$29.6B', label: 'Global music industry', sub: '69% streaming revenue' },
-          ].map((stat) => (
-            <div key={stat.label} className="text-center">
-              <p className="text-2xl font-bold gradient-text mb-1">{stat.value}</p>
-              <p className="text-xs font-medium text-[var(--text-primary)]">{stat.label}</p>
-              <p className="text-[10px] text-[var(--text-muted)]">{stat.sub}</p>
-            </div>
-          ))}
+            {
+              icon: Shield,
+              title: 'Blast Radius Isolation',
+              description: "Each repo is its own MCP server. A bug in the docs layer can't touch your behavioral data. That's not a policy — it's the architecture.",
+              stat: '9 isolated domains',
+            },
+            {
+              icon: Cpu,
+              title: 'MCP-Native from Day One',
+              description: "Every repo exposes tools through Model Context Protocol. Your AI agents get scoped access — not global permissions. Per-repo RBAC at the MCP layer.",
+              stat: '9 MCP servers',
+            },
+            {
+              icon: DollarSign,
+              title: 'Lower LLM Costs',
+              description: "Smaller context windows per repo means fewer tokens burned. I query persona data without loading your entire codebase. Your LLM bill notices.",
+              stat: '~40% fewer tokens',
+            },
+            {
+              icon: Rocket,
+              title: 'Ship Independently',
+              description: "Deploy the UI without touching the playbook engine. Each team owns their release cycle. No monolith. No release trains.",
+              stat: 'Independent deploys',
+            },
+          ].map((benefit) => {
+            const Icon = benefit.icon
+            return (
+              <div
+                key={benefit.title}
+                className="bg-[var(--bg-raised)] border border-[var(--border-primary)] rounded-xl p-6 glow-card"
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <div
+                    className="w-10 h-10 rounded-lg flex items-center justify-center"
+                    style={{
+                      backgroundColor: 'color-mix(in srgb, var(--accent-primary) 10%, transparent)',
+                      border: '1px solid color-mix(in srgb, var(--accent-primary) 20%, transparent)',
+                    }}
+                  >
+                    <Icon className="w-5 h-5" style={{ color: 'var(--accent-primary)' }} />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-semibold text-[var(--text-primary)]">{benefit.title}</h3>
+                    <p className="text-[10px] font-mono text-[var(--accent-primary)]">{benefit.stat}</p>
+                  </div>
+                </div>
+                <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                  {benefit.description}
+                </p>
+              </div>
+            )
+          })}
         </motion.div>
       </div>
     </section>

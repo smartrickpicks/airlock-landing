@@ -6,40 +6,60 @@ import { viewportConfig } from '@/lib/animations'
 
 const dimensions = [
   {
-    label: 'Contract intelligence',
+    label: 'Contract Intelligence',
     clm: 'strong',
     workspace: 'none',
     airlock: 'strong',
+    airlockDetail: 'Strong',
   },
   {
-    label: 'CRM built-in',
+    label: 'CRM Built-in',
     clm: 'none',
     workspace: 'weak',
     airlock: 'native',
+    airlockDetail: 'Native (Vault)',
   },
   {
-    label: 'Project management',
+    label: 'Project Management',
     clm: 'none',
     workspace: 'strong',
     airlock: 'native',
+    airlockDetail: 'Native (Playbooks)',
   },
   {
     label: 'Communication UX',
     clm: 'none',
     workspace: 'weak',
     airlock: 'core',
+    airlockDetail: 'Core (Triptych)',
   },
   {
-    label: 'AI agents',
+    label: 'AI Agents',
     clm: 'emerging',
     workspace: 'emerging',
     airlock: 'native',
+    airlockDetail: 'Native (OTTO)',
   },
   {
-    label: 'Industry-specific',
+    label: 'Industry Vertical',
     clm: 'generic',
     workspace: 'generic',
     airlock: 'vertical',
+    airlockDetail: 'Entertainment-first',
+  },
+  {
+    label: 'Behavioral Intelligence',
+    clm: 'none',
+    workspace: 'none',
+    airlock: 'native',
+    airlockDetail: '17 PI Personas',
+  },
+  {
+    label: 'Identity Sovereignty',
+    clm: 'none',
+    workspace: 'none',
+    airlock: 'native',
+    airlockDetail: 'W3C DID Standards',
   },
 ]
 
@@ -65,6 +85,12 @@ function CellLabel({ value }: { value: string }) {
     none: 'None',
   }
   return <span className="text-xs text-[var(--text-muted)]">{labels[value] || value}</span>
+}
+
+function countChecks(key: 'clm' | 'workspace' | 'airlock') {
+  return dimensions.filter(
+    (d) => d[key] === 'strong' || d[key] === 'native' || d[key] === 'core' || d[key] === 'vertical'
+  ).length
 }
 
 export default function CompetitiveMatrix() {
@@ -97,7 +123,7 @@ export default function CompetitiveMatrix() {
           </h2>
           <p className="text-[var(--text-secondary)] text-lg mt-4 max-w-2xl mx-auto">
             {
-              "Adding Zapier arrows between tools doesn't reduce complexity — it multiplies failure points."
+              "Adding Zapier arrows between tools doesn\u2019t reduce complexity \u2014 it multiplies failure points."
             }
           </p>
         </motion.div>
@@ -115,10 +141,12 @@ export default function CompetitiveMatrix() {
               Dimension
             </div>
             <div className="p-4 text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider text-center border-l border-[var(--border-subtle)]">
-              CLM Tools
+              <span className="block">CLM Tools</span>
+              <span className="block text-[10px] text-[var(--text-muted)]/50 normal-case tracking-normal">(e.g. Ironclad, Juro)</span>
             </div>
             <div className="p-4 text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider text-center border-l border-[var(--border-subtle)]">
-              Workspace Tools
+              <span className="block">Workspace Tools</span>
+              <span className="block text-[10px] text-[var(--text-muted)]/50 normal-case tracking-normal">(e.g. Monday, Notion)</span>
             </div>
             <div className="p-4 text-xs font-mono text-[var(--accent-primary)] uppercase tracking-wider text-center border-l border-[var(--accent-primary)]/20 bg-[var(--accent-primary)]/5">
               Airlock
@@ -130,7 +158,7 @@ export default function CompetitiveMatrix() {
             <div
               key={dim.label}
               className={`grid grid-cols-4 gap-0 ${
-                i < dimensions.length - 1 ? 'border-b border-[var(--border-subtle)]' : ''
+                i < dimensions.length - 1 ? 'border-b border-[var(--border-subtle)]' : 'border-b border-[var(--border-primary)]'
               }`}
             >
               <div className="p-4 text-sm text-[var(--text-primary)] font-medium">
@@ -146,10 +174,29 @@ export default function CompetitiveMatrix() {
               </div>
               <div className="p-4 flex flex-col items-center justify-center gap-1 border-l border-[var(--accent-primary)]/20 bg-[var(--accent-primary)]/[0.02]">
                 <CellIcon value={dim.airlock} />
-                <CellLabel value={dim.airlock} />
+                <span className="text-xs text-[var(--text-muted)]">{dim.airlockDetail}</span>
               </div>
             </div>
           ))}
+
+          {/* Summary row */}
+          <div className="grid grid-cols-4 gap-0 bg-[var(--bg-sunken)]">
+            <div className="p-4 text-sm font-bold text-[var(--text-primary)]">
+              Total ✓
+            </div>
+            <div className="p-4 text-center border-l border-[var(--border-subtle)]">
+              <span className="text-lg font-bold text-red-400">{countChecks('clm')}</span>
+              <span className="text-sm text-[var(--text-muted)]"> / {dimensions.length}</span>
+            </div>
+            <div className="p-4 text-center border-l border-[var(--border-subtle)]">
+              <span className="text-lg font-bold text-yellow-400">{countChecks('workspace')}</span>
+              <span className="text-sm text-[var(--text-muted)]"> / {dimensions.length}</span>
+            </div>
+            <div className="p-4 text-center border-l border-[var(--accent-primary)]/20 bg-[var(--accent-primary)]/5">
+              <span className="text-lg font-bold text-green-400">{countChecks('airlock')}</span>
+              <span className="text-sm text-[var(--text-muted)]"> / {dimensions.length}</span>
+            </div>
+          </div>
         </motion.div>
 
         {/* Source attribution */}

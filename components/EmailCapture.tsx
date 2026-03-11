@@ -12,16 +12,24 @@ export default function EmailCapture({ variant = 'hero' }: EmailCaptureProps) {
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     if (!email || !email.includes('@')) {
       setStatus('error')
       return
     }
     setStatus('loading')
-    setTimeout(() => {
+    try {
+      const res = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+      if (!res.ok) throw new Error('Failed')
       setStatus('success')
-    }, 1000)
+    } catch {
+      setStatus('error')
+    }
   }
 
   return (
