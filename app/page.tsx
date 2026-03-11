@@ -1,6 +1,6 @@
 import Nav from '@/components/Nav'
 import ScrollProgress from '@/components/ScrollProgress'
-import Hero from '@/components/Hero'
+import HeroChat from '@/components/HeroChat'
 import LogoCloud from '@/components/LogoCloud'
 import ProblemSolution from '@/components/ProblemSolution'
 import CompetitiveMatrix from '@/components/CompetitiveMatrix'
@@ -19,7 +19,7 @@ export default function Home() {
     <main>
       <Nav />
       <ScrollProgress />
-      <Hero />
+      <HeroChat />
       <LogoCloud />
       <ProblemSolution />
       <CompetitiveMatrix />
