@@ -67,11 +67,12 @@ function useTypewriter(text: string, speed = 14) {
   return { displayed, done }
 }
 
-/* ── Otto Mark — bold, iconic, Discord-level recognizable ────────────────── */
+/* ── Otto Mark — constellation wireframe otter, abstract + bold ──────────── */
 
 function OttoMark({ size = 'sm', flipping = false }: { size?: 'sm' | 'lg' | 'hero' | 'float'; flipping?: boolean }) {
-  const dims = { sm: 'w-8 h-8', lg: 'w-10 h-10', hero: 'w-20 h-20', float: 'w-28 h-28' }
+  const dims = { sm: 'w-8 h-8', lg: 'w-10 h-10', hero: 'w-20 h-20', float: 'w-32 h-32' }
   const svgClass = dims[size]
+  const isLarge = size === 'float' || size === 'hero'
 
   const flipVariants = {
     idle: { rotateY: 0 },
@@ -88,57 +89,99 @@ function OttoMark({ size = 'sm', flipping = false }: { size?: 'sm' | 'lg' | 'her
       variants={flipVariants}
       animate={flipping ? 'flip' : 'idle'}
     >
-      <svg viewBox="0 0 64 64" className="w-full h-full drop-shadow-[0_0_20px_rgba(124,92,252,0.5)]" fill="none">
-        {/* Otter head silhouette — bold, filled, unmistakable */}
-        <path
-          d="M32 6C20 6 14 14 14 24c0 6 2 10 5 13l-2 10c-.5 2.5 1.5 5 4 5h22c2.5 0 4.5-2.5 4-5l-2-10c3-3 5-7 5-13C50 14 44 6 32 6z"
-          fill="#7C5CFC"
-        />
-        {/* Ears — round, bold */}
-        <circle cx="17" cy="14" r="6" fill="#7C5CFC" />
-        <circle cx="47" cy="14" r="6" fill="#7C5CFC" />
-        <circle cx="17" cy="14" r="3.5" fill="#0B0E14" />
-        <circle cx="47" cy="14" r="3.5" fill="#0B0E14" />
+      <svg viewBox="0 0 160 160" className="w-full h-full" style={{ filter: `drop-shadow(0 0 ${isLarge ? 20 : 8}px rgba(124,92,252,0.3))` }} fill="none">
+        {/* Head outline — wireframe circle */}
+        <circle cx="80" cy="78" r="38" fill="rgba(124,92,252,0.06)" stroke="rgba(124,92,252,0.35)" strokeWidth={isLarge ? 1.5 : 1} />
+        {/* Inner head */}
+        <circle cx="80" cy="80" r="28" fill="rgba(11,14,20,0.6)" stroke="rgba(124,92,252,0.15)" strokeWidth="1" />
 
-        {/* Eyes — THE identity. Big, luminous, alive */}
-        <circle cx="24" cy="26" r="6" fill="#0B0E14" />
-        <circle cx="40" cy="26" r="6" fill="#0B0E14" />
-        {/* Iris glow */}
-        <circle cx="24" cy="26" r="4.5" fill="#00D1FF" opacity="0.9">
-          <animate attributeName="r" values="4.5;4.5;4.5;1;4.5;4.5;4.5" dur="4s" repeatCount="indefinite" keyTimes="0;0.46;0.48;0.5;0.52;0.54;1" />
-        </circle>
-        <circle cx="40" cy="26" r="4.5" fill="#00D1FF" opacity="0.9">
-          <animate attributeName="r" values="4.5;4.5;4.5;1;4.5;4.5;4.5" dur="4s" repeatCount="indefinite" keyTimes="0;0.46;0.48;0.5;0.52;0.54;1" />
-        </circle>
-        {/* Pupil */}
-        <circle cx="25" cy="25" r="2" fill="#fff" opacity="0.85" />
-        <circle cx="41" cy="25" r="2" fill="#fff" opacity="0.85" />
+        {/* Ears — wireframe */}
+        <circle cx="52" cy="50" r="11" fill="rgba(124,92,252,0.06)" stroke="rgba(124,92,252,0.3)" strokeWidth={isLarge ? 1.5 : 1} />
+        <circle cx="52" cy="50" r="5.5" fill="rgba(124,92,252,0.04)" stroke="rgba(124,92,252,0.12)" strokeWidth="0.8" />
+        <circle cx="108" cy="50" r="11" fill="rgba(124,92,252,0.06)" stroke="rgba(124,92,252,0.3)" strokeWidth={isLarge ? 1.5 : 1} />
+        <circle cx="108" cy="50" r="5.5" fill="rgba(124,92,252,0.04)" stroke="rgba(124,92,252,0.12)" strokeWidth="0.8" />
 
-        {/* Nose — otter triangle */}
-        <ellipse cx="32" cy="33" rx="3" ry="2" fill="#0B0E14" />
-
-        {/* Mouth — subtle smile */}
-        <path d="M28 36q4 3 8 0" stroke="#0B0E14" strokeWidth="1.2" fill="none" strokeLinecap="round" />
-
-        {/* Chamber dots — corners, the 4-color signature */}
-        <circle cx="8" cy="8" r="3" fill="#EF4444">
-          <animate attributeName="opacity" values="0.5;1;0.5" dur="3s" repeatCount="indefinite" />
+        {/* Eyes — bright, THE identity */}
+        <circle cx="68" cy="76" r="6.5" fill="#7C5CFC">
+          <animate attributeName="ry" values="6.5;6.5;6.5;1;6.5;6.5;6.5" dur="4s" repeatCount="indefinite" keyTimes="0;0.46;0.48;0.5;0.52;0.54;1" />
         </circle>
-        <circle cx="56" cy="8" r="3" fill="#EAB308">
-          <animate attributeName="opacity" values="0.5;1;0.5" dur="3s" begin="0.75s" repeatCount="indefinite" />
+        <circle cx="92" cy="76" r="6.5" fill="#7C5CFC">
+          <animate attributeName="ry" values="6.5;6.5;6.5;1;6.5;6.5;6.5" dur="4s" repeatCount="indefinite" keyTimes="0;0.46;0.48;0.5;0.52;0.54;1" />
         </circle>
-        <circle cx="56" cy="56" r="3" fill="#A855F7">
-          <animate attributeName="opacity" values="0.5;1;0.5" dur="3s" begin="1.5s" repeatCount="indefinite" />
+        {/* Eye highlights */}
+        <circle cx="66" cy="74" r="2" fill="#fff" opacity="0.7" />
+        <circle cx="90" cy="74" r="2" fill="#fff" opacity="0.7" />
+        {/* Eye glow rings */}
+        <circle cx="68" cy="76" r="11" fill="none" stroke="rgba(124,92,252,0.2)" strokeWidth="1">
+          <animate attributeName="r" values="9;13;9" dur="3s" repeatCount="indefinite" />
+          <animate attributeName="stroke-opacity" values="0.15;0.05;0.15" dur="3s" repeatCount="indefinite" />
         </circle>
-        <circle cx="8" cy="56" r="3" fill="#22C55E">
-          <animate attributeName="opacity" values="0.5;1;0.5" dur="3s" begin="2.25s" repeatCount="indefinite" />
+        <circle cx="92" cy="76" r="11" fill="none" stroke="rgba(124,92,252,0.2)" strokeWidth="1">
+          <animate attributeName="r" values="9;13;9" dur="3s" repeatCount="indefinite" />
+          <animate attributeName="stroke-opacity" values="0.15;0.05;0.15" dur="3s" repeatCount="indefinite" />
         </circle>
 
-        {/* Constellation lines connecting chamber dots through Otto */}
-        <line x1="8" y1="8" x2="24" y2="26" stroke="#EF4444" strokeWidth="0.5" opacity="0.2" />
-        <line x1="56" y1="8" x2="40" y2="26" stroke="#EAB308" strokeWidth="0.5" opacity="0.2" />
-        <line x1="56" y1="56" x2="40" y2="26" stroke="#A855F7" strokeWidth="0.5" opacity="0.2" />
-        <line x1="8" y1="56" x2="24" y2="26" stroke="#22C55E" strokeWidth="0.5" opacity="0.2" />
+        {/* Nose */}
+        <ellipse cx="80" cy="88" rx="3.5" ry="2.5" fill="rgba(124,92,252,0.5)" />
+        {/* Mouth */}
+        <path d="M73 93q7 5 14 0" stroke="rgba(124,92,252,0.35)" strokeWidth="1.2" fill="none" strokeLinecap="round" />
+
+        {/* Constellation edges — connecting face nodes */}
+        <line x1="68" y1="76" x2="80" y2="60" stroke="rgba(124,92,252,0.2)" strokeWidth="0.8" strokeDasharray="3 3" />
+        <line x1="92" y1="76" x2="80" y2="60" stroke="rgba(124,92,252,0.2)" strokeWidth="0.8" strokeDasharray="3 3" />
+        <line x1="68" y1="76" x2="80" y2="100" stroke="rgba(124,92,252,0.15)" strokeWidth="0.8" strokeDasharray="3 3" />
+        <line x1="92" y1="76" x2="80" y2="100" stroke="rgba(124,92,252,0.15)" strokeWidth="0.8" strokeDasharray="3 3" />
+        <line x1="68" y1="76" x2="52" y2="50" stroke="rgba(124,92,252,0.12)" strokeWidth="0.6" strokeDasharray="3 3" />
+        <line x1="92" y1="76" x2="108" y2="50" stroke="rgba(124,92,252,0.12)" strokeWidth="0.6" strokeDasharray="3 3" />
+        <line x1="68" y1="76" x2="55" y2="90" stroke="rgba(124,92,252,0.1)" strokeWidth="0.6" strokeDasharray="3 3" />
+        <line x1="92" y1="76" x2="105" y2="90" stroke="rgba(124,92,252,0.1)" strokeWidth="0.6" strokeDasharray="3 3" />
+
+        {/* Constellation nodes — forehead, chin, jaw */}
+        <circle cx="80" cy="60" r="2.5" fill="#7C5CFC" opacity="0.5" />
+        <circle cx="80" cy="100" r="2.5" fill="#7C5CFC" opacity="0.4" />
+        <circle cx="55" cy="90" r="2" fill="#7C5CFC" opacity="0.3" />
+        <circle cx="105" cy="90" r="2" fill="#7C5CFC" opacity="0.3" />
+
+        {/* Whiskers — wireframe style */}
+        <line x1="60" y1="84" x2="42" y2="80" stroke="rgba(124,92,252,0.15)" strokeWidth="0.8" strokeLinecap="round" />
+        <line x1="60" y1="88" x2="40" y2="88" stroke="rgba(124,92,252,0.15)" strokeWidth="0.8" strokeLinecap="round" />
+        <line x1="60" y1="92" x2="42" y2="96" stroke="rgba(124,92,252,0.15)" strokeWidth="0.8" strokeLinecap="round" />
+        <line x1="100" y1="84" x2="118" y2="80" stroke="rgba(124,92,252,0.15)" strokeWidth="0.8" strokeLinecap="round" />
+        <line x1="100" y1="88" x2="120" y2="88" stroke="rgba(124,92,252,0.15)" strokeWidth="0.8" strokeLinecap="round" />
+        <line x1="100" y1="92" x2="118" y2="96" stroke="rgba(124,92,252,0.15)" strokeWidth="0.8" strokeLinecap="round" />
+
+        {/* Chamber dots — four corners */}
+        <circle cx="20" cy="20" r="4" fill="#EF4444" opacity="0.7">
+          <animate attributeName="opacity" values="0.4;0.8;0.4" dur="3s" repeatCount="indefinite" />
+        </circle>
+        <circle cx="140" cy="20" r="4" fill="#EAB308" opacity="0.7">
+          <animate attributeName="opacity" values="0.4;0.8;0.4" dur="3s" begin="0.75s" repeatCount="indefinite" />
+        </circle>
+        <circle cx="140" cy="140" r="4" fill="#A855F7" opacity="0.7">
+          <animate attributeName="opacity" values="0.4;0.8;0.4" dur="3s" begin="1.5s" repeatCount="indefinite" />
+        </circle>
+        <circle cx="20" cy="140" r="4" fill="#22C55E" opacity="0.7">
+          <animate attributeName="opacity" values="0.4;0.8;0.4" dur="3s" begin="2.25s" repeatCount="indefinite" />
+        </circle>
+
+        {/* Chamber lines to eyes */}
+        <line x1="20" y1="20" x2="68" y2="76" stroke="#EF4444" strokeWidth="0.4" opacity="0.15" strokeDasharray="4 4">
+          <animate attributeName="stroke-opacity" values="0.1;0.25;0.1" dur="3s" repeatCount="indefinite" />
+        </line>
+        <line x1="140" y1="20" x2="92" y2="76" stroke="#EAB308" strokeWidth="0.4" opacity="0.15" strokeDasharray="4 4">
+          <animate attributeName="stroke-opacity" values="0.1;0.25;0.1" dur="3s" begin="0.75s" repeatCount="indefinite" />
+        </line>
+        <line x1="140" y1="140" x2="92" y2="76" stroke="#A855F7" strokeWidth="0.4" opacity="0.15" strokeDasharray="4 4">
+          <animate attributeName="stroke-opacity" values="0.1;0.25;0.1" dur="3s" begin="1.5s" repeatCount="indefinite" />
+        </line>
+        <line x1="20" y1="140" x2="68" y2="76" stroke="#22C55E" strokeWidth="0.4" opacity="0.15" strokeDasharray="4 4">
+          <animate attributeName="stroke-opacity" values="0.1;0.25;0.1" dur="3s" begin="2.25s" repeatCount="indefinite" />
+        </line>
+
+        {/* Ambient outer glow */}
+        <circle cx="80" cy="80" r="65" fill="none" stroke="rgba(124,92,252,0.06)" strokeWidth="1">
+          <animate attributeName="r" values="60;70;60" dur="5s" repeatCount="indefinite" />
+        </circle>
       </svg>
     </motion.div>
   )
@@ -154,9 +197,9 @@ function FloatingOtto({ flipping = false }: { flipping?: boolean }) {
       transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
     >
       {/* Ambient glow behind Otto */}
-      <div className="absolute inset-[-40%] rounded-full" style={{
-        background: 'radial-gradient(circle, rgba(124,92,252,0.2) 0%, rgba(0,209,255,0.08) 40%, transparent 70%)',
-        filter: 'blur(20px)',
+      <div className="absolute inset-[-30%] rounded-full" style={{
+        background: 'radial-gradient(circle, rgba(124,92,252,0.15) 0%, rgba(0,209,255,0.05) 40%, transparent 70%)',
+        filter: 'blur(24px)',
       }} />
       <OttoMark size="float" flipping={flipping} />
     </motion.div>
