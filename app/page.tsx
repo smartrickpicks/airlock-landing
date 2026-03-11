@@ -6,7 +6,7 @@ import ProblemSolution from '@/components/ProblemSolution'
 import CompetitiveMatrix from '@/components/CompetitiveMatrix'
 import ChamberTimeline from '@/components/ChamberTimeline'
 import FeatureShowcase from '@/components/FeatureShowcase'
-import PeopleIntel from '@/components/PeopleIntel'
+import MeetOtto from '@/components/MeetOtto'
 import PlaybookEngine from '@/components/PlaybookEngine'
 import Modules from '@/components/Modules'
 import Metrics from '@/components/Metrics'
@@ -27,7 +27,7 @@ export default function Home() {
       <CompetitiveMatrix />
       <ChamberTimeline />
       <FeatureShowcase />
-      <PeopleIntel />
+      <MeetOtto />
       <PlaybookEngine />
       <Modules />
       <Metrics />
