@@ -3,6 +3,7 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import EmailCapture from '@/components/EmailCapture'
@@ -78,6 +79,24 @@ function OttoHero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
         >
+          {/* Otto + MAGS constellation marks */}
+          <div className="flex items-center justify-center gap-8 mb-8">
+            <Image
+              src="/brand/hero/hero-otto.png"
+              alt="Otto — Behavioral Constellation"
+              width={200}
+              height={200}
+              className="opacity-90"
+            />
+            <Image
+              src="/brand/hero/hero-mags.png"
+              alt="MAGS — Multi-Arc Governance System"
+              width={200}
+              height={200}
+              className="opacity-90"
+            />
+          </div>
+
           <p className="text-sm font-mono text-[#7C5CFC] uppercase tracking-widest mb-6">
             Meet Otto
           </p>
