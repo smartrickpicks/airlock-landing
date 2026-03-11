@@ -7,6 +7,7 @@ import Image from 'next/image'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import EmailCapture from '@/components/EmailCapture'
+import ProfileExplorer from '@/components/ProfileExplorer'
 import {
   ArrowLeft,
   Brain,
@@ -984,6 +985,7 @@ export default function OttoPage() {
       <Nav />
       <OttoHero />
       <HowOttoWorks />
+      <ProfileExplorer />
       <TeamThroughOttosEyes />
       <TheOffice />
       <GatesSection />
