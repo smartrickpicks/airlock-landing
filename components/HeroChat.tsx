@@ -20,7 +20,17 @@ interface DagSpec {
   otto_value: string; use_case_tags: string[]
 }
 
-type Phase = 'chat' | 'generating' | 'spec' | 'capture'
+type Phase = 'chat' | 'building' | 'spec' | 'capture'
+type OttoMood = 'idle' | 'focused' | 'surprised' | 'satisfied'
+
+interface ChoreographyState {
+  visibleNodes: DagNode[]
+  visibleEdges: [number, number][]
+  currentThought: string
+  reconsiderTarget: number | null
+  phase: 'thinking' | 'placing' | 'reconsidering' | 'solidifying' | 'done'
+  mood: OttoMood
+}
 
 /* ── Constants ───────────────────────────────────────────────────────────── */
 
@@ -65,6 +75,168 @@ function useTypewriter(text: string, speed = 14) {
     return () => clearInterval(timer)
   }, [text, speed])
   return { displayed, done }
+}
+
+function useMediaQuery(query: string) {
+  const [matches, setMatches] = useState(false)
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const mql = window.matchMedia(query)
+    setMatches(mql.matches)
+    const handler = (e: MediaQueryListEvent) => setMatches(e.matches)
+    mql.addEventListener('change', handler)
+    return () => mql.removeEventListener('change', handler)
+  }, [query])
+  return matches
+}
+
+const TIMING = {
+  INITIAL_DELAY: 500,
+  THOUGHT_DURATION: 1400,
+  NODE_INTERVAL: 800,
+  RECONSIDER_SHAKE: 300,
+  RECONSIDER_PAUSE: 500,
+  RECONSIDER_REBUILD: 600,
+  SOLIDIFY_DURATION: 1000,
+}
+
+function generateThoughts(spec: DagSpec): string[] {
+  const thoughts = [
+    `${spec.industry}... ${spec.role.toLowerCase()}. Let me map this.`,
+    spec.team_insight,
+    `The gap: ${spec.gap.toLowerCase()}.`,
+  ]
+  spec.dag.nodes.forEach((n) => {
+    thoughts.push(`${n.chamber} \u2192 ${n.label}. ${n.description.split('.')[0]}.`)
+  })
+  thoughts.push('Your playbook is ready.')
+  return thoughts
+}
+
+const GENERIC_THOUGHTS = [
+  'Mapping behavioral drives...',
+  'Computing sovereign balance...',
+  'Routing personas to chambers...',
+  'Identifying cognitive gaps...',
+  'Building your playbook...',
+]
+
+function useChoreography(spec: DagSpec | null): ChoreographyState {
+  const [state, setState] = useState<ChoreographyState>({
+    visibleNodes: [], visibleEdges: [], currentThought: '',
+    reconsiderTarget: null, phase: 'thinking', mood: 'focused',
+  })
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const startedRef = useRef(false)
+
+  useEffect(() => {
+    if (startedRef.current) return
+    startedRef.current = true
+
+    // Start with generic thoughts until spec arrives
+    let thoughtIndex = 0
+    const genericInterval = setInterval(() => {
+      if (thoughtIndex < GENERIC_THOUGHTS.length) {
+        setState(s => ({ ...s, currentThought: GENERIC_THOUGHTS[thoughtIndex], phase: 'thinking', mood: 'focused' }))
+        thoughtIndex++
+      }
+    }, TIMING.THOUGHT_DURATION)
+
+    // Store for cleanup
+    timerRef.current = genericInterval as unknown as ReturnType<typeof setTimeout>
+
+    return () => {
+      clearInterval(genericInterval)
+      if (timerRef.current) clearTimeout(timerRef.current)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!spec) return
+
+    const thoughts = generateThoughts(spec)
+    const nodes = spec.dag.nodes
+    const gateIndex = nodes.findIndex(n => n.is_gate)
+    const reconsiderAt = gateIndex > 1 ? gateIndex : Math.min(3, nodes.length - 2)
+
+    // Clear any generic timer
+    if (timerRef.current) {
+      clearInterval(timerRef.current as unknown as ReturnType<typeof setInterval>)
+    }
+
+    let step = 0
+    const totalNodes = nodes.length
+
+    // Kick off the node-placing sequence
+    const placeNext = () => {
+      if (step < totalNodes) {
+        const currentNode = nodes[step]
+        const thought = thoughts[Math.min(step + 3, thoughts.length - 1)]
+
+        // Reconsider event
+        if (step === reconsiderAt && reconsiderAt > 0) {
+          setState(s => ({
+            ...s,
+            reconsiderTarget: currentNode.id,
+            currentThought: `Wait \u2014 ${currentNode.label.toLowerCase()} needs to come earlier.`,
+            phase: 'reconsidering',
+            mood: 'surprised',
+          }))
+          // After shake, remove and re-add
+          setTimeout(() => {
+            setState(s => ({
+              ...s,
+              reconsiderTarget: null,
+              visibleNodes: [...s.visibleNodes, currentNode],
+              visibleEdges: step > 0 ? [...s.visibleEdges, [step - 1, step]] : s.visibleEdges,
+              currentThought: thought,
+              phase: 'placing',
+              mood: 'focused',
+            }))
+            step++
+            setTimeout(placeNext, TIMING.NODE_INTERVAL)
+          }, TIMING.RECONSIDER_SHAKE + TIMING.RECONSIDER_PAUSE + TIMING.RECONSIDER_REBUILD)
+          return
+        }
+
+        setState(s => ({
+          ...s,
+          visibleNodes: [...s.visibleNodes, currentNode],
+          visibleEdges: step > 0 ? [...s.visibleEdges, [step - 1, step]] : s.visibleEdges,
+          currentThought: thought,
+          phase: 'placing',
+          mood: 'focused',
+        }))
+        step++
+        timerRef.current = setTimeout(placeNext, TIMING.NODE_INTERVAL)
+      } else {
+        // Solidify
+        setState(s => ({
+          ...s,
+          currentThought: thoughts[thoughts.length - 1],
+          phase: 'solidifying',
+          mood: 'satisfied',
+        }))
+        timerRef.current = setTimeout(() => {
+          setState(s => ({ ...s, phase: 'done', mood: 'satisfied' }))
+        }, TIMING.SOLIDIFY_DURATION)
+      }
+    }
+
+    // Initial spec thoughts
+    setState(s => ({ ...s, currentThought: thoughts[0], phase: 'thinking', mood: 'focused' }))
+    timerRef.current = setTimeout(() => {
+      setState(s => ({ ...s, currentThought: thoughts[1] }))
+      timerRef.current = setTimeout(() => {
+        setState(s => ({ ...s, currentThought: thoughts[2] }))
+        timerRef.current = setTimeout(placeNext, TIMING.THOUGHT_DURATION)
+      }, TIMING.THOUGHT_DURATION)
+    }, TIMING.THOUGHT_DURATION)
+
+    return () => { if (timerRef.current) clearTimeout(timerRef.current) }
+  }, [spec])
+
+  return state
 }
 
 /* ── Otto Mark — constellation wireframe otter, abstract + bold ──────────── */
@@ -189,19 +361,32 @@ function OttoMark({ size = 'sm', flipping = false }: { size?: 'sm' | 'lg' | 'her
 
 /* ── Free-floating Otto — lives outside the container, owns the space ───── */
 
-function FloatingOtto({ flipping = false }: { flipping?: boolean }) {
+function FloatingOtto({ mood = 'idle' as OttoMood }: { mood?: OttoMood }) {
+  const moodStyles = {
+    idle: { scale: 1, filter: 'drop-shadow(0 0 20px rgba(124,92,252,0.3))' },
+    focused: { scale: 1.05, filter: 'drop-shadow(0 0 28px rgba(124,92,252,0.5))' },
+    surprised: { scale: 1.15, filter: 'drop-shadow(0 0 35px rgba(239,68,68,0.4))' },
+    satisfied: { scale: 1.08, filter: 'drop-shadow(0 0 30px rgba(34,197,94,0.4))' },
+  }
+
   return (
     <motion.div
       className="relative"
-      animate={flipping ? {} : { y: [0, -8, 0] }}
-      transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+      animate={{
+        y: mood === 'idle' ? [0, -8, 0] : mood === 'surprised' ? [0, -12, 0] : [0, -4, 0],
+        ...moodStyles[mood],
+      }}
+      transition={{ duration: mood === 'surprised' ? 0.4 : 4, repeat: mood === 'idle' ? Infinity : 0, ease: 'easeInOut' }}
     >
-      {/* Ambient glow behind Otto */}
       <div className="absolute inset-[-30%] rounded-full" style={{
-        background: 'radial-gradient(circle, rgba(124,92,252,0.15) 0%, rgba(0,209,255,0.05) 40%, transparent 70%)',
+        background: mood === 'surprised'
+          ? 'radial-gradient(circle, rgba(239,68,68,0.15) 0%, transparent 70%)'
+          : mood === 'satisfied'
+          ? 'radial-gradient(circle, rgba(34,197,94,0.12) 0%, transparent 70%)'
+          : 'radial-gradient(circle, rgba(124,92,252,0.15) 0%, rgba(0,209,255,0.05) 40%, transparent 70%)',
         filter: 'blur(24px)',
       }} />
-      <OttoMark size="float" flipping={flipping} />
+      <OttoMark size="float" flipping={mood === 'focused'} />
     </motion.div>
   )
 }
@@ -515,42 +700,189 @@ function formatSpecAsText(spec: DagSpec): string {
   return text
 }
 
-/* ── Generating animation ────────────────────────────────────────────────── */
+/* ── Spatial DAG Canvas ─────────────────────────────────────────────────── */
 
-function GeneratingSpec() {
-  const steps = ['Mapping behavioral drives...', 'Computing sovereign balance...', 'Routing personas...', 'Building your playbook...']
-  const [step, setStep] = useState(0)
-  useEffect(() => {
-    const timer = setInterval(() => setStep((p) => Math.min(p + 1, steps.length - 1)), 900)
-    return () => clearInterval(timer)
-  }, [steps.length])
+const CHAMBER_ORDER = ['discovery', 'build', 'verify', 'ship'] as const
+
+function computeNodePositions(nodes: DagNode[], isDesktop: boolean) {
+  const chamberGroups: Record<string, number[]> = { discovery: [], build: [], verify: [], ship: [] }
+  nodes.forEach((n, i) => { if (chamberGroups[n.chamber]) chamberGroups[n.chamber].push(i) })
+
+  if (isDesktop) {
+    const W = 620, H = 260, colW = W / 4
+    return nodes.map((n, i) => {
+      const ci = CHAMBER_ORDER.indexOf(n.chamber as typeof CHAMBER_ORDER[number])
+      const withinChamber = chamberGroups[n.chamber].indexOf(i)
+      const count = chamberGroups[n.chamber].length
+      return {
+        x: ci * colW + colW / 2 + 30,
+        y: count === 1 ? H / 2 : 60 + withinChamber * ((H - 120) / Math.max(count - 1, 1)),
+      }
+    })
+  } else {
+    const W = 300
+    return nodes.map((_, i) => ({
+      x: W / 2,
+      y: 40 + i * 65,
+    }))
+  }
+}
+
+function SpatialCanvas({ choreography, isDesktop }: { choreography: ChoreographyState; isDesktop: boolean }) {
+  const { visibleNodes, visibleEdges, reconsiderTarget, phase } = choreography
+  const positions = computeNodePositions(visibleNodes, isDesktop)
+  const W = isDesktop ? 680 : 300
+  const H = isDesktop ? 260 : Math.max(200, visibleNodes.length * 65 + 80)
 
   return (
-    <GlassContainer className="py-8 px-6">
-      <div className="flex flex-col items-center gap-5">
-        {/* Otto is flipping above — this just shows the progress steps */}
-        <div className="flex items-center gap-3">
-          {[0, 1, 2, 3].map((i) => (
-            <motion.div key={i} className="w-3 h-3 rounded-full"
-              style={{ backgroundColor: Object.values(CHAMBER_COLORS)[i] }}
-              animate={{
-                scale: [1, 1.4, 1],
-                opacity: [0.4, 1, 0.4],
-              }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut', delay: i * 0.3 }}
-            />
-          ))}
-        </div>
-        <div className="space-y-1">
-          {steps.map((s, i) => (
-            <motion.p key={s} initial={{ opacity: 0.3 }} animate={{ opacity: i <= step ? 1 : 0.3 }}
-              className="text-[11px] font-mono text-center"
-              style={{ color: i <= step ? '#00D1FF' : 'var(--text-muted)' }}
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ maxHeight: isDesktop ? 260 : 500 }}>
+      {/* Chamber lane labels */}
+      {isDesktop && CHAMBER_ORDER.map((ch, ci) => {
+        const colW = 620 / 4
+        return (
+          <g key={ch}>
+            <text x={ci * colW + colW / 2 + 30} y={22} textAnchor="middle"
+              fill={CHAMBER_COLORS[ch]} fontSize="9" fontFamily="monospace" opacity="0.6"
             >
-              {i < step ? '\u2713' : i === step ? '\u203A' : '\u00B7'} {s}
-            </motion.p>
-          ))}
-        </div>
+              {CHAMBER_LABELS[ch]}
+            </text>
+            <line x1={ci * colW + 30} y1={32} x2={ci * colW + 30} y2={H - 10}
+              stroke={CHAMBER_COLORS[ch]} strokeWidth="0.5" opacity="0.08" strokeDasharray="4 4"
+            />
+          </g>
+        )
+      })}
+
+      {/* Edges */}
+      {visibleEdges.map(([from, to], i) => {
+        const pf = positions[from], pt = positions[to]
+        if (!pf || !pt) return null
+        return (
+          <motion.line key={`e-${i}`}
+            x1={pf.x} y1={pf.y} x2={pt.x} y2={pt.y}
+            stroke={CHAMBER_COLORS[visibleNodes[to]?.chamber] || '#7C5CFC'}
+            strokeWidth="1" strokeDasharray="4 3" opacity="0.3"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: 0.3 }}
+            transition={{ duration: 0.4, ease: 'easeOut' }}
+          />
+        )
+      })}
+
+      {/* Nodes */}
+      {visibleNodes.map((node, i) => {
+        const pos = positions[i]
+        if (!pos) return null
+        const color = CHAMBER_COLORS[node.chamber] || '#7C5CFC'
+        const isReconsidering = reconsiderTarget === node.id
+        const isGate = node.is_gate
+        const r = isGate ? 14 : 11
+
+        return (
+          <motion.g key={`n-${node.id}`}
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{
+              opacity: isReconsidering ? [1, 0.3, 1, 0.3, 0] : 1,
+              scale: isReconsidering ? [1, 1.2, 0.8, 1.2, 0] : 1,
+              x: isReconsidering ? [0, -4, 4, -4, 0] : 0,
+            }}
+            transition={{
+              duration: isReconsidering ? 0.8 : 0.3,
+              ease: isReconsidering ? 'easeInOut' : 'easeOut',
+            }}
+          >
+            {/* Glow */}
+            <circle cx={pos.x} cy={pos.y} r={r + 8} fill="none"
+              stroke={isReconsidering ? '#EF4444' : color} strokeWidth="0.5" opacity="0.15"
+            />
+            {/* Node */}
+            {isGate ? (
+              <polygon
+                points={`${pos.x},${pos.y - r} ${pos.x + r * 0.87},${pos.y - r / 2} ${pos.x + r * 0.87},${pos.y + r / 2} ${pos.x},${pos.y + r} ${pos.x - r * 0.87},${pos.y + r / 2} ${pos.x - r * 0.87},${pos.y - r / 2}`}
+                fill={`${color}20`} stroke={isReconsidering ? '#EF4444' : '#00D1FF'} strokeWidth="1.5"
+              />
+            ) : (
+              <circle cx={pos.x} cy={pos.y} r={r}
+                fill={`${color}15`} stroke={isReconsidering ? '#EF4444' : color} strokeWidth="1.2"
+              />
+            )}
+            {/* Label */}
+            <text
+              x={isDesktop ? pos.x : pos.x + r + 8}
+              y={isDesktop ? pos.y + r + 14 : pos.y + 1}
+              textAnchor={isDesktop ? 'middle' : 'start'}
+              fill="var(--text-primary)" fontSize="10" fontWeight="600"
+            >
+              {node.label.length > 22 ? node.label.slice(0, 20) + '...' : node.label}
+            </text>
+            {/* Persona */}
+            <text
+              x={isDesktop ? pos.x : pos.x + r + 8}
+              y={isDesktop ? pos.y + r + 25 : pos.y + 13}
+              textAnchor={isDesktop ? 'middle' : 'start'}
+              fill="#7C5CFC" fontSize="7" fontFamily="monospace" opacity="0.5"
+            >
+              {node.persona}
+            </text>
+            {/* Gate badge */}
+            {isGate && (
+              <text x={pos.x} y={pos.y + 3} textAnchor="middle"
+                fill="#00D1FF" fontSize="7" fontFamily="monospace" fontWeight="700"
+              >
+                GATE
+              </text>
+            )}
+          </motion.g>
+        )
+      })}
+
+      {/* Solidify pulse */}
+      {phase === 'solidifying' && visibleNodes.map((_, i) => {
+        const pos = positions[i]
+        if (!pos) return null
+        return (
+          <motion.circle key={`pulse-${i}`} cx={pos.x} cy={pos.y} r="11" fill="none"
+            stroke="#00D1FF" strokeWidth="2" opacity="0"
+            animate={{ r: [11, 25], opacity: [0.6, 0] }}
+            transition={{ duration: 0.8, delay: i * 0.05 }}
+          />
+        )
+      })}
+    </svg>
+  )
+}
+
+function ThinkingStrip({ thought }: { thought: string }) {
+  const { displayed } = useTypewriter(thought, 20)
+  return (
+    <div className="flex items-center gap-2.5 px-4 py-2.5">
+      <OttoMark />
+      <p className="text-[11px] font-mono text-[var(--text-muted)] leading-relaxed min-h-[16px]">
+        {displayed}
+        <span className="inline-block w-[2px] h-[11px] bg-[#00D1FF]/60 ml-0.5 align-middle animate-pulse" />
+      </p>
+    </div>
+  )
+}
+
+function DagBuilderPhase({ spec, onComplete }: { spec: DagSpec | null; onComplete: (s: DagSpec) => void }) {
+  const isDesktop = useMediaQuery('(min-width: 640px)')
+  const choreography = useChoreography(spec)
+
+  useEffect(() => {
+    if (choreography.phase === 'done' && spec) {
+      const timer = setTimeout(() => onComplete(spec), 600)
+      return () => clearTimeout(timer)
+    }
+  }, [choreography.phase, spec, onComplete])
+
+  return (
+    <GlassContainer className="overflow-hidden">
+      <div className="px-2 pt-3 pb-1">
+        <SpatialCanvas choreography={choreography} isDesktop={isDesktop} />
+      </div>
+      <div className="border-t border-[rgba(30,35,48,0.5)]">
+        <ThinkingStrip thought={choreography.currentThought} />
       </div>
     </GlassContainer>
   )
@@ -564,6 +896,8 @@ export default function HeroChat() {
   const [phase, setPhase] = useState<Phase>('chat')
   const [loading, setLoading] = useState(false)
   const [spec, setSpec] = useState<DagSpec | null>(null)
+  const [buildingSpec, setBuildingSpec] = useState<DagSpec | null>(null)
+  const [ottoMood, setOttoMood] = useState<OttoMood>('idle')
   const [latestAssistantIdx, setLatestAssistantIdx] = useState(-1)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const chatEndRef = useRef<HTMLDivElement>(null)
@@ -593,20 +927,28 @@ export default function HeroChat() {
   }, [input, messages, loading])
 
   const generateSpec = async (chatMessages: ChatMsg[]) => {
-    setPhase('generating')
+    setPhase('building')
+    setBuildingSpec(null)
+    setOttoMood('focused')
     try {
       const res = await fetch('/api/otto-chat', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: chatMessages, generateSpec: true }),
       })
       const data = await res.json()
-      if (data.spec) setTimeout(() => { setSpec(data.spec); setPhase('spec') }, 3600)
+      if (data.spec) setBuildingSpec(data.spec)
       else setPhase('chat')
     } catch { setPhase('chat') }
   }
 
+  const handleBuildComplete = useCallback((completedSpec: DagSpec) => {
+    setSpec(completedSpec)
+    setPhase('spec')
+    setOttoMood('idle')
+  }, [])
+
   const handleReset = () => {
-    setMessages([]); setPhase('chat'); setSpec(null); setLoading(false); setLatestAssistantIdx(-1)
+    setMessages([]); setPhase('chat'); setSpec(null); setBuildingSpec(null); setLoading(false); setLatestAssistantIdx(-1); setOttoMood('idle')
     setTimeout(() => inputRef.current?.focus(), 100)
   }
 
@@ -622,7 +964,7 @@ export default function HeroChat() {
           transition={{ duration: 0.7, type: 'spring', stiffness: 150 }}
           className="flex justify-center mb-2"
         >
-          <FloatingOtto flipping={phase === 'generating'} />
+          <FloatingOtto mood={phase === 'building' ? ottoMood : 'idle'} />
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="text-center mb-6">
@@ -680,9 +1022,9 @@ export default function HeroChat() {
             </motion.div>
           )}
 
-          {phase === 'generating' && (
-            <motion.div key="generating" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.05 }} transition={{ duration: 0.4 }}>
-              <GeneratingSpec />
+          {phase === 'building' && (
+            <motion.div key="building" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.05 }} transition={{ duration: 0.4 }}>
+              <DagBuilderPhase spec={buildingSpec} onComplete={handleBuildComplete} />
             </motion.div>
           )}
 
