@@ -34,6 +34,9 @@ import {
   Settings,
   Puzzle,
   Layout,
+  Terminal,
+  Download,
+  Copy,
 } from 'lucide-react'
 
 const viewportConfig = { once: true, margin: '-80px' as const }
@@ -799,6 +802,161 @@ function OttoCTA() {
   )
 }
 
+/* ── §8: Try Otto Alpha ────────────────────────────────────────────────────── */
+
+function TryOttoAlpha() {
+  return (
+    <section className="py-24 px-6 md:py-32 md:px-8 relative">
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse 60% 40% at 50% 50%, rgba(124,92,252,0.06), transparent 70%)',
+        }}
+      />
+
+      <div className="max-w-[900px] mx-auto relative">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={viewportConfig}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-10"
+        >
+          <div className="inline-flex items-center gap-2 bg-[#7C5CFC]/10 border border-[#7C5CFC]/20 rounded-full px-4 py-1.5 text-xs font-mono mb-6">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7C5CFC] opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#7C5CFC]" />
+            </span>
+            <span className="text-[#7C5CFC] uppercase tracking-wider">Alpha Available Now</span>
+          </div>
+
+          <h2
+            className="font-bold text-[var(--text-primary)] mb-4"
+            style={{ fontSize: 'clamp(1.75rem, 4vw, 2.5rem)' }}
+          >
+            Try me in Claude Code
+          </h2>
+          <p className="text-[var(--text-secondary)] text-lg max-w-2xl mx-auto">
+            {"I run as a Claude Code skill. 17 personas, 99 curated skills, hard-gated workflows — all in your terminal. No signup required."}
+          </p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={viewportConfig}
+          transition={{ duration: 0.6, delay: 0.15 }}
+          className="bg-[var(--bg-raised)] border border-[#7C5CFC]/20 rounded-2xl overflow-hidden"
+        >
+          {/* Terminal header */}
+          <div className="flex items-center gap-2 px-5 py-3 border-b border-[var(--border-primary)] bg-[var(--bg-sunken)]">
+            <Terminal className="w-4 h-4 text-[#7C5CFC]" />
+            <span className="text-xs font-mono text-[var(--text-muted)]">claude-code</span>
+            <div className="flex-1" />
+            <div className="flex gap-1.5">
+              <div className="w-2.5 h-2.5 rounded-full bg-red-500/60" />
+              <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/60" />
+              <div className="w-2.5 h-2.5 rounded-full bg-green-500/60" />
+            </div>
+          </div>
+
+          {/* Steps */}
+          <div className="p-6 md:p-8 space-y-6">
+            {/* Step 1 */}
+            <div className="flex gap-4">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#7C5CFC]/10 border border-[#7C5CFC]/20 flex items-center justify-center">
+                <span className="text-xs font-mono font-bold text-[#7C5CFC]">1</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-[var(--text-primary)] mb-2">Clone the skill into your Claude Code skills directory</p>
+                <div className="group relative bg-[var(--bg-sunken)] border border-[var(--border-primary)] rounded-lg p-3 font-mono text-sm text-[var(--text-secondary)] overflow-x-auto">
+                  <code>git clone https://github.com/smartrickpicks/agent-otto.git ~/.claude/skills/agent-otto</code>
+                </div>
+              </div>
+            </div>
+
+            {/* Step 2 */}
+            <div className="flex gap-4">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#7C5CFC]/10 border border-[#7C5CFC]/20 flex items-center justify-center">
+                <span className="text-xs font-mono font-bold text-[#7C5CFC]">2</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-[var(--text-primary)] mb-2">Open Claude Code and invoke Otto</p>
+                <div className="group relative bg-[var(--bg-sunken)] border border-[var(--border-primary)] rounded-lg p-3 font-mono text-sm text-[var(--text-secondary)]">
+                  <code>/agent-otto</code>
+                </div>
+              </div>
+            </div>
+
+            {/* Step 3 */}
+            <div className="flex gap-4">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#7C5CFC]/10 border border-[#7C5CFC]/20 flex items-center justify-center">
+                <span className="text-xs font-mono font-bold text-[#7C5CFC]">3</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-[var(--text-primary)] mb-2">Describe your task. Otto routes the right persona, chamber, and skills.</p>
+                <div className="group relative bg-[var(--bg-sunken)] border border-[var(--border-primary)] rounded-lg p-3 font-mono text-sm">
+                  <span className="text-[var(--text-muted)]">{">"} </span>
+                  <span className="text-[var(--text-secondary)]">{"\"Build a REST API with auth and tests\""}</span>
+                  <div className="mt-2 pt-2 border-t border-[var(--border-subtle)]">
+                    <span className="text-[#7C5CFC]">{"(Maverick ⚡ · Build)"}</span>
+                    <span className="text-[var(--text-muted)]">{" Loading Build chamber. Skills: api-design, tdd-workflow, security-review..."}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Feature pills */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={viewportConfig}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="flex flex-wrap items-center justify-center gap-3 mt-8"
+        >
+          {[
+            '17 Personas',
+            '99 Skills',
+            '4 Chambers',
+            'Hard Gates',
+            'Session Memory',
+            'Zero Config',
+          ].map((feature) => (
+            <span
+              key={feature}
+              className="text-xs font-mono text-[#7C5CFC]/80 border border-[#7C5CFC]/20 rounded-full px-3 py-1 bg-[#7C5CFC]/5"
+            >
+              {feature}
+            </span>
+          ))}
+        </motion.div>
+
+        {/* Disclaimer */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={viewportConfig}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="text-center text-xs text-[var(--text-muted)] mt-6"
+        >
+          Requires{' '}
+          <a
+            href="https://docs.anthropic.com/en/docs/claude-code"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#7C5CFC]/80 hover:text-[#7C5CFC] underline underline-offset-2"
+          >
+            Claude Code
+          </a>{' '}
+          (Anthropic CLI). Alpha — features and skill set evolving weekly.
+        </motion.p>
+      </div>
+    </section>
+  )
+}
+
 /* ── Page ──────────────────────────────────────────────────────────────────── */
 
 export default function OttoPage() {
@@ -812,6 +970,7 @@ export default function OttoPage() {
       <GatesSection />
       <MAGSRuntime />
       <ConstellationDeep />
+      <TryOttoAlpha />
       <OttoCTA />
       <Footer />
     </main>
