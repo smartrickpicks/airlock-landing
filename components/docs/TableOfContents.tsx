@@ -34,27 +34,42 @@ export default function TableOfContents({ items }: TableOfContentsProps) {
 
   if (items.length === 0) return null
 
+  const activeIndex = items.findIndex((item) => item.id === activeId)
+
   return (
-    <div className="space-y-2">
-      <p className="text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] px-2">
-        On this page
-      </p>
-      <nav className="space-y-0.5">
-        {items.map((item) => (
-          <a
-            key={item.id}
-            href={`#${item.id}`}
-            className={`block py-1 text-[13px] transition-colors ${
-              item.level === 3 ? 'pl-6' : item.level === 4 ? 'pl-10' : 'pl-2'
-            } ${
-              activeId === item.id
-                ? 'text-[var(--accent-primary)] border-l-2 border-[var(--accent-primary)] -ml-px'
-                : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
-            }`}
-          >
-            {item.text}
-          </a>
-        ))}
+    <div>
+      {/* Header with counter */}
+      <div className="flex items-center justify-between px-2 mb-3">
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
+          On this page
+        </p>
+        {activeIndex >= 0 && (
+          <span className="text-[10px] font-mono text-[var(--text-muted)]/60">
+            {activeIndex + 1}/{items.length}
+          </span>
+        )}
+      </div>
+
+      {/* TOC items with left border track */}
+      <nav className="space-y-0.5 border-l border-[var(--border-subtle)]">
+        {items.map((item) => {
+          const isActive = activeId === item.id
+          const indent = item.level === 3 ? 'pl-5' : item.level === 4 ? 'pl-8' : 'pl-3'
+
+          return (
+            <a
+              key={item.id}
+              href={`#${item.id}`}
+              className={`block py-1.5 text-[13px] leading-snug transition-all duration-150 -ml-px border-l-2 ${indent} ${
+                isActive
+                  ? 'border-[var(--accent-primary)] text-[var(--accent-primary)] bg-[var(--accent-primary)]/[0.04]'
+                  : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:border-[var(--border-primary)]'
+              }`}
+            >
+              {item.text}
+            </a>
+          )
+        })}
       </nav>
     </div>
   )

@@ -22,8 +22,8 @@ export default function DocsNav({ onMenuToggle, onSearchOpen }: DocsNavProps) {
         </button>
 
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[var(--accent-primary)] to-[var(--accent-secondary)] flex items-center justify-center">
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[var(--accent-primary)] to-[var(--accent-secondary)] flex items-center justify-center shadow-sm shadow-[var(--accent-primary)]/20">
             <span className="text-white text-xs font-bold">A</span>
           </div>
           <span className="text-sm font-semibold text-[var(--text-primary)] group-hover:text-[var(--accent-primary)] transition-colors">
@@ -31,21 +31,21 @@ export default function DocsNav({ onMenuToggle, onSearchOpen }: DocsNavProps) {
           </span>
         </Link>
 
-        <span className="text-[var(--text-muted)] text-sm">/</span>
-        <span className="text-sm text-[var(--text-secondary)]">Docs</span>
+        <span className="text-[var(--border-primary)] text-sm select-none">/</span>
+        <span className="text-sm font-medium text-[var(--text-secondary)]">Docs</span>
       </div>
 
       <div className="flex items-center gap-3">
         {/* Search */}
         <button
           onClick={onSearchOpen}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[var(--border-primary)] bg-[var(--bg-raised)] text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:border-[var(--border-subtle)] transition-colors text-sm"
+          className="flex items-center gap-2.5 px-3 py-1.5 rounded-lg border border-[var(--border-primary)] bg-[var(--bg-raised)] text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/20 hover:bg-[var(--bg-overlay)] transition-all text-sm"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
           <span className="hidden sm:inline">Search docs...</span>
-          <kbd className="hidden sm:inline text-xs px-1.5 py-0.5 rounded bg-[var(--bg-overlay)] text-[var(--text-muted)]">
+          <kbd className="hidden sm:inline text-[11px] px-1.5 py-0.5 rounded bg-[var(--bg-overlay)] border border-[var(--border-subtle)] text-[var(--text-muted)] font-mono">
             /
           </kbd>
         </button>

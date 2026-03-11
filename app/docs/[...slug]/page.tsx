@@ -8,6 +8,8 @@ import { getAllDocSlugs } from '@/lib/docs-nav'
 import { mdxComponents } from '@/components/docs/MDXComponents'
 import TableOfContents from '@/components/docs/TableOfContents'
 import PrevNextNav from '@/components/docs/PrevNextNav'
+import Breadcrumbs from '@/components/docs/Breadcrumbs'
+import StatusBadge from '@/components/docs/StatusBadge'
 
 export function generateStaticParams() {
   return getAllDocSlugs().map((slug) => ({
@@ -76,6 +78,22 @@ async function SafeMDXContent({ source, isMdx }: { source: string; isMdx: boolea
   }
 }
 
+// Extract status from frontmatter or first line pattern
+function extractStatus(frontmatter: Record<string, unknown>, content: string): string | null {
+  if (frontmatter.status) return frontmatter.status as string
+
+  // Check first few lines for status patterns like "**Status:** BRAINSTORM"
+  const statusMatch = content.match(/^\*\*Status[:\s]*\*\*\s*(\w+)/m)
+  if (statusMatch) return statusMatch[1]
+
+  // Check for standalone status words at the top
+  const topLines = content.split('\n').slice(0, 5).join('\n')
+  const standaloneMatch = topLines.match(/^(BRAINSTORM|SPECCED|LOCKED|DRAFT|DEPRECATED)\s*$/m)
+  if (standaloneMatch) return standaloneMatch[1]
+
+  return null
+}
+
 export default async function DocPage({ params }: { params: Promise<{ slug: string[] }> }) {
   const { slug } = await params
   const doc = getDocBySlug(slug)
@@ -83,20 +101,32 @@ export default async function DocPage({ params }: { params: Promise<{ slug: stri
 
   const toc = getTableOfContents(doc.content)
   const prevNext = getPrevNext(doc.slug)
+  const status = extractStatus(doc.frontmatter, doc.content)
 
   return (
     <div className="flex">
       {/* Content */}
       <article className="flex-1 min-w-0 px-6 lg:px-12 py-10 max-w-3xl">
-        {/* Title */}
-        <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">
-          {doc.title}
-        </h1>
-        {doc.description && (
-          <p className="text-lg text-[var(--text-secondary)] mb-8">
-            {doc.description}
-          </p>
-        )}
+        {/* Breadcrumbs */}
+        <Breadcrumbs slug={doc.slug} title={doc.title} />
+
+        {/* Page header */}
+        <div className="mb-8">
+          <div className="flex items-center gap-3 flex-wrap mb-3">
+            <h1 className="text-3xl font-bold text-[var(--text-primary)]">
+              {doc.title}
+            </h1>
+            {status && <StatusBadge status={status} />}
+          </div>
+          {doc.description && (
+            <p className="text-lg text-[var(--text-secondary)] leading-relaxed">
+              {doc.description}
+            </p>
+          )}
+        </div>
+
+        {/* Divider */}
+        <div className="h-px bg-gradient-to-r from-[var(--border-primary)] via-[var(--accent-primary)]/20 to-transparent mb-8" />
 
         {/* MDX content */}
         <div className="docs-content">

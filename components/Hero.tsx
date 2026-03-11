@@ -385,9 +385,8 @@ export default function Hero() {
           className="text-[var(--text-secondary)] text-lg md:text-xl max-w-2xl mx-auto mt-6 leading-relaxed"
         >
           Contracts, CRM, tasks, calendar, documents — unified in a workspace
-          that actually knows who{"'"}s on your team. I{"'"}m Otto. I mapped your
-          behavioral drives before you opened the app. The tools are yours.
-          The intelligence is mine.
+          that actually knows who{"'"}s on your team. Behavioral intelligence
+          built in, not bolted on.
         </motion.p>
 
         {/* CTA */}
