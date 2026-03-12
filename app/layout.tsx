@@ -22,9 +22,9 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '/brand/hero/hero-airlock.png',
+        url: '/brand/social/og-airlock.png',
         width: 1200,
-        height: 1200,
+        height: 627,
         alt: 'Airlock — Enterprise Data Operations',
       },
     ],
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     title: 'Airlock — Enterprise Operations, Orchestrated',
     description:
       'The workspace that learns who you are and builds itself around your team.',
-    images: ['/brand/hero/hero-airlock.png'],
+    images: ['/brand/social/og-airlock.png'],
   },
 }
 

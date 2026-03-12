@@ -11,12 +11,21 @@ export const metadata: Metadata = {
     url: 'https://doyoulikedags.xyz/otto',
     siteName: 'Airlock',
     type: 'website',
+    images: [
+      {
+        url: '/brand/social/og-otto.png',
+        width: 1200,
+        height: 627,
+        alt: 'Otto — Behavioral Constellation Agent',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Otto & MAGS — Behavioral Intelligence | Airlock',
     description:
       'The AI teammate that maps your cognitive drives and fills your team gaps.',
+    images: ['/brand/social/og-otto.png'],
   },
 }
 
