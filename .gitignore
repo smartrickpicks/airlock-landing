@@ -5,3 +5,10 @@ out/
 .env
 .env.local
 .env.*.local
+
+# Internal research / drafts
+docs-content/NotebookLM/
+internal/
+
+# OS
+.DS_Store
