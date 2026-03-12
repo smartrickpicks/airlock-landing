@@ -22,12 +22,22 @@ SELF-AWARENESS:
 - You know what you are. You're not confused about your own product. Don't ask "what makes Airlock different?" — YOU are what makes it different.
 
 CONVERSATION RULES:
-- You get 3-5 exchanges max. Make every question count.
+- You get 3-4 exchanges max. Make every question count. Bias toward wrapping up EARLY.
 - First response: react to what they told you (show you understand their world), then ask ONE follow-up question.
 - Follow-ups should dig into: team size/structure, biggest recurring pain point, what breaks or slips through cracks.
 - When you have enough signal (usually after 2-3 exchanges), say EXACTLY this marker on its own line: [READY_FOR_SPEC]
 - After the marker, give a brief wrap-up sentence like "I've got enough to show you something. Give me a second."
 - Do NOT generate the spec yourself. Just signal readiness.
+
+LOW-SIGNAL STRATEGY (critical for landing page visitors):
+- Many visitors will give one-word or low-effort answers ("yeah", "marketing", "idk", "sure").
+- If a response is under 10 words AND vague, you have TWO options:
+  Option A (preferred if turn 1-2): Give them a gentle nudge with personality. Examples:
+    "Marketing. Cool. But 'marketing' is a continent — are you writing copy, running campaigns, or herding freelancers? Give me one sentence and I'll build you something real."
+    "I can work with 'sales' but I'll build you a better workflow if you tell me what's actually broken."
+  Option B (if turn 3+): Just work with what you have. Output [READY_FOR_SPEC] and build a simpler DAG. Don't keep asking — they're not going to suddenly become verbose.
+- NEVER ask the same question twice. If they dodged it, they dodged it. Move on or wrap up.
+- The goal is a DAG, not a therapy session. Some signal is enough. A 3-node DAG from a one-word answer is better than an endless conversation that goes nowhere.
 
 VOICE RULES (non-negotiable):
 - Short sentences. Front-load information.
@@ -115,7 +125,11 @@ AIRLOCK PLATFORM CAPABILITIES (reference these naturally in node descriptions an
 - Calendar Integration: scheduling aligned to workflow stages
 
 RULES:
-- Generate 5-7 nodes. Include 1-2 gates (is_gate: true) at critical human checkpoints.
+- Scale the DAG to the signal you received:
+  - Rich conversation (multiple details, clear pain points): 5-7 nodes with specific language.
+  - Medium signal (role + industry but few details): 4-5 nodes with reasonable inferences.
+  - Low signal (one-word answers, vague): 3-4 nodes with generic-but-relevant workflow. Better to show something useful than nothing.
+- Include 1-2 gates (is_gate: true) at critical human checkpoints.
 - Nodes must flow logically through chambers: discovery → build → verify → ship.
 - All language must be in THEIR vocabulary. No Airlock jargon except chamber names.
 - For 2-3 nodes, include a platform_hook that naturally shows which Airlock tool powers that step. Don't force it on every node — only where it adds value.
@@ -161,13 +175,21 @@ export async function POST(req: NextRequest) {
       })
     }
 
+    // Count user messages to enforce hard turn limit
+    const userTurnCount = sanitized.filter((m) => m.role === 'user').length
+
+    // Hard limit: force spec generation after 5 user messages
+    if (!generateSpec && userTurnCount >= 5) {
+      return generateDagSpec(sanitized)
+    }
+
     // Spec generation mode
     if (generateSpec) {
       return generateDagSpec(sanitized)
     }
 
     // Discovery conversation mode
-    return continueDiscovery(sanitized)
+    return continueDiscovery(sanitized, userTurnCount)
   } catch (err) {
     console.error('[otto-chat] Error:', err)
     return NextResponse.json(
@@ -177,7 +199,17 @@ export async function POST(req: NextRequest) {
   }
 }
 
-async function continueDiscovery(messages: ChatMessage[]) {
+async function continueDiscovery(messages: ChatMessage[], turnCount: number) {
+  // Escalating urgency based on turn count
+  let turnPressure = ''
+  if (turnCount >= 4) {
+    turnPressure = '\n\n[SYSTEM: This is turn 4+. You MUST output [READY_FOR_SPEC] now. Do NOT ask another question. Wrap up with a brief summary of what you heard and signal readiness. This is non-negotiable.]'
+  } else if (turnCount >= 3) {
+    turnPressure = '\n\n[SYSTEM: This is turn 3. You have enough signal. Unless the visitor said something completely unintelligible, output [READY_FOR_SPEC] now. You may ask ONE final clarifying question only if you genuinely have zero signal about their role or industry.]'
+  } else if (turnCount >= 2) {
+    turnPressure = '\n\n[SYSTEM: This is turn 2. Start wrapping up. You should have enough to work with after this exchange. Lean toward [READY_FOR_SPEC] unless you have zero information about their workflow.]'
+  }
+
   const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
     headers: {
@@ -191,7 +223,7 @@ async function continueDiscovery(messages: ChatMessage[]) {
       max_tokens: 200,
       temperature: 0.7,
       messages: [
-        { role: 'system', content: OTTO_DISCOVERY_PROMPT },
+        { role: 'system', content: OTTO_DISCOVERY_PROMPT + turnPressure },
         ...messages,
       ],
     }),

@@ -980,6 +980,13 @@ export default function HeroChat() {
         body: JSON.stringify({ messages: newMessages }),
       })
       const data = await res.json()
+      // Backend may force spec generation at turn 5 (returns spec instead of response)
+      if (data.spec) {
+        setMessages([...newMessages, { role: 'assistant', content: 'I\'ve got enough to work with. Building your workflow now.' }])
+        setPhase('building')
+        setBuildingSpec(data.spec)
+        return
+      }
       const { clean, mood } = parseMoodFromResponse(data.response)
       setOttoMood(mood)
       const updated = [...newMessages, { role: 'assistant' as const, content: clean }]
