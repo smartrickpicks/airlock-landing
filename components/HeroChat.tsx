@@ -21,7 +21,7 @@ interface DagSpec {
 }
 
 type Phase = 'chat' | 'building' | 'spec' | 'capture'
-type OttoMood = 'idle' | 'focused' | 'surprised' | 'satisfied'
+type OttoMood = 'idle' | 'focused' | 'surprised' | 'satisfied' | 'amused' | 'impressed' | 'thinking'
 
 interface ChoreographyState {
   visibleNodes: DagNode[]
@@ -58,6 +58,19 @@ const SUGGESTION_PILLS = [
   'I want to launch a side project',
   'What can you actually do?',
 ]
+
+/* ── Mood parsing ─────────────────────────────────────────────────────── */
+
+function parseMoodFromResponse(text: string): { clean: string; mood: OttoMood } {
+  const moodMatch = text.match(/\[MOOD:(focused|amused|impressed|thinking)\]\s*$/)
+  if (moodMatch) {
+    return {
+      clean: text.replace(/\[MOOD:\w+\]\s*$/, '').trim(),
+      mood: moodMatch[1] as OttoMood,
+    }
+  }
+  return { clean: text, mood: 'focused' }
+}
 
 /* ── Hooks ───────────────────────────────────────────────────────────────── */
 
@@ -362,31 +375,51 @@ function OttoMark({ size = 'sm', flipping = false }: { size?: 'sm' | 'lg' | 'her
 /* ── Free-floating Otto — lives outside the container, owns the space ───── */
 
 function FloatingOtto({ mood = 'idle' as OttoMood }: { mood?: OttoMood }) {
-  const moodStyles = {
+  const moodStyles: Record<OttoMood, { scale: number; filter: string }> = {
     idle: { scale: 1, filter: 'drop-shadow(0 0 20px rgba(124,92,252,0.3))' },
     focused: { scale: 1.05, filter: 'drop-shadow(0 0 28px rgba(124,92,252,0.5))' },
     surprised: { scale: 1.15, filter: 'drop-shadow(0 0 35px rgba(239,68,68,0.4))' },
     satisfied: { scale: 1.08, filter: 'drop-shadow(0 0 30px rgba(34,197,94,0.4))' },
+    amused: { scale: 1.1, filter: 'drop-shadow(0 0 30px rgba(234,179,8,0.4))' },
+    impressed: { scale: 1.12, filter: 'drop-shadow(0 0 32px rgba(0,209,255,0.5))' },
+    thinking: { scale: 0.97, filter: 'drop-shadow(0 0 24px rgba(168,85,247,0.4))' },
   }
+
+  const yAnimation: Record<OttoMood, number[]> = {
+    idle: [0, -8, 0],
+    focused: [0, -4, 0],
+    surprised: [0, -12, 0],
+    satisfied: [0, -4, 0],
+    amused: [0, -6, 2, -6, 0],       // little bounce — like a chuckle
+    impressed: [0, -10, -2, 0],       // leans forward
+    thinking: [0, -2, -4, -2, 0],     // slow, subtle drift — processing
+  }
+
+  const glowColor: Record<OttoMood, string> = {
+    idle: 'radial-gradient(circle, rgba(124,92,252,0.15) 0%, rgba(0,209,255,0.05) 40%, transparent 70%)',
+    focused: 'radial-gradient(circle, rgba(124,92,252,0.15) 0%, rgba(0,209,255,0.05) 40%, transparent 70%)',
+    surprised: 'radial-gradient(circle, rgba(239,68,68,0.15) 0%, transparent 70%)',
+    satisfied: 'radial-gradient(circle, rgba(34,197,94,0.12) 0%, transparent 70%)',
+    amused: 'radial-gradient(circle, rgba(234,179,8,0.15) 0%, rgba(124,92,252,0.05) 40%, transparent 70%)',
+    impressed: 'radial-gradient(circle, rgba(0,209,255,0.2) 0%, rgba(124,92,252,0.05) 40%, transparent 70%)',
+    thinking: 'radial-gradient(circle, rgba(168,85,247,0.12) 0%, rgba(124,92,252,0.05) 40%, transparent 70%)',
+  }
+
+  const duration = mood === 'surprised' ? 0.4 : mood === 'amused' ? 0.6 : mood === 'thinking' ? 5 : 4
+  const shouldRepeat = mood === 'idle' || mood === 'thinking'
+  const shouldFlip = mood === 'focused' || mood === 'thinking'
 
   return (
     <motion.div
       className="relative"
-      animate={{
-        y: mood === 'idle' ? [0, -8, 0] : mood === 'surprised' ? [0, -12, 0] : [0, -4, 0],
-        ...moodStyles[mood],
-      }}
-      transition={{ duration: mood === 'surprised' ? 0.4 : 4, repeat: mood === 'idle' ? Infinity : 0, ease: 'easeInOut' }}
+      animate={{ y: yAnimation[mood], ...moodStyles[mood] }}
+      transition={{ duration, repeat: shouldRepeat ? Infinity : 0, ease: 'easeInOut' }}
     >
       <div className="absolute inset-[-30%] rounded-full" style={{
-        background: mood === 'surprised'
-          ? 'radial-gradient(circle, rgba(239,68,68,0.15) 0%, transparent 70%)'
-          : mood === 'satisfied'
-          ? 'radial-gradient(circle, rgba(34,197,94,0.12) 0%, transparent 70%)'
-          : 'radial-gradient(circle, rgba(124,92,252,0.15) 0%, rgba(0,209,255,0.05) 40%, transparent 70%)',
+        background: glowColor[mood],
         filter: 'blur(24px)',
       }} />
-      <OttoMark size="float" flipping={mood === 'focused'} />
+      <OttoMark size="float" flipping={shouldFlip} />
     </motion.div>
   )
 }
@@ -501,12 +534,36 @@ function HeroBackground() {
 
 /* ── Forge-style input ───────────────────────────────────────────────────── */
 
+function useScrollLock() {
+  const lock = useCallback(() => {
+    if (typeof window === 'undefined') return
+    const isMobile = window.innerWidth < 640
+    if (isMobile) {
+      document.body.style.overflow = 'hidden'
+      document.body.style.position = 'fixed'
+      document.body.style.width = '100%'
+      document.body.style.top = `-${window.scrollY}px`
+    }
+  }, [])
+  const unlock = useCallback(() => {
+    if (typeof window === 'undefined') return
+    const top = document.body.style.top
+    document.body.style.overflow = ''
+    document.body.style.position = ''
+    document.body.style.width = ''
+    document.body.style.top = ''
+    if (top) window.scrollTo(0, -parseInt(top, 10))
+  }, [])
+  return { lock, unlock }
+}
+
 function ForgeInput({
   value, onChange, onSubmit, placeholder, disabled, inputRef,
 }: {
   value: string; onChange: (v: string) => void; onSubmit: () => void
   placeholder: string; disabled: boolean; inputRef: React.RefObject<HTMLTextAreaElement>
 }) {
+  const { lock, unlock } = useScrollLock()
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); onSubmit() }
   }
@@ -520,7 +577,8 @@ function ForgeInput({
   return (
     <div className="flex items-end gap-2 rounded-xl border border-[var(--border-primary)] bg-[var(--bg-overlay)] px-3 py-2 transition-colors focus-within:border-[#00D1FF]/30">
       <textarea ref={inputRef} value={value} onChange={(e) => onChange(e.target.value)}
-        onKeyDown={handleKeyDown} placeholder={placeholder} disabled={disabled} rows={1}
+        onKeyDown={handleKeyDown} onFocus={lock} onBlur={unlock}
+        placeholder={placeholder} disabled={disabled} rows={1}
         className="flex-1 resize-none bg-transparent text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none disabled:opacity-40"
         style={{ minHeight: '24px', maxHeight: '120px' }} autoFocus
       />
@@ -922,7 +980,9 @@ export default function HeroChat() {
         body: JSON.stringify({ messages: newMessages }),
       })
       const data = await res.json()
-      const updated = [...newMessages, { role: 'assistant' as const, content: data.response }]
+      const { clean, mood } = parseMoodFromResponse(data.response)
+      setOttoMood(mood)
+      const updated = [...newMessages, { role: 'assistant' as const, content: clean }]
       setMessages(updated); setLatestAssistantIdx(updated.length - 1)
       if (data.ready) setTimeout(() => generateSpec(updated), 2000)
     } catch {
@@ -968,7 +1028,7 @@ export default function HeroChat() {
           transition={{ duration: 0.7, type: 'spring', stiffness: 150 }}
           className="flex justify-center mb-2"
         >
-          <FloatingOtto mood={phase === 'building' ? ottoMood : 'idle'} />
+          <FloatingOtto mood={phase === 'building' ? ottoMood : phase === 'chat' && messages.length > 0 ? ottoMood : 'idle'} />
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="text-center mb-6">
@@ -978,6 +1038,30 @@ export default function HeroChat() {
             <span className="w-2 h-2 rounded-full bg-[#22C55E] animate-pulse" />
             <span className="text-[11px] text-[var(--text-muted)] font-mono">Online</span>
           </div>
+          {/* Persona indicator */}
+          {phase === 'chat' && messages.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              className="flex items-center justify-center gap-2 mb-1"
+            >
+              <span className="text-[10px] font-mono text-[#EF4444]/60 uppercase tracking-widest">Scholar</span>
+              <span className="text-[10px] text-[var(--text-muted)]">·</span>
+              <span className="text-[10px] font-mono text-[var(--text-muted)]/50 uppercase tracking-widest">Discovery</span>
+            </motion.div>
+          )}
+          {phase === 'building' && (
+            <motion.div
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex items-center justify-center gap-2 mb-1"
+            >
+              <span className="text-[10px] font-mono text-[#EAB308]/60 uppercase tracking-widest">Maverick</span>
+              <span className="text-[10px] text-[var(--text-muted)]">·</span>
+              <span className="text-[10px] font-mono text-[var(--text-muted)]/50 uppercase tracking-widest">Build</span>
+            </motion.div>
+          )}
 
           <h1 className="font-bold leading-[1.1] tracking-tight mb-2" style={{ fontSize: 'clamp(1.75rem, 5vw, 2.75rem)' }}>
             <span className="gradient-text-white">Hi, I&apos;m Otto.</span>
