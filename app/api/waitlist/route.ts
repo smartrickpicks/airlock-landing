@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const WAITLIST_ENDPOINT = process.env.WAITLIST_ENDPOINT
-const WAITLIST_NOTIFY_EMAIL = process.env.WAITLIST_NOTIFY_EMAIL || 'team@airlock.dev'
+const API_URL = process.env.AIRLOCK_API_URL || 'http://localhost:8000'
 
 export async function POST(req: NextRequest) {
   try {
@@ -13,28 +12,27 @@ export async function POST(req: NextRequest) {
 
     const sanitized = email.trim().toLowerCase().slice(0, 254)
 
-    // Forward to existing brainbrigade.xyz invite service
-    if (WAITLIST_ENDPOINT) {
-      const res = await fetch(WAITLIST_ENDPOINT, {
+    // Forward to Airlock API waitlist endpoint
+    try {
+      const res = await fetch(`${API_URL}/api/v1/waitlist`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: sanitized,
           source: 'doyoulikedags.xyz',
-          notify: WAITLIST_NOTIFY_EMAIL,
-          timestamp: new Date().toISOString(),
         }),
       })
 
-      if (!res.ok) {
-        console.error(`Waitlist forward failed: ${res.status}`)
-        return NextResponse.json({ error: 'Service unavailable' }, { status: 502 })
+      if (res.ok) {
+        return NextResponse.json({ ok: true })
       }
 
-      return NextResponse.json({ ok: true })
+      console.error(`[waitlist] API returned ${res.status}`)
+    } catch (err) {
+      console.error('[waitlist] API unreachable, falling back to log:', err)
     }
 
-    // Fallback: log for manual pickup when no endpoint configured
+    // Fallback: log for manual pickup when API is down
     console.log(`[waitlist] ${sanitized} — ${new Date().toISOString()}`)
     return NextResponse.json({ ok: true })
   } catch (err) {

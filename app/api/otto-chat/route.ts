@@ -207,6 +207,12 @@ async function continueDiscovery(messages: ChatMessage[]) {
   }
 
   const data = await response.json()
+  const usage = data.usage
+  if (usage) {
+    console.log(
+      `[otto-chat] discovery | tokens: ${usage.prompt_tokens}in/${usage.completion_tokens}out | cost: $${(usage.total_cost ?? 0).toFixed(4)}`
+    )
+  }
   const text = data.choices?.[0]?.message?.content || 'Lost my train of thought. Say that again?'
   const ready = text.includes('[READY_FOR_SPEC]')
   const cleanText = text.replace('[READY_FOR_SPEC]', '').trim()
@@ -245,6 +251,12 @@ async function generateDagSpec(messages: ChatMessage[]) {
   }
 
   const data = await response.json()
+  const usage = data.usage
+  if (usage) {
+    console.log(
+      `[otto-chat] spec-gen | tokens: ${usage.prompt_tokens}in/${usage.completion_tokens}out | cost: $${(usage.total_cost ?? 0).toFixed(4)}`
+    )
+  }
   const text = data.choices?.[0]?.message?.content || ''
 
   try {
