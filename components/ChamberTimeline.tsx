@@ -2,14 +2,14 @@
 
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
-import { Search, Hammer, Eye, Rocket } from 'lucide-react'
+import Image from 'next/image'
 import { staggerContainer, staggerItem, viewportConfig } from '@/lib/animations'
 
 const chambers = [
   {
     name: 'Discover',
     role: 'Builder',
-    icon: Search,
+    iconSrc: '/brand/icons/chamber-discover.png',
     description:
       'Initial intake and extraction. AI pulls structured data from unstructured documents — 9 extractor types running in parallel.',
     color: 'var(--chamber-discover)',
@@ -18,7 +18,7 @@ const chambers = [
   {
     name: 'Build',
     role: 'Builder',
-    icon: Hammer,
+    iconSrc: '/brand/icons/chamber-build.png',
     description:
       'Refinement and preparation. Correct errors, fill gaps, generate contracts from the 188-clause library. Data shaped into final form.',
     color: 'var(--chamber-build)',
@@ -27,7 +27,7 @@ const chambers = [
   {
     name: 'Review',
     role: 'Gatekeeper',
-    icon: Eye,
+    iconSrc: '/brand/icons/chamber-review.png',
     description:
       'Quality gates with preflight validation. Risk scoring, required field checks, confidence thresholds — all enforced before advancing.',
     color: 'var(--chamber-review)',
@@ -36,7 +36,7 @@ const chambers = [
   {
     name: 'Ship',
     role: 'Owner',
-    icon: Rocket,
+    iconSrc: '/brand/icons/chamber-ship.png',
     description:
       'Published and locked. No further changes without a new patch. Full audit trail, version history, and export to PDF or DOCX.',
     color: 'var(--chamber-ship)',
@@ -100,7 +100,6 @@ export default function ChamberTimeline() {
           </div>
 
           {chambers.map((chamber, i) => {
-            const Icon = chamber.icon
             return (
               <motion.div
                 key={chamber.name}
@@ -128,7 +127,7 @@ export default function ChamberTimeline() {
                       boxShadow: `0 0 20px color-mix(in srgb, ${chamber.color} 20%, transparent)`,
                     }}
                   >
-                    <Icon className="w-5 h-5" style={{ color: chamber.color }} />
+                    <Image src={chamber.iconSrc} alt={chamber.name} width={24} height={24} className="w-6 h-6" />
                   </motion.div>
                   <span className="text-2xl font-bold text-[var(--border-primary)] font-mono">
                     {chamber.number}
