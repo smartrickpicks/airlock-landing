@@ -13,6 +13,8 @@ const footerLinks = {
   Company: [
     { label: 'About', href: '/docs/company/about' },
     { label: 'Blog', href: '/docs' },
+    { label: 'Investors', href: '/invest' },
+    { label: 'Research', href: '/research' },
   ],
   Legal: [
     { label: 'Privacy', href: '/docs/legal/privacy' },

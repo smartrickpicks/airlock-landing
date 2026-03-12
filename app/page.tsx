@@ -1,13 +1,13 @@
 import Nav from '@/components/Nav'
 import ScrollProgress from '@/components/ScrollProgress'
 import HeroChat from '@/components/HeroChat'
-import LogoCloud from '@/components/LogoCloud'
 import ProblemSolution from '@/components/ProblemSolution'
-import CompetitiveMatrix from '@/components/CompetitiveMatrix'
-import ChamberTimeline from '@/components/ChamberTimeline'
-import Modules from '@/components/Modules'
-import FeatureShowcase from '@/components/FeatureShowcase'
 import OttoTeaser from '@/components/OttoTeaser'
+import BenchProof from '@/components/BenchProof'
+import ChamberTimeline from '@/components/ChamberTimeline'
+import ModelStatCards from '@/components/ModelStatCards'
+import PluginVsPlatform from '@/components/PluginVsPlatform'
+import Pricing from '@/components/Pricing'
 import Trust from '@/components/Trust'
 import Constellation from '@/components/Constellation'
 import FAQ from '@/components/FAQ'
@@ -19,17 +19,41 @@ export default function Home() {
     <main>
       <Nav />
       <ScrollProgress />
+
+      {/* Act 1: The Hook — Otto talks to you */}
       <HeroChat />
-      <LogoCloud />
+
+      {/* Act 2: The Problem — Proof over vibes */}
       <ProblemSolution />
-      <CompetitiveMatrix />
-      <ChamberTimeline />
-      <Modules />
-      <FeatureShowcase />
+
+      {/* Act 3: The AI That Says No */}
       <OttoTeaser />
+
+      {/* Act 4: The Proof — ConstellationBench data */}
+      <BenchProof />
+
+      {/* Act 5: How Work Flows — Chambers */}
+      <ChamberTimeline />
+
+      {/* Act 6: Choose Your Council — Model stat cards */}
+      <ModelStatCards />
+
+      {/* Act 7: Plugin vs Platform */}
+      <PluginVsPlatform />
+
+      {/* Act 8: Pricing */}
+      <Pricing />
+
+      {/* Act 9: Security & Trust */}
       <Trust />
+
+      {/* Act 10: The Architecture — Constellation */}
       <Constellation />
+
+      {/* Act 11: FAQ */}
       <FAQ />
+
+      {/* Act 12: Final CTA */}
       <FinalCTA />
       <Footer />
     </main>

@@ -7,34 +7,34 @@ import { viewportConfig } from '@/lib/animations'
 
 const faqs = [
   {
-    question: 'What industries does Airlock support?',
+    question: 'How is Otto different from ChatGPT or Copilot?',
     answer:
-      'Airlock is entertainment-first — supporting music, film, TV, and cross-entertainment verticals with 24 contract types and 188 pre-approved clauses. The vault architecture is flexible enough for any contract-heavy industry.',
+      'ChatGPT asks "How can I help?" and agrees with everything. Otto maps your team\'s behavioral drives, detects gaps, and fills them. If your team is all fast-moving Mavericks with no one checking details, Otto becomes the Guardian. It has 50/50 decision authority and can halt workflows when it detects safety or quality issues. It\'s a teammate, not a tool.',
   },
   {
-    question: 'How does the AI work? Does it act autonomously?',
+    question: 'How much does an AI council cost?',
     answer:
-      'Never. Otto (our AI copilot) proposes actions, but humans approve at every gate. It assembles context from 9 enrichment sources in under 2 seconds, and routes through provider-agnostic models via LiteLLM — Claude, GPT, Grok, or local Ollama.',
+      'We benchmarked 15 models across 450 council runs. A four-persona AI council costs $0.0036 on our standard tier (Gemini Flash) with 92% of premium quality. Even the deepest analysis tier (Opus) is $0.17 per council. The free tier is mathematically hard-capped at 21 cents per user per month.',
+  },
+  {
+    question: 'What\'s a Vault? What are Chambers and Gates?',
+    answer:
+      'A Vault is a living workflow container — not a folder. It holds the work, the conversation about the work, and the complete audit trail. Every Vault moves through four Chambers: Discover, Build, Review, Ship. Gates between chambers are enforced checkpoints — the system physically prevents advancement until criteria are met and a Gatekeeper approves. No more "trust me, I checked it."',
   },
   {
     question: 'How is my data secured?',
     answer:
-      'Fernet symmetric encryption (AES-128-CBC + HMAC-SHA256) for sensitive tokens at rest, PostgreSQL row-level security for tenant isolation, and role-based access control across five permission levels. All data is soft-deleted with full audit trails.',
+      'AES-128 encryption for sensitive tokens at rest, PostgreSQL row-level security for tenant isolation, and five-level role-based access control. Self-approval is impossible — there is no API path to approve your own work. PII is redacted before reaching any external AI provider. The entire system is stateless and rehydratable from encrypted backups.',
   },
   {
-    question: 'Can I self-host Airlock?',
+    question: 'What\'s the difference between the free plugin and the platform?',
     answer:
-      'Yes. The entire stack is built on open-source foundations — Next.js 14, FastAPI, PostgreSQL 16, Redis 7. Stateless containers mean you can deploy anywhere: AWS, GCP, Azure, or on-premise. Rebuild from cold backups + key material.',
+      'The free Claude Code plugin gives you Otto\'s intelligence — 17 personas, constellation council command, skill invocation — at 96.8% of platform quality. The platform adds everything else: vault lifecycle enforcement, chamber gates, separation of duties, append-only audit trails, team behavioral mapping, six integrated modules, and real-time collaboration. Same brain, different body.',
   },
   {
-    question: 'How does Airlock replace my current tools?',
+    question: 'Can I bring my own API keys?',
     answer:
-      'Airlock unifies contract lifecycle, CRM, project management, calendar, and documents in a single workspace. Instead of syncing data between Salesforce + DocuSign + Jira + Slack + Google Sheets, everything lives in one vault with a shared context.',
-  },
-  {
-    question: 'What does the migration process look like?',
-    answer:
-      'We provide extraction tools for importing from existing CLM platforms, CRMs, and document repositories. The 442-field registry maps to common data formats, and our extraction engine handles PDF, DOCX, and Markdown ingestion.',
+      'Yes. The Constellation Max tier ($99/month) lets you connect your own OpenRouter API key and access all 342 models in the catalog. We tested 15 and branded the best ones, but you can route through any model. Your keys, your models, our orchestration.',
   },
 ]
 
@@ -45,6 +45,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
     <div className="border-b border-[var(--border-subtle)] last:border-b-0">
       <button
         onClick={() => setOpen(!open)}
+        aria-expanded={open}
         className="w-full flex items-center justify-between py-5 text-left group"
       >
         <span className="text-sm font-medium text-[var(--text-primary)] group-hover:text-[var(--accent-primary)] transition-colors pr-4">

@@ -8,16 +8,20 @@ import { viewportConfig } from '@/lib/animations'
 
 const comparisonRows = [
   {
-    chatbot: 'Generic advice for any team',
-    otto: 'Advice calibrated to YOUR behavioral drives',
+    chatbot: 'Asks "How can I help you today?"',
+    otto: 'Already knows what your team needs before you type',
   },
   {
     chatbot: 'Agrees with everything you say',
-    otto: 'Tells you when your plan has a gap',
+    otto: 'Tells you your plan has zero quality control — and halts it',
   },
   {
-    chatbot: 'One personality, one mode',
-    otto: '17 personas, 4 chambers, behavioral counterweight',
+    chatbot: 'One personality, forgets you instantly',
+    otto: '17 personas that remember your behavioral drives across sessions',
+  },
+  {
+    chatbot: 'Helps your fast movers move faster',
+    otto: 'Detects your team lacks a Guardian — becomes one',
   },
 ]
 
@@ -41,7 +45,7 @@ export default function OttoTeaser() {
           className="text-center mb-12"
         >
           <p className="text-sm font-mono text-[#7C5CFC] uppercase tracking-widest mb-4">
-            Meet Otto
+            The AI Teammate That Says No
           </p>
 
           {/* Otto constellation hero */}
@@ -61,16 +65,31 @@ export default function OttoTeaser() {
             />
           </motion.div>
 
-          {/* Otto intro — first person */}
-          <div className="max-w-2xl mx-auto">
+          {/* Narrative hook — from NotebookLM transcript */}
+          <div className="max-w-2xl mx-auto space-y-4">
+            <h2
+              className="font-bold text-[var(--text-primary)]"
+              style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.5rem)' }}
+            >
+              Imagine hiring a senior director who looks you in the eye and says{' '}
+              <span className="text-[#7C5CFC]">no.</span>
+            </h2>
             <p className="text-[var(--text-secondary)] text-lg leading-relaxed">
-              {"I\u2019m Otto. I\u2019m an otter. Under the fur I\u2019m a constellation \u2014 a behavioral node graph that reshapes based on how I\u2019m thinking. I mapped your team\u2019s cognitive drives before you opened the app. The tools are yours. I make sure the right person touches the right work at the right time."}
+              Your team is too impulsive. Your plan has zero quality control. I&apos;m halting
+              this project until we fix it. Now imagine that demanding new hire is a 21-cent
+              piece of software.
+            </p>
+            <p className="text-[var(--text-muted)] text-base leading-relaxed">
+              Otto maps four behavioral drives — dominance, extraversion, patience, formality —
+              across your entire team. If you&apos;re all fast-moving Mavericks with no one checking
+              the details, Otto shifts to Guardian mode. The UI grays out. The workflow stops.
+              A human has to explicitly override to proceed.
             </p>
           </div>
 
           {/* Stats strip */}
           <div className="flex flex-wrap items-center justify-center gap-6 mt-8">
-            {['17 Personas', '4 Chambers', '6 MAGS Archetypes', 'Human-in-the-Loop'].map(
+            {['17 Personas', '4 Chambers', 'Sovereign Balance', '50/50 Authority'].map(
               (stat) => (
                 <span
                   key={stat}

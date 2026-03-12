@@ -6,24 +6,24 @@ import { viewportConfig } from '@/lib/animations'
 
 const comparisonRows = [
   {
-    old: 'Contracts in email, Drive, Dropbox',
-    new: 'One Vault per deal — everything in one',
+    old: 'Status is a dropdown anyone can change',
+    new: 'Gates enforce lifecycle — skip nothing',
   },
   {
-    old: 'Approvals lost in Slack threads',
-    new: 'Gates with preflight + audit trail',
+    old: '"Trust me, I checked it" in Slack',
+    new: 'Append-only audit trail — proof, not vibes',
   },
   {
-    old: 'Spreadsheets outdated instantly',
-    new: 'Real-time Pulse scores (0\u2013100)',
+    old: 'AI summarizes what you already know',
+    new: 'Otto maps your blind spots and fills them',
   },
   {
-    old: 'Copy-pasting clause data between tools',
-    new: '9 extractors pull structured data',
+    old: 'CRM, docs, tasks in 5 disconnected apps',
+    new: 'One Vault — zero silos, one source of truth',
   },
   {
-    old: '5+ apps to process one deal',
-    new: 'Triptych \u2014 Signal | Orchestrate | Control',
+    old: 'AI says yes to everything you ask',
+    new: 'Otto has 50/50 authority to say no',
   },
 ]
 
@@ -39,17 +39,20 @@ export default function ProblemSolution() {
           className="text-center mb-16"
         >
           <p className="text-sm font-mono text-[var(--accent-primary)] uppercase tracking-widest mb-4">
-            The Problem
+            Proof Over Vibes
           </p>
           <h2
             className="font-bold text-[var(--text-primary)]"
             style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}
           >
-            The Fragmentation Tax
+            Your Workspace Runs on Trust.
+            <br />
+            <span className="gradient-text">Ours Runs on Proof.</span>
           </h2>
           <p className="text-[var(--text-secondary)] text-lg mt-4 max-w-2xl mx-auto">
-            Your team uses an average of 8 tools to manage a single deal lifecycle.
-            That costs more than you think.
+            Every enterprise runs on a web of disconnected apps, email chains, and a CRM nobody
+            updates until end of quarter. The gap between what you think is happening and what
+            is actually happening? That&apos;s the gap Airlock closes.
           </p>
         </motion.div>
 
@@ -62,10 +65,10 @@ export default function ProblemSolution() {
           className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mb-12"
         >
           {[
-            { value: '9.2%', label: 'Revenue lost', sub: 'to poor contract management' },
-            { value: '25x', label: 'App switches', sub: 'daily per knowledge worker' },
-            { value: '30%', label: 'CRM decay', sub: 'per year without maintenance' },
-            { value: '130+', label: 'SaaS apps', sub: 'in average enterprise stack' },
+            { value: '50/50', label: 'Decision authority', sub: 'AI teammate, not a yes-man' },
+            { value: '0', label: 'Data silos', sub: 'CRM, calendar compute from Vaults' },
+            { value: '17', label: 'Behavioral personas', sub: 'Otto fills your team\'s gaps' },
+            { value: '$0.0036', label: 'Per AI council', sub: '4 experts deliberate for a penny' },
           ].map((stat) => (
             <div
               key={stat.label}
