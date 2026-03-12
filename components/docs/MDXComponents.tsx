@@ -46,7 +46,7 @@ function Card({
         {content}
       </a>
     ) : (
-      <Link href={`/docs/${href}`}>{content}</Link>
+      <Link href={href.startsWith('/') ? href : `/docs/${href}`}>{content}</Link>
     )
   }
 
