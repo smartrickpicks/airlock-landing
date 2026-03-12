@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 const WAITLIST_ENDPOINT = process.env.WAITLIST_ENDPOINT
-const WAITLIST_NOTIFY_EMAIL = process.env.WAITLIST_NOTIFY_EMAIL || 'rick@brainbrigade.xyz'
+const WAITLIST_NOTIFY_EMAIL = process.env.WAITLIST_NOTIFY_EMAIL || 'team@airlock.dev'
 
 export async function POST(req: NextRequest) {
   try {

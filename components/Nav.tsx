@@ -20,7 +20,7 @@ export default function Nav() {
     <nav className="fixed top-0 left-0 right-0 z-50 h-16 bg-[var(--bg-base)] md:bg-[var(--bg-base)]/80 md:backdrop-blur-xl border-b border-[var(--border-subtle)]">
       <div className="max-w-[1200px] mx-auto h-full px-6 flex items-center justify-between">
         {/* Logo */}
-        <a href="#" className="flex items-center gap-2.5">
+        <a href="/" className="flex items-center gap-2.5">
           <Image
             src="/brand/airlock-256.png"
             alt="Airlock"
