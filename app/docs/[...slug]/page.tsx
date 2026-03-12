@@ -11,6 +11,13 @@ import PrevNextNav from '@/components/docs/PrevNextNav'
 import Breadcrumbs from '@/components/docs/Breadcrumbs'
 import StatusBadge from '@/components/docs/StatusBadge'
 
+// Allow on-demand generation of routes not in generateStaticParams
+// This ensures pages render successfully even if pre-generation is incomplete
+export const dynamicParams = true
+
+// Revalidate docs every hour (ISR) so doc updates don't require full rebuild
+export const revalidate = 3600
+
 export function generateStaticParams() {
   return getAllDocSlugs().map((slug) => ({
     slug: slug.split('/'),
