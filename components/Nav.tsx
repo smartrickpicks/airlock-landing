@@ -6,10 +6,11 @@ import { Menu, X } from 'lucide-react'
 import Image from 'next/image'
 
 const navLinks = [
+  { label: 'Research', href: '/research' },
+  { label: 'Invest', href: '/invest' },
+  { label: 'Otto', href: '/otto' },
   { label: 'Features', href: '#features' },
-  { label: 'How It Works', href: '#how-it-works' },
   { label: 'Pricing', href: '#pricing' },
-  { label: 'Otto & MAGS', href: '/otto' },
   { label: 'Docs', href: '/docs' },
 ]
 

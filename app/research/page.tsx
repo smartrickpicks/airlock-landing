@@ -19,6 +19,7 @@ import Footer from '@/components/Footer'
 import AnimatedCounter from '@/components/AnimatedCounter'
 import ParetoChart from '@/components/ParetoChart'
 import ModelCard from '@/components/ModelCard'
+import HeroModelCard, { HeroModelData } from '@/components/HeroModelCard'
 import { staggerContainer, staggerItem, viewportConfig } from '@/lib/animations'
 
 /* ── Model Tier Data (ConstellationBench, March 2026) ────────── */
@@ -54,6 +55,59 @@ const modelCardData = [
   { ...modelTiers[12], tagline: 'Cheap and fast but shallow. Entry-level deliberation.', badge: undefined },
   { ...modelTiers[13], tagline: 'Fast responses, uniform opinions. All personas agree. Not ideal.', badge: 'FASTEST' },
   { ...modelTiers[2], tagline: 'Verbose and thorough. Writes essays where bullets would do.', badge: undefined },
+]
+
+/* ── Hero Model Data (Full 7-Benchmark ConstellationBench) ────────── */
+// Normalized to 0-1 scale for radar chart display
+const heroModels: HeroModelData[] = [
+  {
+    name: 'Kimi K2.5', brand: 'The Scholar', role: 'All-Rounder', provider: 'Moonshot',
+    costPerTask: 0.0047, tasksPerDollar: 213, tier: 'budget',
+    stats: { ottoTau: 0.830, personaFidelity: 0.373, sessionRecall: 0.70, coldRead: 0.776, voiceDrift: 0.412, benchCore: 0.580 },
+    wins: ['OttoTau', 'ColdRead'], tagline: 'Wins 2 of 7 benchmarks. Best policy enforcement of any model tested. The quiet overachiever.', badge: 'TOP PICK',
+  },
+  {
+    name: 'Grok 3 Mini', brand: 'The Scrapper', role: 'All-Rounder', provider: 'xAI',
+    costPerTask: 0.0013, tasksPerDollar: 769, tier: 'budget',
+    stats: { ottoTau: 0.754, personaFidelity: 0.348, sessionRecall: 0.73, coldRead: 0.739, voiceDrift: 0.443, benchCore: 0.568 },
+    wins: ['VoiceDrift'], tagline: 'Best persona stability over 10-turn conversations. Holds character when others crack. 769 tasks per dollar.', badge: 'BEST VALUE',
+  },
+  {
+    name: 'DeepSeek V3', brand: 'The Phantom', role: 'Budget Hero', provider: 'DeepSeek',
+    costPerTask: 0.0004, tasksPerDollar: 2500, tier: 'budget',
+    stats: { ottoTau: 0.737, personaFidelity: 0.357, sessionRecall: 0.74, coldRead: 0.752, voiceDrift: 0.406, benchCore: 0.548 },
+    wins: [], tagline: '2,500 tasks per dollar. Third overall. No benchmark wins but no weaknesses either. The workhorse.', badge: '2,500 TASKS/$1',
+  },
+  {
+    name: 'Gemini 2.5 Flash', brand: 'The Flash', role: 'Specialist', provider: 'Google',
+    costPerTask: 0.0005, tasksPerDollar: 2000, tier: 'budget',
+    stats: { ottoTau: 0.654, personaFidelity: 0.414, sessionRecall: 0.73, coldRead: 0.753, voiceDrift: 0.384, benchCore: 0.573 },
+    wins: ['PersonaFidelity'], tagline: 'Best persona differentiation. Produces genuinely different voices for each profile. Fast and cheap.', badge: 'PERSONA KING',
+  },
+  {
+    name: 'Qwen3 235B', brand: 'The Ghost', role: 'Budget Hero', provider: 'Alibaba',
+    costPerTask: 0.00006, tasksPerDollar: 16667, tier: 'budget',
+    stats: { ottoTau: 0.708, personaFidelity: 0.329, sessionRecall: 0.71, coldRead: 0.757, voiceDrift: 0.394, benchCore: 0.562 },
+    wins: ['CostPerLifecycle'], tagline: '16,667 tasks per dollar. Cheapest model that still performs. The invisible infrastructure play.',
+  },
+  {
+    name: 'Haiku 4.5', brand: 'The Prodigy', role: 'Support', provider: 'Anthropic',
+    costPerTask: 0.0036, tasksPerDollar: 278, tier: 'mid',
+    stats: { ottoTau: 0.548, personaFidelity: 0.370, sessionRecall: 0.76, coldRead: 0.757, voiceDrift: 0.383, benchCore: 0.573 },
+    wins: ['SessionRecall'], tagline: 'Best memory. Highest session recall of any model. Never hallucinated. The reliable teammate.',
+  },
+  {
+    name: 'Opus 4.6', brand: 'The Heavyweight', role: 'Tank', provider: 'Anthropic',
+    costPerTask: 0.1109, tasksPerDollar: 9, tier: 'frontier',
+    stats: { ottoTau: 0.522, personaFidelity: 0.362, sessionRecall: 0.70, coldRead: 0.773, voiceDrift: 0.385, benchCore: 0.589 },
+    wins: ['BenchCore'], tagline: 'Highest raw deliberation quality. But costs 23x more than the #1 model and wins only 1 of 7 benchmarks.',
+  },
+  {
+    name: 'GPT-4o', brand: 'The Default', role: 'Glass Cannon', provider: 'OpenAI',
+    costPerTask: 0.0045, tasksPerDollar: 222, tier: 'mid',
+    stats: { ottoTau: 0.623, personaFidelity: 0.353, sessionRecall: 0.69, coldRead: 0.738, voiceDrift: 0.364, benchCore: 0.540 },
+    wins: [], tagline: 'The market default is dead last. Wins zero benchmarks. Near-bottom in 4 of 7. The emperor has no clothes.',
+  },
 ]
 
 const keyFindings = [
@@ -180,27 +234,27 @@ export default function ResearchPage() {
           transition={{ duration: 0.8 }}
         >
           <p className="text-sm font-mono text-[var(--chamber-ship)] tracking-wider uppercase mb-4">
-            ConstellationBench &middot; March 2026
+            ConstellationBench &middot; 7 Benchmarks &middot; March 2026
           </p>
           <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
-            We benchmarked 15 AI models
+            We ran 5,800 LLM calls
             <br />
             <span className="text-[var(--text-muted)]">
-              in 450 multi-agent council runs.
+              across 15 models and 7 benchmarks.
             </span>
           </h1>
           <p className="text-lg text-[var(--text-secondary)] max-w-2xl leading-relaxed mb-10">
-            ConstellationBench is our internal benchmark for multi-persona AI
-            deliberation. Each council assembles 4 AI experts with distinct
-            behavioral profiles to analyze enterprise decisions. We tested every
-            model we could find.
+            ConstellationBench measures what existing benchmarks don&apos;t — can an AI sustain
+            a consistent behavioral persona, enforce governance policies in character,
+            and recall session context without hallucinating? We tested every model we
+            could find. Budget models won.
           </p>
           <div className="flex flex-wrap gap-8">
             {[
-              { target: 450, suffix: '', label: 'council runs' },
-              { target: 1800, suffix: '', label: 'AI perspectives' },
+              { target: 7, suffix: '', label: 'benchmarks' },
+              { target: 5800, suffix: '+', label: 'LLM calls' },
               { target: 15, suffix: '', label: 'models tested' },
-              { target: 9.85, prefix: '$', suffix: '', decimals: 2, label: 'total cost', accent: true },
+              { target: 22.95, prefix: '$', suffix: '', decimals: 2, label: 'total cost', accent: true },
             ].map((stat) => (
               <div key={stat.label}>
                 <span className={`font-mono text-3xl font-bold ${stat.accent ? 'text-[var(--accent-primary)]' : 'text-[var(--text-primary)]'}`}>
@@ -416,8 +470,59 @@ export default function ResearchPage() {
         </div>
       </section>
 
-      {/* ── Model Personality Cards ── */}
+      {/* ── Hero Model Cards (League of Legends treatment) ── */}
       <section className="py-20 px-6 bg-[var(--bg-raised)]">
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={viewportConfig}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-4"
+          >
+            <p className="text-sm font-mono text-[var(--accent-primary)] tracking-wider uppercase mb-3">
+              7 Benchmarks · 15 Models · 5,800+ LLM Calls
+            </p>
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">
+              Choose your champion
+            </h2>
+          </motion.div>
+          <motion.p
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={viewportConfig}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-[var(--text-muted)] text-center mb-4 max-w-2xl mx-auto"
+          >
+            Every model has strengths. The budget heroes outperform the expensive ones
+            on 6 of 7 benchmarks. Radar charts show performance across OttoTau (policy
+            enforcement), Persona Fidelity, Session Recall, Cold Read, Voice Drift,
+            and Bench Core (deliberation quality).
+          </motion.p>
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={viewportConfig}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-center text-sm font-semibold text-[var(--accent-primary)] mb-12"
+          >
+            Total benchmark cost: $22.95 — less than a single Devin session.
+          </motion.p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+            {heroModels.slice(0, 4).map((model, i) => (
+              <HeroModelCard key={model.name} model={model} index={i} />
+            ))}
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mt-5">
+            {heroModels.slice(4).map((model, i) => (
+              <HeroModelCard key={model.name} model={model} index={i + 4} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Legacy Model Cards (full 14) ── */}
+      <section className="py-20 px-6 border-t border-[var(--border-subtle)]">
         <div className="max-w-6xl mx-auto">
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
@@ -426,7 +531,7 @@ export default function ResearchPage() {
             transition={{ duration: 0.6 }}
             className="text-2xl md:text-3xl font-bold mb-4 text-center"
           >
-            Choose your council
+            All 14 models
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 30 }}
@@ -435,7 +540,7 @@ export default function ResearchPage() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-[var(--text-muted)] text-center mb-12 max-w-xl mx-auto"
           >
-            Each model has a personality. Pick the one that fits your use case.
+            Core bench scores for every model tested.
           </motion.p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {visibleCards.map((model, i) => (
