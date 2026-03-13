@@ -109,7 +109,7 @@ const whyNow = [
   {
     icon: GitFork,
     title: 'MCP is becoming standard',
-    body: 'Model Context Protocol connects AI to enterprise tools. Airlock already orchestrates 7 MCP servers. As MCP adoption grows, our multi-repo architecture becomes a competitive moat.',
+    body: 'Model Context Protocol connects AI to enterprise tools. Orbit already orchestrates 7 MCP servers. As MCP adoption grows, our multi-repo architecture becomes a competitive moat.',
   },
   {
     icon: Brain,
@@ -119,7 +119,7 @@ const whyNow = [
   {
     icon: Users,
     title: 'Enterprise buyers want platforms, not plugins',
-    body: 'Contract lifecycle management, CRM, project management, and AI orchestration — currently 4+ separate vendors. Airlock collapses the stack into one Discord-like interface.',
+    body: 'Contract lifecycle management, CRM, project management, and AI orchestration — currently 4+ separate vendors. Orbit collapses the stack into one Discord-like interface.',
   },
 ]
 
@@ -179,7 +179,7 @@ export default function InvestPage() {
             </span>
           </h1>
           <p className="text-lg text-[var(--text-secondary)] max-w-2xl leading-relaxed">
-            Airlock is bootstrapped, profitable-by-design, and building the
+            Orbit is bootstrapped, profitable-by-design, and building the
             operating system for enterprise data operations. We&apos;re not
             raising out of desperation. We&apos;re looking for partners who
             understand what we&apos;re building and want to accelerate it.
@@ -491,7 +491,7 @@ export default function InvestPage() {
               className="space-y-6 text-[var(--text-secondary)] leading-relaxed"
             >
               <p>
-                Airlock is an enterprise data operations platform with a
+                Orbit is an enterprise data operations platform with a
                 Discord-like interface. Contracts, CRM, project management,
                 calendar, and documents — unified in one workspace with AI
                 councils that deliberate on business decisions.
@@ -579,7 +579,7 @@ export default function InvestPage() {
                   obsession with structured analysis to enterprise operations.
                 </p>
                 <p className="text-[var(--text-muted)] text-sm italic border-l-2 border-[var(--accent-primary)]/30 pl-4">
-                  Every feature in Airlock exists because Zac needed it and
+                  Every feature in Orbit exists because Zac needed it and
                   couldn&apos;t find it. The platform is opinionated because the
                   founder is opinionated. That&apos;s not a bug.
                 </p>

@@ -6,15 +6,15 @@ import Image from 'next/image'
 const footerLinks = {
   Product: [
     { label: 'Features', href: '#features' },
-    { label: 'How It Works', href: '#how-it-works' },
-    { label: 'Modules', href: '#modules' },
+    { label: 'Pricing', href: '#pricing' },
+    { label: 'Otto', href: '/otto' },
     { label: 'Docs', href: '/docs' },
   ],
   Company: [
+    { label: 'Research', href: '/research' },
+    { label: 'Invest', href: '/invest' },
     { label: 'About', href: '/docs/company/about' },
     { label: 'Blog', href: '/docs' },
-    { label: 'Investors', href: '/invest' },
-    { label: 'Research', href: '/research' },
   ],
   Legal: [
     { label: 'Privacy', href: '/docs/legal/privacy' },

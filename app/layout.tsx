@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
 const firaCode = Fira_Code({ subsets: ['latin'], variable: '--font-mono' })
 
 export const metadata: Metadata = {
-  title: 'Airlock — The workspace that builds itself around your team',
+  title: 'Orbit — The workspace that builds itself around your team',
   description:
     'Enterprise data operations platform. Contracts, teams, and intelligence in one workspace that learns who you are.',
   icons: {
@@ -14,24 +14,24 @@ export const metadata: Metadata = {
     apple: '/brand/airlock-512.png',
   },
   openGraph: {
-    title: 'Airlock — Enterprise Operations, Orchestrated',
+    title: 'Orbit — Enterprise Operations, Orchestrated',
     description:
       'The workspace that learns who you are and builds itself around your team.',
     url: 'https://doyoulikedags.xyz',
-    siteName: 'Airlock',
+    siteName: 'Orbit',
     type: 'website',
     images: [
       {
         url: '/brand/social/og-airlock.png',
         width: 1200,
         height: 627,
-        alt: 'Airlock — Enterprise Data Operations',
+        alt: 'Orbit — Enterprise Data Operations',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Airlock — Enterprise Operations, Orchestrated',
+    title: 'Orbit — Enterprise Operations, Orchestrated',
     description:
       'The workspace that learns who you are and builds itself around your team.',
     images: ['/brand/social/og-airlock.png'],

@@ -68,7 +68,7 @@ function OttoHero() {
           className="mb-12"
         >
           <p className="text-sm text-[var(--text-muted)]">
-            Airlock is a unified workspace for deal teams — contracts, CRM, tasks, calendar, documents.{' '}
+            Orbit is a unified workspace for deal teams — contracts, CRM, tasks, calendar, documents.{' '}
             <Link href="/" className="text-[var(--accent-primary)] hover:underline">
               See the workspace <ArrowLeft className="inline w-3 h-3 rotate-180" />
             </Link>
@@ -132,7 +132,7 @@ const layers = [
     id: 'L2',
     title: 'Workspace Forge',
     status: 'active' as const,
-    description: 'SpellBurst-pattern onboarding. I ask 2\u20134 goal questions, infer your MAGS archetype, and configure your workspace \u2014 modules, skills, layout, defaults. Your first encounter with Airlock is a conversation with me, not a settings page.',
+    description: 'SpellBurst-pattern onboarding. I ask 2\u20134 goal questions, infer your MAGS archetype, and configure your workspace \u2014 modules, skills, layout, defaults. Your first encounter with Orbit is a conversation with me, not a settings page.',
     icon: Sparkles,
     color: '#A855F7',
   },
@@ -229,7 +229,7 @@ function HowOttoWorks() {
             <p className="text-xs font-mono text-[#A855F7] uppercase tracking-wider mb-3">First Encounter</p>
             <h4 className="text-base font-semibold text-[var(--text-primary)] mb-2">Workspace Forge</h4>
             <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-              Split-screen onboarding. I ask, you answer, your workspace builds itself. Modules activate. Skills load. Layout configures. By the time we finish talking, your Airlock is yours.
+              Split-screen onboarding. I ask, you answer, your workspace builds itself. Modules activate. Skills load. Layout configures. By the time we finish talking, your Orbit is yours.
             </p>
           </div>
           <div className="bg-[var(--bg-raised)] border border-[#7C5CFC]/20 rounded-2xl p-6">

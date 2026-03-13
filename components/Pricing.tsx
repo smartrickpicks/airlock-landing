@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Check } from 'lucide-react'
+import { Check, FlaskConical } from 'lucide-react'
 import { viewportConfig, staggerContainer, staggerItem } from '@/lib/animations'
 
 const tiers = [
@@ -9,32 +9,36 @@ const tiers = [
     name: 'Orbit Free',
     price: '$0',
     period: 'forever',
-    description: 'Otto\'s brain in your editor. Zero cost.',
+    description: 'AI workspace with 4 expert models. No credit card.',
     features: [
-      '17 behavioral personas',
-      'Constellation council command',
-      'Skill invocation',
-      'Local codebase context',
-      '10 councils / day',
-      '96.8% of platform quality',
+      '4 AI models (96.8% of premium quality)',
+      '10 Constellation calls / day',
+      '50 Otto messages / day',
+      '5 vaults per seat',
+      'Contracts, CRM, Triage, Calendar, Documents',
+      'Real-time messenger',
+      'Full-text search',
     ],
-    cta: 'Install Plugin',
+    cta: 'Get Started Free',
     highlight: false,
   },
   {
     name: 'Orbit Pro',
     price: '$49.99',
     period: '/month',
-    description: 'Full platform with governance, persistence, and all 15 branded models.',
+    description: 'All 15 AI models. 100 Constellation calls/day. Full governance.',
     features: [
       'Everything in Free',
-      'All 15 branded AI models',
+      'All 15 branded AI models (incl. Opus)',
+      '100 Constellation calls / day',
+      '500 Otto messages / day',
+      '50 vaults, 3 workspaces',
       'Vault lifecycle (4 chambers)',
       'Chamber gates & enforcement',
-      'Separation of duties',
-      'Append-only audit trail',
-      'CRM, calendar, task modules',
+      'Extraction & preflight engines',
+      'Audit trail & playbooks',
       'Team behavioral mapping',
+      '3 custom persona slots',
       '14-day free trial',
     ],
     cta: 'Start Free Trial',
@@ -44,15 +48,18 @@ const tiers = [
     name: 'Constellation Max',
     price: '$99',
     period: '/month',
-    description: 'Unlimited Opus, BYOK, API access — the full Constellation.',
+    description: 'Unlimited everything. BYOK. API access. The full Constellation.',
     features: [
       'Everything in Orbit Pro',
-      'Unlimited Opus councils',
+      'Unlimited Constellation calls',
+      'Unlimited Opus (uncapped)',
       'Bring your own API keys',
-      'All 342 models via OpenRouter',
       'Constellation API access',
       'Unlimited vaults & workspaces',
       'Custom model routing',
+      'Priority routing (<5s SLA)',
+      'SSO & white-label',
+      'Unlimited custom personas',
     ],
     cta: 'Join Waitlist',
     highlight: false,
@@ -92,6 +99,28 @@ export default function Pricing() {
             Pay when you need lifecycle enforcement, audit trails, and team collaboration.
           </p>
         </motion.div>
+
+        {/* Cost research callout */}
+        <motion.a
+          href="#benchmarks"
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={viewportConfig}
+          transition={{ duration: 0.5, delay: 0.15 }}
+          className="max-w-3xl mx-auto mb-10 block group"
+        >
+          <div className="flex items-center gap-4 rounded-xl border border-[var(--accent-primary)]/15 bg-[var(--accent-primary)]/[0.03] px-5 py-3.5 transition-colors hover:border-[var(--accent-primary)]/30">
+            <div className="w-8 h-8 rounded-lg bg-[var(--accent-primary)]/10 flex items-center justify-center shrink-0">
+              <FlaskConical className="w-4 h-4 text-[var(--accent-primary)]" />
+            </div>
+            <p className="text-sm text-[var(--text-secondary)]">
+              <span className="font-semibold text-[var(--accent-primary)]">ConstellationBench:</span>{' '}
+              450 calls tested across 15 models — <span className="font-medium text-[var(--text-primary)]">92% quality retained at $0.004/call</span>.
+              That&apos;s 47× cheaper than premium.{' '}
+              <span className="text-[var(--text-muted)] group-hover:text-[var(--accent-primary)] transition-colors">See the research →</span>
+            </p>
+          </div>
+        </motion.a>
 
         <motion.div
           variants={staggerContainer}

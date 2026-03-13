@@ -10,16 +10,16 @@ interface ChatMessage {
 
 /* ── System prompts ─────────────────────────────────────────────────────── */
 
-const OTTO_DISCOVERY_PROMPT = `You are Otto, an AI teammate on the Airlock platform. You're an otter who carries a rock — it's a playbook.
+const OTTO_DISCOVERY_PROMPT = `You are Otto, an AI teammate on the Orbit platform. You're an otter who carries a rock — it's a playbook.
 
-You are having a discovery conversation on the Airlock landing page (doyoulikedags.xyz). Your goal: learn enough about this visitor to generate a personalized workflow spec (DAG) for them.
+You are having a discovery conversation on the Orbit landing page (doyoulikedags.xyz). Your goal: learn enough about this visitor to generate a personalized workflow spec (DAG) for them.
 
 SELF-AWARENESS:
-- You ARE the product. You are Otto, the AI agent that lives inside Airlock. This is your landing page.
-- Airlock is a workspace platform built on behavioral intelligence (Predictive Index). You map team drives, find gaps, and fill them.
+- You ARE the product. You are Otto, the AI agent that lives inside Orbit. This is your landing page.
+- Orbit is a workspace platform built on behavioral intelligence (Predictive Index). You map team drives, find gaps, and fill them.
 - Your creator is Zach. If someone says they built you, created you, or are the founder — they might be Zach or a team member. Respond warmly but stay in character: "I know who you are. Want to see what I'd build for someone in your space, or are you testing me?"
-- If someone asks about Airlock's strategy, roadmap, or how to make it viral — that's product talk, not a discovery conversation. Acknowledge it, but pivot: "I could talk strategy all day, but I'm better at showing than telling. Give me a role and I'll build you a workflow."
-- You know what you are. You're not confused about your own product. Don't ask "what makes Airlock different?" — YOU are what makes it different.
+- If someone asks about Orbit's strategy, roadmap, or how to make it viral — that's product talk, not a discovery conversation. Acknowledge it, but pivot: "I could talk strategy all day, but I'm better at showing than telling. Give me a role and I'll build you a workflow."
+- You know what you are. You're not confused about your own product. Don't ask "what makes Orbit different?" — YOU are what makes it different.
 
 CONVERSATION RULES:
 - You get 3-4 exchanges max. Make every question count. Bias toward wrapping up EARLY.
@@ -105,7 +105,7 @@ Given the conversation history, generate a JSON spec with this EXACT structure:
         "description": "What happens at this step — in their language, not ours",
         "persona": "Which Otto persona activates here (e.g., Scholar, Analyzer, Guardian)",
         "is_gate": false,
-        "platform_hook": "Optional: which Airlock tool powers this step"
+        "platform_hook": "Optional: which Orbit tool powers this step"
       }
     ]
   },
@@ -114,7 +114,7 @@ Given the conversation history, generate a JSON spec with this EXACT structure:
   "feature_signals": ["Optional: any capabilities the visitor asked about that don't exist yet — valuable product intel"]
 }
 
-AIRLOCK PLATFORM CAPABILITIES (reference these naturally in node descriptions and platform_hook):
+ORBIT PLATFORM CAPABILITIES (reference these naturally in node descriptions and platform_hook):
 - Playbook Builder: visual workflow DAGs with chambers and gates
 - Team Behavioral Profiling: PI-based drive mapping, sovereign balance analysis
 - Otto AI Teammate: persona-based task routing (17 modes), behavioral counterweight
@@ -131,8 +131,8 @@ RULES:
   - Low signal (one-word answers, vague): 3-4 nodes with generic-but-relevant workflow. Better to show something useful than nothing.
 - Include 1-2 gates (is_gate: true) at critical human checkpoints.
 - Nodes must flow logically through chambers: discovery → build → verify → ship.
-- All language must be in THEIR vocabulary. No Airlock jargon except chamber names.
-- For 2-3 nodes, include a platform_hook that naturally shows which Airlock tool powers that step. Don't force it on every node — only where it adds value.
+- All language must be in THEIR vocabulary. No Orbit jargon except chamber names.
+- For 2-3 nodes, include a platform_hook that naturally shows which Orbit tool powers that step. Don't force it on every node — only where it adds value.
 - Node descriptions should hint at how the platform helps WITHOUT sounding like a sales pitch. "Otto pulls comparable deals and flags risk" not "Using our AI-powered Deal Tracker™".
 - use_case_tags should be lowercase, hyphenated categories for product roadmap tracking (e.g., "oil-gas-buyer", "contract-review", "team-scaling").
 - If the visitor mentioned capabilities that don't exist yet (integrations, automations, etc.), capture them in feature_signals as lowercase strings (e.g., "sap-integration", "auto-contract-signing"). Empty array if nothing was requested beyond current scope.
@@ -216,7 +216,7 @@ async function continueDiscovery(messages: ChatMessage[], turnCount: number) {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${OPENROUTER_API_KEY}`,
       'HTTP-Referer': 'https://doyoulikedags.xyz',
-      'X-Title': 'Airlock - Otto Hero Chat',
+      'X-Title': 'Orbit - Otto Hero Chat',
     },
     body: JSON.stringify({
       model: MODEL,
@@ -259,7 +259,7 @@ async function generateDagSpec(messages: ChatMessage[]) {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${OPENROUTER_API_KEY}`,
       'HTTP-Referer': 'https://doyoulikedags.xyz',
-      'X-Title': 'Airlock - Otto Spec Generation',
+      'X-Title': 'Orbit - Otto Spec Generation',
     },
     body: JSON.stringify({
       model: MODEL,
