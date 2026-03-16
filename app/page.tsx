@@ -4,6 +4,7 @@ import HeroChat from '@/components/HeroChat'
 import ProblemSolution from '@/components/ProblemSolution'
 import OttoTeaser from '@/components/OttoTeaser'
 import BenchProof from '@/components/BenchProof'
+import CostComparison from '@/components/CostComparison'
 import ChamberTimeline from '@/components/ChamberTimeline'
 import ModelStatCards from '@/components/ModelStatCards'
 import PluginVsPlatform from '@/components/PluginVsPlatform'
@@ -31,6 +32,9 @@ export default function Home() {
 
       {/* Act 4: The Proof — ConstellationBench data */}
       <BenchProof />
+
+      {/* Act 4b: Cost comparison — Forge stretches your API credits */}
+      <CostComparison />
 
       {/* Act 5: How Work Flows — Chambers */}
       <ChamberTimeline />
