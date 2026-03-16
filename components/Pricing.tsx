@@ -6,59 +6,55 @@ import { viewportConfig, staggerContainer, staggerItem } from '@/lib/animations'
 
 const tiers = [
   {
-    name: 'Orbit Free',
+    name: 'NoConflict',
     price: '$0',
     period: 'forever',
-    description: 'AI workspace with 4 expert models. No credit card.',
+    badge: null,
+    description: 'Git CLI that eliminates merge conflicts. Otto resolves them before they happen.',
     features: [
-      '4 AI models (96.8% of premium quality)',
-      '10 Constellation calls / day',
-      '50 Otto messages / day',
-      '5 vaults per seat',
-      'Contracts, CRM, Triage, Calendar, Documents',
-      'Real-time messenger',
-      'Full-text search',
+      'nc push — one command, done',
+      'Pre-merge conflict detection',
+      'Auto-resolve with context awareness',
+      'Branch health monitoring',
+      'Works with any git repo',
+      'Claude Code integration',
     ],
     cta: 'Get Started Free',
     highlight: false,
   },
   {
-    name: 'Orbit Pro',
-    price: '$49.99',
+    name: 'Forge',
+    price: '$29',
     period: '/month',
-    description: 'All 15 AI models. 100 Constellation calls/day. Full governance.',
+    badge: 'coming soon',
+    description: 'AI dev workstation with behavioral intelligence. Otto adapts to how you build.',
     features: [
-      'Everything in Free',
-      'All 15 branded AI models (incl. Opus)',
-      '100 Constellation calls / day',
-      '500 Otto messages / day',
-      '50 vaults, 3 workspaces',
-      'Vault lifecycle (4 chambers)',
-      'Chamber gates & enforcement',
-      'Extraction & preflight engines',
-      'Audit trail & playbooks',
-      'Team behavioral mapping',
-      '3 custom persona slots',
+      'Everything in NoConflict',
+      '17 AI personas tuned to your style',
+      'Constellation council deliberation',
+      'Persona succession (auto-rotation)',
+      'Ego shielding & passive field effects',
+      'Session memory & continuity',
+      'Glass box transparency score',
       '14-day free trial',
     ],
-    cta: 'Start Free Trial',
+    cta: 'Join Waitlist',
     highlight: true,
   },
   {
     name: 'Constellation Max',
     price: '$99',
     period: '/month',
+    badge: 'coming soon',
     description: 'Unlimited everything. BYOK. API access. The full Constellation.',
     features: [
-      'Everything in Orbit Pro',
+      'Everything in Forge',
       'Unlimited Constellation calls',
       'Unlimited Opus (uncapped)',
       'Bring your own API keys',
       'Constellation API access',
-      'Unlimited vaults & workspaces',
       'Custom model routing',
       'Priority routing (<5s SLA)',
-      'SSO & white-label',
       'Unlimited custom personas',
     ],
     cta: 'Join Waitlist',
@@ -92,11 +88,11 @@ export default function Pricing() {
             className="font-bold text-[var(--text-primary)] mb-4"
             style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}
           >
-            Start free. Scale when you need governance.
+            Start free. Scale when you&apos;re ready.
           </h2>
           <p className="text-[var(--text-secondary)] text-lg max-w-xl mx-auto">
-            The plugin is free forever — same AI quality, no credit card.
-            Pay when you need lifecycle enforcement, audit trails, and team collaboration.
+            NoConflict is free forever. Forge adds behavioral intelligence to your dev workflow.
+            Same Otto brain — different surfaces.
           </p>
         </motion.div>
 
@@ -144,10 +140,15 @@ export default function Pricing() {
               )}
 
               <div className="mb-6">
-                <div className="flex items-baseline gap-1 mb-1">
+                <div className="flex items-center gap-2 mb-1">
                   {tier.highlight && (
-                    <span className="text-[10px] font-mono bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] px-2 py-0.5 rounded-md uppercase tracking-wider mb-2 inline-block">
+                    <span className="text-[10px] font-mono bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] px-2 py-0.5 rounded-md uppercase tracking-wider inline-block">
                       Recommended
+                    </span>
+                  )}
+                  {tier.badge && (
+                    <span className="text-[10px] font-mono bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded-md uppercase tracking-wider inline-block">
+                      {tier.badge}
                     </span>
                   )}
                 </div>
@@ -171,7 +172,7 @@ export default function Pricing() {
               </ul>
 
               <a
-                href={tier.name === 'Orbit Free' ? '/docs/plugin-install' : '#waitlist'}
+                href={tier.name === 'NoConflict' ? '/docs/plugin-install' : '#waitlist'}
                 className={`w-full py-2.5 rounded-xl text-sm font-medium transition-all text-center block ${
                   tier.highlight
                     ? 'bg-[var(--accent-primary)] text-black hover:brightness-110'

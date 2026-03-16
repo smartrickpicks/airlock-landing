@@ -23,20 +23,20 @@ import { staggerContainer, staggerItem, viewportConfig } from '@/lib/animations'
 const proofPoints = [
   {
     icon: BarChart3,
-    target: 450,
+    target: 18000,
     prefix: '',
-    suffix: '',
-    label: 'Council runs benchmarked',
-    detail: '30 enterprise queries across 15 AI models from 8 providers',
+    suffix: '+',
+    label: 'LLM calls benchmarked',
+    detail: '17 personas across 3 adversarial stress layers and 15 models',
   },
   {
     icon: DollarSign,
-    target: 9.85,
+    target: 49.95,
     prefix: '$',
     suffix: '',
     decimals: 2,
     label: 'Total benchmark cost',
-    detail: '1,800 AI perspectives generated for less than a lunch',
+    detail: '18,000 evaluations for less than dinner — budget models won',
   },
   {
     icon: TrendingUp,
@@ -109,7 +109,7 @@ const whyNow = [
   {
     icon: GitFork,
     title: 'MCP is becoming standard',
-    body: 'Model Context Protocol connects AI to enterprise tools. Orbit already orchestrates 7 MCP servers. As MCP adoption grows, our multi-repo architecture becomes a competitive moat.',
+    body: 'Model Context Protocol connects AI to enterprise tools. Airlock already orchestrates 7 MCP servers. As MCP adoption grows, our multi-repo architecture becomes a competitive moat.',
   },
   {
     icon: Brain,
@@ -119,7 +119,7 @@ const whyNow = [
   {
     icon: Users,
     title: 'Enterprise buyers want platforms, not plugins',
-    body: 'Contract lifecycle management, CRM, project management, and AI orchestration — currently 4+ separate vendors. Orbit collapses the stack into one Discord-like interface.',
+    body: 'Contract lifecycle management, CRM, project management, and AI orchestration — currently 4+ separate vendors. Airlock collapses the stack into one unified interface.',
   },
 ]
 
@@ -179,7 +179,7 @@ export default function InvestPage() {
             </span>
           </h1>
           <p className="text-lg text-[var(--text-secondary)] max-w-2xl leading-relaxed">
-            Orbit is bootstrapped, profitable-by-design, and building the
+            Airlock is bootstrapped, profitable-by-design, and building the
             operating system for enterprise data operations. We&apos;re not
             raising out of desperation. We&apos;re looking for partners who
             understand what we&apos;re building and want to accelerate it.
@@ -209,8 +209,8 @@ export default function InvestPage() {
               <p>
                 Most AI startups burn venture capital to subsidize inference
                 costs, pray for scale, and figure out unit economics later. Our
-                unit economics already work. We benchmarked 15 models across 450
-                council runs and found that enterprise-grade multi-agent
+                unit economics already work. We ran 18,000+ LLM calls across 17
+                personas and 15 models and found that enterprise-grade multi-agent
                 deliberation costs{' '}
                 <span className="text-[var(--accent-primary)] font-semibold">
                   $0.0036 per run
@@ -261,8 +261,8 @@ export default function InvestPage() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-[var(--text-muted)] text-center mb-12 max-w-xl mx-auto"
           >
-            ConstellationBench — our internal benchmark suite. 450 multi-agent
-            council runs across 15 AI models from 8 providers.
+            ConstellationBench + Sovereign Triads — 18,000+ LLM calls across
+            17 personas, 15 models, and 3 adversarial stress layers.
           </motion.p>
           <motion.div
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
@@ -491,8 +491,8 @@ export default function InvestPage() {
               className="space-y-6 text-[var(--text-secondary)] leading-relaxed"
             >
               <p>
-                Orbit is an enterprise data operations platform with a
-                Discord-like interface. Contracts, CRM, project management,
+                Airlock is an enterprise data operations platform with a
+                unified interface. Contracts, CRM, project management,
                 calendar, and documents — unified in one workspace with AI
                 councils that deliberate on business decisions.
               </p>
@@ -579,7 +579,7 @@ export default function InvestPage() {
                   obsession with structured analysis to enterprise operations.
                 </p>
                 <p className="text-[var(--text-muted)] text-sm italic border-l-2 border-[var(--accent-primary)]/30 pl-4">
-                  Every feature in Orbit exists because Zac needed it and
+                  Every feature in Airlock exists because Zac needed it and
                   couldn&apos;t find it. The platform is opinionated because the
                   founder is opinionated. That&apos;s not a bug.
                 </p>

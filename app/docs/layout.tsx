@@ -4,10 +4,10 @@ import { getNavigation, getAllFlatPages, getSearchIndex } from '@/lib/docs-nav'
 
 export const metadata: Metadata = {
   title: {
-    template: '%s — Orbit Docs',
-    default: 'Orbit Docs',
+    template: '%s — Airlock Docs',
+    default: 'Airlock Docs',
   },
-  description: 'Orbit documentation — contracts, teams, and intelligence in one workspace.',
+  description: 'Airlock documentation — contracts, teams, and intelligence in one workspace.',
 }
 
 export default function DocsLayout({ children }: { children: React.ReactNode }) {

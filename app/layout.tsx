@@ -6,34 +6,34 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
 const firaCode = Fira_Code({ subsets: ['latin'], variable: '--font-mono' })
 
 export const metadata: Metadata = {
-  title: 'Orbit — The workspace that builds itself around your team',
+  title: 'Airlock — The AI teammate that adapts to how you work',
   description:
-    'Enterprise data operations platform. Contracts, teams, and intelligence in one workspace that learns who you are.',
+    'Behavioral intelligence for developers. NoConflict resolves git conflicts before they happen. Forge adds 17 AI personas tuned to your style.',
   icons: {
     icon: '/brand/airlock-256.png',
     apple: '/brand/airlock-512.png',
   },
   openGraph: {
-    title: 'Orbit — Enterprise Operations, Orchestrated',
+    title: 'Airlock — Behavioral Intelligence for Dev Teams',
     description:
-      'The workspace that learns who you are and builds itself around your team.',
+      'The AI teammate that adapts to how you work. NoConflict + Forge.',
     url: 'https://doyoulikedags.xyz',
-    siteName: 'Orbit',
+    siteName: 'Airlock',
     type: 'website',
     images: [
       {
         url: '/brand/social/og-airlock.png',
         width: 1200,
         height: 627,
-        alt: 'Orbit — Enterprise Data Operations',
+        alt: 'Airlock — Behavioral Intelligence for Dev Teams',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Orbit — Enterprise Operations, Orchestrated',
+    title: 'Airlock — Behavioral Intelligence for Dev Teams',
     description:
-      'The workspace that learns who you are and builds itself around your team.',
+      'The AI teammate that adapts to how you work. NoConflict + Forge.',
     images: ['/brand/social/og-airlock.png'],
   },
 }

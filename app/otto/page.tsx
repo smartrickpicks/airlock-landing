@@ -68,7 +68,7 @@ function OttoHero() {
           className="mb-12"
         >
           <p className="text-sm text-[var(--text-muted)]">
-            Orbit is a unified workspace for deal teams — contracts, CRM, tasks, calendar, documents.{' '}
+            Otto is the AI teammate that adapts to how you work — not the other way around.{' '}
             <Link href="/" className="text-[var(--accent-primary)] hover:underline">
               See the workspace <ArrowLeft className="inline w-3 h-3 rotate-180" />
             </Link>
@@ -122,9 +122,9 @@ function OttoHero() {
 const layers = [
   {
     id: 'L1',
-    title: 'Otto Learns You',
+    title: 'Otto Adapts to You',
     status: 'active' as const,
-    description: 'LinkedIn, resume, or a 2-minute conversation. I extract your behavioral drives \u2014 Dominance, Extraversion, Patience, Formality \u2014 and match you to one of 17 PI profiles. No setup wizard. No personality quiz. Just a conversation.',
+    description: 'A conversation is all it takes. I pick up on how you think, decide, and communicate \u2014 then shape everything around your natural style. No setup wizard. No personality quiz. Just talk to me.',
     icon: Brain,
     color: '#7C5CFC',
   },
@@ -132,7 +132,7 @@ const layers = [
     id: 'L2',
     title: 'Workspace Forge',
     status: 'active' as const,
-    description: 'SpellBurst-pattern onboarding. I ask 2\u20134 goal questions, infer your MAGS archetype, and configure your workspace \u2014 modules, skills, layout, defaults. Your first encounter with Orbit is a conversation with me, not a settings page.',
+    description: 'SpellBurst-pattern onboarding. I ask 2\u20134 goal questions, infer your work style, and configure your workspace \u2014 modules, skills, layout, defaults. Your first encounter is a conversation with me, not a settings page.',
     icon: Sparkles,
     color: '#A855F7',
   },
@@ -229,7 +229,7 @@ function HowOttoWorks() {
             <p className="text-xs font-mono text-[#A855F7] uppercase tracking-wider mb-3">First Encounter</p>
             <h4 className="text-base font-semibold text-[var(--text-primary)] mb-2">Workspace Forge</h4>
             <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-              Split-screen onboarding. I ask, you answer, your workspace builds itself. Modules activate. Skills load. Layout configures. By the time we finish talking, your Orbit is yours.
+              Split-screen onboarding. I ask, you answer, your workspace builds itself. Modules activate. Skills load. Layout configures. By the time we finish talking, it&apos;s yours.
             </p>
           </div>
           <div className="bg-[var(--bg-raised)] border border-[#7C5CFC]/20 rounded-2xl p-6">
@@ -985,13 +985,13 @@ export default function OttoPage() {
       <Nav />
       <OttoHero />
       <HowOttoWorks />
+      <TryOttoAlpha />
       <ProfileExplorer />
       <TeamThroughOttosEyes />
       <TheOffice />
       <GatesSection />
       <MAGSRuntime />
       <ConstellationDeep />
-      <TryOttoAlpha />
       <OttoCTA />
       <Footer />
     </main>
