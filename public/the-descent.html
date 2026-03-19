@@ -3,20 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Airlock — The identity layer for autonomous agents</title>
-<meta name="description" content="Persona-grounded. Behaviorally adaptive. Cryptographically verifiable.">
+<title>Airlock — Reinventing how code gets built</title>
+<meta name="description" content="The Forge redefines coding. Persona-grounded. Behaviorally adaptive. Yours.">
 <meta name="robots" content="noindex, nofollow">
 
 <!-- Open Graph -->
-<meta property="og:title" content="Airlock — The identity layer for autonomous agents">
-<meta property="og:description" content="Persona-grounded. Behaviorally adaptive. Cryptographically verifiable.">
+<meta property="og:title" content="Airlock — Reinventing how code gets built">
+<meta property="og:description" content="The Forge redefines coding. Persona-grounded. Behaviorally adaptive. Yours.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://doyoulikedags.xyz">
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Airlock — The identity layer for autonomous agents">
-<meta name="twitter:description" content="Persona-grounded. Behaviorally adaptive. Cryptographically verifiable.">
+<meta name="twitter:title" content="Airlock — Reinventing how code gets built">
+<meta name="twitter:description" content="The Forge redefines coding. Persona-grounded. Behaviorally adaptive. Yours.">
 
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -245,9 +245,9 @@ body {
    ═══════════════════════════════════════════ */
 .proof-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 24px;
-  max-width: 760px;
+  max-width: 1080px;
   width: 100%;
 }
 
@@ -261,9 +261,10 @@ body {
   transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-.proof-card[data-delay="0"] { transform: translateX(-40px); }
-.proof-card[data-delay="1"] { transform: translateX(40px); }
-.proof-card.visible { opacity: 1; transform: translateX(0); }
+.proof-card[data-delay="0"] { transform: translateY(30px); }
+.proof-card[data-delay="1"] { transform: translateY(30px); }
+.proof-card[data-delay="2"] { transform: translateY(30px); }
+.proof-card.visible { opacity: 1; transform: translateY(0); }
 
 .proof-card:hover { border-color: var(--al-otto); }
 
@@ -332,7 +333,8 @@ body {
 @media (max-width: 700px) {
   .proof-grid { grid-template-columns: 1fr; }
   .proof-card[data-delay="0"],
-  .proof-card[data-delay="1"] { transform: translateY(20px); }
+  .proof-card[data-delay="1"],
+  .proof-card[data-delay="2"] { transform: translateY(20px); }
 }
 
 /* ═══════════════════════════════════════════
@@ -419,6 +421,12 @@ body {
 .horizon-line.visible {
   opacity: 1;
   transform: translateY(0);
+  animation: forgeGlow 4s ease-in-out 1s infinite;
+}
+
+@keyframes forgeGlow {
+  0%, 100% { text-shadow: none; }
+  50% { text-shadow: 0 0 30px var(--al-otto-glow), 0 0 60px rgba(124, 92, 252, 0.1); }
 }
 
 .horizon-frontier {
@@ -589,6 +597,39 @@ body {
   .email-capture { width: 100%; max-width: 280px; }
 }
 
+/* The promise */
+.dog-days {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--al-text3);
+  text-align: center;
+  margin-top: 48px;
+  letter-spacing: 2px;
+  cursor: help;
+  transition: color 0.6s ease, letter-spacing 0.6s ease;
+  user-select: none;
+}
+.dog-days:hover {
+  color: var(--al-gold);
+  letter-spacing: 4px;
+}
+
+/* The one who knows */
+.jack-egg {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--al-base);
+  text-align: center;
+  margin-top: 12px;
+  letter-spacing: 0.5px;
+  cursor: default;
+  transition: color 0.8s ease;
+  user-select: none;
+}
+.jack-egg:hover {
+  color: var(--al-text3);
+}
+
 /* ═══════════════════════════════════════════
    ACCESSIBILITY
    ═══════════════════════════════════════════ */
@@ -635,7 +676,7 @@ body {
 
   <!-- Layer 0: The Void -->
   <section class="layer" id="layer-void">
-    <h1 class="void-headline">The identity layer for autonomous agents.</h1>
+    <h1 class="void-headline">Reinventing how code gets built.</h1>
     <div class="scroll-indicator" id="scrollIndicator">
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
         <path d="M10 4 L10 16 M5 11 L10 16 L15 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -646,25 +687,28 @@ body {
   <!-- Layer 1: The Problem -->
   <section class="layer" id="layer-problem">
     <div class="problem-lines">
-      <p class="problem-line" data-delay="0">Every agent shipping today is stateless.</p>
-      <p class="problem-line" data-delay="1">It doesn't know who it's serving.</p>
-      <p class="problem-line" data-delay="2">It doesn't know who authorized it.</p>
-      <p class="problem-line" data-delay="3">It doesn't adapt to how you think.</p>
-      <p class="problem-line" data-delay="4">It forgets you the moment you leave.</p>
-      <p class="problem-punchline" data-delay="5">That's not infrastructure. That's a demo.</p>
+      <p class="problem-line" data-delay="0">Your terminal hasn't changed in 40 years.</p>
+      <p class="problem-line" data-delay="1">Your dev tools were designed by committee.</p>
+      <p class="problem-line" data-delay="2">Your IDE doesn't know who you are.</p>
+      <p class="problem-line" data-delay="3">Your git workflow breaks the moment someone else touches it.</p>
+      <p class="problem-line" data-delay="4">Every tool you use was built for a world before AI.</p>
+      <p class="problem-punchline" data-delay="5">That's not a workflow. That's <span style="color: var(--al-accent);">archaeology</span>.</p>
     </div>
   </section>
+
+  <!-- Divider pulse -->
+  <div style="width: 60px; height: 1px; background: linear-gradient(90deg, transparent, var(--al-otto), transparent); margin: 0 auto; opacity: 0.4;"></div>
 
   <!-- Layer 2: The Thesis -->
   <section class="layer" id="layer-thesis">
     <div class="thesis-content">
       <h2 class="thesis-brand" data-delay="0">AIRLOCK</h2>
-      <p class="thesis-line" data-delay="1">We're building what's missing.</p>
-      <p class="thesis-body" data-delay="2">An identity and adaptation layer for agents that need to know who they're working for.</p>
+      <p class="thesis-line" data-delay="1">The Forge redefines coding.</p>
+      <p class="thesis-body" data-delay="2">We're replacing the tools developers tolerate with the ones they've been waiting for.</p>
       <div class="thesis-descriptors" data-delay="3">
         <span class="descriptor">Persona-grounded.</span>
         <span class="descriptor">Behaviorally adaptive.</span>
-        <span class="descriptor">Cryptographically verifiable.</span>
+        <span class="descriptor">Yours.</span>
       </div>
     </div>
   </section>
@@ -689,12 +733,32 @@ body {
         </div>
         <h3 class="proof-card-name">NoConflict</h3>
         <p class="proof-card-tagline">nc push &rarr; done.</p>
-        <p class="proof-card-desc">Merge conflicts mass-murdered before you see them. The CLI that makes git painless.</p>
+        <p class="proof-card-desc">Merge conflicts eliminated before you see them. Works in any IDE. VS Code. Cursor. Windsurf. Yours.</p>
         <a class="proof-card-link" href="https://noconflict.dev" target="_blank" rel="noopener">noconflict.dev &rarr;</a>
       </div>
 
-      <!-- Maverick MCP card -->
+      <!-- The Nerve card -->
       <div class="proof-card" data-delay="1">
+        <div class="proof-card-terminal">
+          <div class="terminal-bar">
+            <div class="terminal-dots">
+              <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            </div>
+            <span class="terminal-title">nerve</span>
+          </div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-prompt">$</span> <span class="t-cmd">nerve start</span></div>
+            <div class="t-line t-receipt"><span class="t-check">&#10003;</span> <span class="t-msg">terminal + console + network &mdash; unified</span></div>
+          </div>
+        </div>
+        <h3 class="proof-card-name">The Nerve</h3>
+        <p class="proof-card-tagline">One panel. Not twelve tabs.</p>
+        <p class="proof-card-desc">Terminal, console, network, devtools &mdash; unified into one intelligent surface that tells you what's happening.</p>
+        <a class="proof-card-link" href="#">coming soon &rarr;</a>
+      </div>
+
+      <!-- Maverick MCP card -->
+      <div class="proof-card" data-delay="2">
         <div class="proof-card-terminal">
           <div class="terminal-bar">
             <div class="terminal-dots">
@@ -708,34 +772,48 @@ body {
           </div>
         </div>
         <h3 class="proof-card-name">Maverick MCP</h3>
-        <p class="proof-card-tagline">Our gift to Goose.</p>
-        <p class="proof-card-desc">An open-source MCP server for the agent ecosystem. Because some infrastructure should be free.</p>
-        <a class="proof-card-link" href="https://github.com/airlock" target="_blank" rel="noopener">GitHub &rarr;</a>
+        <p class="proof-card-tagline">Our gift to the ecosystem.</p>
+        <p class="proof-card-desc">An open-source MCP server for agents. Because some infrastructure should be free.</p>
+        <a class="proof-card-link" href="https://github.com/get-airlock" target="_blank" rel="noopener">GitHub &rarr;</a>
       </div>
 
     </div>
   </section>
+
+  <!-- Divider pulse -->
+  <div style="width: 60px; height: 1px; background: linear-gradient(90deg, transparent, var(--al-otto), transparent); margin: 0 auto; opacity: 0.4;"></div>
 
   <!-- Layer 4: The Ethos -->
   <section class="layer" id="layer-ethos">
     <div class="ethos-content">
       <p class="ethos-line" data-delay="0">Your data stays yours.</p>
       <p class="ethos-line" data-delay="1">Your agent answers to you.</p>
-      <div class="ethos-group" data-delay="2">
+      <p class="ethos-line" data-delay="2">Your tools should know you &mdash; not sell you.</p>
+      <div class="ethos-group" data-delay="3">
         <p class="ethos-line-sm">No dark patterns.</p>
         <p class="ethos-line-sm">No data brokerage.</p>
         <p class="ethos-line-sm">No exit traps.</p>
       </div>
-      <p class="ethos-sovereign" data-delay="3">We build tools that make you <span class="sovereign-word">sovereign</span>.</p>
+      <p class="ethos-sovereign" data-delay="4">We build tools that make you <span class="sovereign-word">sovereign</span>.</p>
     </div>
   </section>
 
   <!-- Layer 5: The Horizon -->
   <section class="layer" id="layer-horizon">
     <div class="horizon-content">
-      <p class="horizon-line" data-delay="0">Something else is coming.</p>
-      <p class="horizon-frontier" data-delay="1">Trailblazing the Pareto Frontier.</p>
+      <p class="horizon-line" data-delay="0">The Forge is coming.</p>
+      <div class="horizon-echo" data-delay="1">
+        <p class="horizon-descriptor">Not another IDE with a chatbot bolted on.</p>
+        <p class="horizon-descriptor">A living workspace. Six organs working as one.</p>
+        <p class="horizon-descriptor">The Cortex thinks. The Nerve executes. The Lens watches. The Spine holds state.</p>
+        <p class="horizon-descriptor">The Sentinel guards quality. The Synapse connects everything.</p>
+      </div>
       <div class="horizon-echo" data-delay="2">
+        <p class="horizon-descriptor">No terminal. No twelve-tab chaos. No context switching.</p>
+        <p class="horizon-descriptor">Your AI knows your behavioral patterns before you type a single line.</p>
+        <p class="horizon-descriptor">It doesn't guess what you want. It already knows.</p>
+      </div>
+      <div class="horizon-echo" data-delay="3">
         <p class="horizon-descriptor">Persona-grounded.</p>
         <p class="horizon-descriptor">Behaviorally adaptive.</p>
         <p class="horizon-yours">Yours.</p>
@@ -748,11 +826,13 @@ body {
     <div class="bottom-content">
       <div class="bottom-row">
         <div class="bottom-links">
-          <a href="https://noconflict.dev" target="_blank" rel="noopener">noconflict.dev</a>
+          <a href="https://noconflict.dev" target="_blank" rel="noopener">noconflict</a>
           <span class="bottom-sep">&middot;</span>
-          <a href="https://github.com/airlock" target="_blank" rel="noopener">maverick mcp</a>
+          <a href="#">the nerve</a>
           <span class="bottom-sep">&middot;</span>
-          <a href="https://github.com/airlock" target="_blank" rel="noopener">github</a>
+          <a href="#">the forge</a>
+          <span class="bottom-sep">&middot;</span>
+          <a href="https://github.com/get-airlock" target="_blank" rel="noopener">github</a>
         </div>
         <div class="bottom-sig">built by otto &middot; 2026</div>
       </div>
@@ -771,6 +851,9 @@ body {
           <span class="email-cursor" id="emailCursor"></span>
         </form>
       </div>
+
+      <p class="dog-days" title="Florence knew.">the dog days are over.</p>
+      <p class="jack-egg" title="You know who you are, Jack.">if you're reading this, we built it for the same reasons you left. the bird deserved better.</p>
     </div>
   </footer>
 
