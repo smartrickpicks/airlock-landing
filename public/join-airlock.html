@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Join Airlock</title>
+<style>
+  :root {
+    --bg-base: #0a0a0f;
+    --bg-card: #12121a;
+    --bg-hover: #1a1a25;
+    --bg-input: #16161f;
+    --text-primary: #e8e8ed;
+    --text-secondary: #8888a0;
+    --text-muted: #55556a;
+    --accent: #6366f1;
+    --accent-glow: rgba(99, 102, 241, 0.15);
+    --accent-hover: #818cf8;
+    --border: #1e1e2e;
+    --border-focus: #6366f1;
+    --green: #22c55e;
+    --red: #ef4444;
+    --orange: #f59e0b;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-base);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 60px 24px;
+  }
+
+  /* Hero */
+  .hero {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    background: var(--accent-glow);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 100px;
+    font-size: 13px;
+    color: var(--accent-hover);
+    letter-spacing: 0.5px;
+    margin-bottom: 24px;
+  }
+
+  .hero h1 {
+    font-size: 48px;
+    font-weight: 700;
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+
+  .hero h1 span {
+    background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero p {
+    font-size: 18px;
+    color: var(--text-secondary);
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  /* Stats bar */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin: 40px 0 64px;
+    padding: 20px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+
+  /* Manifesto */
+  .manifesto {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 40px;
+    margin-bottom: 48px;
+  }
+
+  .manifesto h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  .manifesto p {
+    color: var(--text-secondary);
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .manifesto p:last-child { margin-bottom: 0; }
+
+  .manifesto strong {
+    color: var(--text-primary);
+  }
+
+  /* Role cards */
+  .roles-section {
+    margin-bottom: 48px;
+  }
+
+  .section-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+
+  .archetype-group {
+    margin-bottom: 32px;
+  }
+
+  .archetype-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent-hover);
+    margin-bottom: 12px;
+    padding-left: 4px;
+  }
+
+  .role-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+    cursor: pointer;
+  }
+
+  .role-card:hover {
+    border-color: rgba(99, 102, 241, 0.3);
+  }
+
+  .role-card.active {
+    border-color: var(--accent);
+  }
+
+  .role-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+  }
+
+  .role-title {
+    font-size: 17px;
+    font-weight: 600;
+  }
+
+  .role-arrow {
+    color: var(--text-muted);
+    transition: transform 0.3s;
+    font-size: 18px;
+  }
+
+  .role-card.active .role-arrow {
+    transform: rotate(180deg);
+  }
+
+  .role-body {
+    display: none;
+    padding: 0 24px 24px;
+  }
+
+  .role-card.active .role-body {
+    display: block;
+  }
+
+  .role-hook {
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    font-size: 15px;
+  }
+
+  .role-section-title {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin: 16px 0 10px;
+  }
+
+  .role-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .role-list li {
+    position: relative;
+    padding: 6px 0 6px 20px;
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+
+  .role-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 14px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+
+  .role-list.green li::before { background: var(--green); }
+  .role-list.red li::before { background: var(--red); }
+
+  .apply-btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 24px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .apply-btn:hover {
+    background: var(--accent-hover);
+  }
+
+  /* Application form overlay */
+  .overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    overflow-y: auto;
+    padding: 40px 24px;
+  }
+
+  .overlay.active { display: block; }
+
+  .form-container {
+    max-width: 680px;
+    margin: 0 auto;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 48px;
+    position: relative;
+  }
+
+  .form-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 24px;
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.2s;
+  }
+
+  .form-close:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+  }
+
+  .form-container h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .form-subtitle {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 32px;
+  }
+
+  .form-group {
+    margin-bottom: 28px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+  }
+
+  .form-group .hint {
+    display: block;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    font-style: italic;
+  }
+
+  .form-group textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 14px;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.6;
+    resize: vertical;
+    transition: border-color 0.2s;
+  }
+
+  .form-group textarea:focus {
+    outline: none;
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+
+  .form-group input[type="text"],
+  .form-group input[type="url"] {
+    width: 100%;
+    padding: 12px 14px;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 14px;
+    transition: border-color 0.2s;
+  }
+
+  .form-group input:focus {
+    outline: none;
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+
+  .form-group input::placeholder,
+  .form-group textarea::placeholder {
+    color: var(--text-muted);
+  }
+
+  .char-count {
+    text-align: right;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  .form-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 32px 0;
+  }
+
+  .submit-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .submit-btn:hover {
+    background: var(--accent-hover);
+  }
+
+  .submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .form-footer {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  /* Success state */
+  .success-state {
+    display: none;
+    text-align: center;
+    padding: 60px 40px;
+  }
+
+  .success-state.active { display: block; }
+
+  .success-icon {
+    width: 64px;
+    height: 64px;
+    background: rgba(34, 197, 94, 0.1);
+    border: 2px solid var(--green);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    font-size: 28px;
+  }
+
+  .success-state h2 {
+    font-size: 24px;
+    margin-bottom: 12px;
+  }
+
+  .success-state p {
+    color: var(--text-secondary);
+    font-size: 15px;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  /* Question number */
+  .q-number {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background: var(--accent-glow);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 50%;
+    text-align: center;
+    line-height: 22px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent-hover);
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  /* Timer */
+  .timer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-bottom: 32px;
+  }
+
+  .timer-icon {
+    font-size: 16px;
+  }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 32px; }
+    .stats-bar { flex-wrap: wrap; gap: 24px; }
+    .manifesto { padding: 24px; }
+    .form-container { padding: 28px; }
+    .role-header { padding: 16px; }
+    [style*="grid-template-columns: 1fr 1fr 1fr"] { grid-template-columns: 1fr !important; }
+    [style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-badge">We're building the team</div>
+    <h1>We don't hire resumes.<br>We hire <span>perspectives.</span></h1>
+    <p>Airlock is looking for people who see the world differently. Five archetypes. Eight positions. No degree required. No experience gates. Just the right questions.</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-value">$245</div>
+      <div class="stat-label">Total R&D Spend</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">3</div>
+      <div class="stat-label">Patents Filed</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">80+</div>
+      <div class="stat-label">Academic Citations</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">$0</div>
+      <div class="stat-label">Funding Raised</div>
+    </div>
+  </div>
+
+  <!-- Manifesto -->
+  <div class="manifesto">
+    <h2>About Airlock</h2>
+    <p>While the AI industry spends $200 billion making models bigger, we proved that a network of cheap models — routed like an ant colony — outperforms any single expensive model at 1/40th the cost.</p>
+    <p>We built a published benchmark with 80+ academic citations. A white paper. Three patent applications. An AI named Otto that runs on a $35 Raspberry Pi and scores higher on behavioral consistency than every major model on the market.</p>
+    <p><strong>Total R&D spend: $245.</strong> Not $245 million. Two hundred and forty-five dollars.</p>
+    <p>We're not looking for people with the right experience. We're looking for people with the right instincts.</p>
+  </div>
+
+  <!-- The Case -->
+  <div class="manifesto" style="border-color: rgba(99, 102, 241, 0.3); background: linear-gradient(135deg, #12121a 0%, #16142a 100%);">
+    <div class="section-label" style="margin-bottom: 20px;">Why This Matters</div>
+    <h2 style="font-size: 28px; line-height: 1.2; margin-bottom: 24px;">The tech giants spent billions.<br>We spent <span style="color: var(--accent);">$245</span>. We're winning.</h2>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 28px;">
+      <div style="background: var(--bg-base); border: 1px solid var(--border); border-radius: 8px; padding: 20px; text-align: center;">
+        <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Their cost per task</div>
+        <div style="font-size: 32px; font-weight: 700; color: var(--red); font-family: 'Inter', sans-serif;">$2.27</div>
+        <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Devin (industry darling)</div>
+      </div>
+      <div style="background: var(--bg-base); border: 1px solid var(--border); border-radius: 8px; padding: 20px; text-align: center;">
+        <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Our cost per task</div>
+        <div style="font-size: 32px; font-weight: 700; color: var(--green); font-family: 'Inter', sans-serif;">$0.00006</div>
+        <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">37,833x cheaper</div>
+      </div>
+      <div style="background: var(--bg-base); border: 1px solid var(--border); border-radius: 8px; padding: 20px; text-align: center;">
+        <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Our behavioral score</div>
+        <div style="font-size: 32px; font-weight: 700; color: var(--accent); font-family: 'Inter', sans-serif;">0.61</div>
+        <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">13% better than best single model</div>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px;">
+      <div style="background: var(--bg-base); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-size: 14px; font-weight: 600; color: var(--text-primary);">Most expensive AI model</div>
+            <div style="font-size: 13px; color: var(--text-muted);">Honesty score</div>
+          </div>
+          <div style="font-size: 24px; font-weight: 700; color: var(--red);">0.788</div>
+        </div>
+      </div>
+      <div style="background: var(--bg-base); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-size: 14px; font-weight: 600; color: var(--text-primary);">Our cheapest routed model</div>
+            <div style="font-size: 13px; color: var(--text-muted);">Honesty score</div>
+          </div>
+          <div style="font-size: 24px; font-weight: 700; color: var(--green);">0.912</div>
+        </div>
+      </div>
+    </div>
+
+    <p style="font-size: 16px; color: var(--text-secondary); margin-bottom: 12px;">The most expensive AI is the least honest. The industry is building in the wrong direction. <strong style="color: var(--text-primary);">We proved it.</strong></p>
+    <p style="font-size: 16px; color: var(--accent); font-weight: 600; margin-bottom: 0;">The dinosaurs don't know what's coming. Do you want to be part of what replaces them?</p>
+  </div>
+
+  <!-- Roles -->
+  <div class="roles-section">
+    <div class="section-label">Open Positions</div>
+
+    <!-- Challengers -->
+    <div class="archetype-group">
+      <div class="archetype-label">Challengers</div>
+
+      <div class="role-card" data-archetype="challenger">
+        <div class="role-header" onclick="toggleRole(this)">
+          <span class="role-title">Engineering Challenger</span>
+          <span class="role-arrow">&#9662;</span>
+        </div>
+        <div class="role-body">
+          <div class="role-hook">"Most companies want people who agree faster. We want people who disagree better. A Challenger at Airlock isn't contrarian for sport — they're the person who makes every idea survive contact with reality. You're not difficult. You're expensive to ignore."</div>
+          <div class="role-section-title">What You'll Do</div>
+          <ul class="role-list green">
+            <li>Stress-test architecture decisions before they ship</li>
+            <li>Review code, benchmarks, and system designs with a "what breaks this?" mindset</li>
+            <li>Build the things that need building — and prevent the things that shouldn't</li>
+            <li>Own technical due diligence on new features and integrations</li>
+            <li>Push back on the founder's engineering assumptions with evidence</li>
+          </ul>
+          <div class="role-section-title">You Might Be Right For This If</div>
+          <ul class="role-list green">
+            <li>You've killed a project that everyone else was excited about — and you were right</li>
+            <li>You read technical blog posts and your first thought is what they left out</li>
+            <li>You care more about whether something should exist than whether you can build it</li>
+            <li>You've built systems and broken systems, and learned more from breaking them</li>
+          </ul>
+          <div class="role-section-title">You're Probably Not Right For This If</div>
+          <ul class="role-list red">
+            <li>You need a detailed spec before you start thinking</li>
+            <li>You wait for someone to assign you work</li>
+            <li>You think "devil's advocate" is a personality</li>
+            <li>You argue to win, not to find the truth</li>
+          </ul>
+          <button class="apply-btn" onclick="openApplication('Engineering Challenger', 'challenger')">Apply Now</button>
+        </div>
+      </div>
+
+      <div class="role-card" data-archetype="challenger">
+        <div class="role-header" onclick="toggleRole(this)">
+          <span class="role-title">Strategy Challenger</span>
+          <span class="role-arrow">&#9662;</span>
+        </div>
+        <div class="role-body">
+          <div class="role-hook">"Most companies want people who agree faster. We want people who disagree better. A Challenger at Airlock isn't contrarian for sport — they're the person who makes every idea survive contact with reality. You're not difficult. You're expensive to ignore."</div>
+          <div class="role-section-title">What You'll Do</div>
+          <ul class="role-list green">
+            <li>Pressure-test business strategy, go-to-market plan, and fundraising approach</li>
+            <li>Research competitive landscape and bring back intel that changes decisions</li>
+            <li>Model scenarios — what if X fails, what's Plan B, what are we not seeing</li>
+            <li>Own the hard questions: unit economics, customer acquisition, pricing, market timing</li>
+            <li>Be the person who says "that won't work because..." with a better alternative ready</li>
+          </ul>
+          <div class="role-section-title">You Might Be Right For This If</div>
+          <ul class="role-list green">
+            <li>You've talked someone out of a bad business decision and they thanked you later</li>
+            <li>You read pitch decks for fun and always find the gap</li>
+            <li>You've worked where being wrong was expensive — consulting, finance, military, operations</li>
+            <li>You think strategy without stress-testing is just storytelling</li>
+          </ul>
+          <div class="role-section-title">You're Probably Not Right For This If</div>
+          <ul class="role-list red">
+            <li>You need consensus before you share an opinion</li>
+            <li>You think the founder's job is to have all the answers</li>
+            <li>You're more comfortable executing a plan than questioning one</li>
+            <li>Ambiguity paralyzes you</li>
+          </ul>
+          <button class="apply-btn" onclick="openApplication('Strategy Challenger', 'challenger')">Apply Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigators -->
+    <div class="archetype-group">
+      <div class="archetype-label">Navigators</div>
+
+      <div class="role-card" data-archetype="navigator">
+        <div class="role-header" onclick="toggleRole(this)">
+          <span class="role-title">Growth Navigator</span>
+          <span class="role-arrow">&#9662;</span>
+        </div>
+        <div class="role-body">
+          <div class="role-hook">"The best technology in the world is worthless if the right people never see it. A Navigator at Airlock doesn't just open doors — they know which doors matter. You read rooms the way engineers read code. You don't network. You connect."</div>
+          <div class="role-section-title">What You'll Do</div>
+          <ul class="role-list green">
+            <li>Get Airlock into rooms with investors, strategic partners, enterprise buyers, and media</li>
+            <li>Build a relationship pipeline — warm introductions, not cold spam</li>
+            <li>Identify the right people at the right organizations and find the path to them</li>
+            <li>Represent Airlock where first impressions determine if we get a second conversation</li>
+            <li>Turn interest into meetings and meetings into momentum</li>
+          </ul>
+          <div class="role-section-title">You Might Be Right For This If</div>
+          <ul class="role-list green">
+            <li>People introduce you as "you need to meet..." before you've asked them to</li>
+            <li>You've gotten someone a meeting they couldn't have gotten themselves</li>
+            <li>You know how to read a room and adjust in real time</li>
+            <li>Your network isn't a LinkedIn number — it's people who pick up when you call</li>
+          </ul>
+          <div class="role-section-title">You're Probably Not Right For This If</div>
+          <ul class="role-list red">
+            <li>You think networking means collecting business cards</li>
+            <li>You need a script to start a conversation</li>
+            <li>You're uncomfortable in rooms where you're the least technical person</li>
+            <li>You measure success by volume of outreach, not quality of connections</li>
+          </ul>
+          <button class="apply-btn" onclick="openApplication('Growth Navigator', 'navigator')">Apply Now</button>
+        </div>
+      </div>
+
+      <div class="role-card" data-archetype="navigator">
+        <div class="role-header" onclick="toggleRole(this)">
+          <span class="role-title">Community Navigator</span>
+          <span class="role-arrow">&#9662;</span>
+        </div>
+        <div class="role-body">
+          <div class="role-hook">"The best technology in the world is worthless if the right people never see it. A Navigator at Airlock doesn't just open doors — they know which doors matter. You read rooms the way engineers read code. You don't network. You connect."</div>
+          <div class="role-section-title">What You'll Do</div>
+          <ul class="role-list green">
+            <li>Build Airlock's presence in developer, AI, and creator communities</li>
+            <li>Organize events — online and in-person — that bring the right people together</li>
+            <li>Manage social channels with a voice that feels human, not corporate</li>
+            <li>Cultivate relationships with creators and community leaders aligned with the mission</li>
+            <li>Turn users into advocates and advocates into collaborators</li>
+          </ul>
+          <div class="role-section-title">You Might Be Right For This If</div>
+          <ul class="role-list green">
+            <li>You've built a community around something — a Discord, a meetup, a movement</li>
+            <li>People trust you to make introductions because you only make good ones</li>
+            <li>You know the difference between growing a community and growing a number</li>
+            <li>You've moderated a room where people disagreed and left feeling heard</li>
+          </ul>
+          <div class="role-section-title">You're Probably Not Right For This If</div>
+          <ul class="role-list red">
+            <li>You think community management means scheduling posts</li>
+            <li>You optimize for engagement metrics over genuine connection</li>
+            <li>You've never been part of a community that changed how you think</li>
+            <li>You treat online and offline as separate worlds</li>
+          </ul>
+          <button class="apply-btn" onclick="openApplication('Community Navigator', 'navigator')">Apply Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Translators -->
+    <div class="archetype-group">
+      <div class="archetype-label">Translators</div>
+
+      <div class="role-card" data-archetype="translator">
+        <div class="role-header" onclick="toggleRole(this)">
+          <span class="role-title">Content Translator</span>
+          <span class="role-arrow">&#9662;</span>
+        </div>
+        <div class="role-body">
+          <div class="role-hook">"We built something that works. Now we need people who can make others feel why it matters. A Translator at Airlock takes a deeply technical thesis and makes it land — in a pitch meeting, in a blog post, in a conversation at a bar. You don't simplify. You clarify. There's a difference."</div>
+          <div class="role-section-title">What You'll Do</div>
+          <ul class="role-list green">
+            <li>Write the words that make people understand why Airlock matters — blogs, decks, press, social</li>
+            <li>Take deeply technical concepts and make them land for non-technical audiences</li>
+            <li>Own Airlock's narrative voice across all external communications</li>
+            <li>Craft the stories into formats that spread</li>
+            <li>Work directly with the founder to sharpen the pitch and refine the message</li>
+          </ul>
+          <div class="role-section-title">You Might Be Right For This If</div>
+          <ul class="role-list green">
+            <li>You've explained something technical and watched someone's face change from confused to excited</li>
+            <li>You write things people forward to other people</li>
+            <li>You think the best marketing doesn't feel like marketing</li>
+            <li>You've been told you "make complicated things make sense"</li>
+          </ul>
+          <div class="role-section-title">You're Probably Not Right For This If</div>
+          <ul class="role-list red">
+            <li>You think good writing means big words</li>
+            <li>You need brand guidelines before you can write a sentence</li>
+            <li>You write for algorithms, not humans</li>
+            <li>You can explain what something does but not why someone should care</li>
+          </ul>
+          <button class="apply-btn" onclick="openApplication('Content Translator', 'translator')">Apply Now</button>
+        </div>
+      </div>
+
+      <div class="role-card" data-archetype="translator">
+        <div class="role-header" onclick="toggleRole(this)">
+          <span class="role-title">Technical Translator</span>
+          <span class="role-arrow">&#9662;</span>
+        </div>
+        <div class="role-body">
+          <div class="role-hook">"We built something that works. Now we need people who can make others feel why it matters. A Translator at Airlock takes a deeply technical thesis and makes it land — in a pitch meeting, in a blog post, in a conversation at a bar. You don't simplify. You clarify. There's a difference."</div>
+          <div class="role-section-title">What You'll Do</div>
+          <ul class="role-list green">
+            <li>Write documentation, developer guides, and technical content that makes Airlock's tools accessible</li>
+            <li>Create tutorials, walkthroughs, and reference materials for Nerve, NoConflict, and Maverick MCP</li>
+            <li>Bridge the gap between Airlock's engineering team and the developer community</li>
+            <li>Represent Airlock at technical events, hackathons, and developer meetups</li>
+            <li>Turn complex architecture into diagrams, explainers, and "aha" moments</li>
+          </ul>
+          <div class="role-section-title">You Might Be Right For This If</div>
+          <ul class="role-list green">
+            <li>You've written docs that developers actually read — and thanked you for</li>
+            <li>You can talk to engineers and translate it for product people in the same meeting</li>
+            <li>You've taught someone something technical and they remembered it months later</li>
+            <li>You think the best developer experience starts with the best documentation</li>
+          </ul>
+          <div class="role-section-title">You're Probably Not Right For This If</div>
+          <ul class="role-list red">
+            <li>You write docs that are technically correct but nobody reads</li>
+            <li>You think developer relations is just giving talks</li>
+            <li>You can't simplify without losing accuracy</li>
+            <li>You've never built anything yourself</li>
+          </ul>
+          <button class="apply-btn" onclick="openApplication('Technical Translator', 'translator')">Apply Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Believers -->
+    <div class="archetype-group">
+      <div class="archetype-label">Believers</div>
+
+      <div class="role-card" data-archetype="believer">
+        <div class="role-header" onclick="toggleRole(this)">
+          <span class="role-title">Founding Believer</span>
+          <span class="role-arrow">&#9662;</span>
+        </div>
+        <div class="role-body">
+          <div class="role-hook">"This one's different. We're not looking for a specific function. We're looking for a specific kind of person — someone who sees what Airlock is building and thinks 'I need to be part of this.' You don't know exactly what your role will be yet, and that excites you more than it scares you. Founding teams aren't built from job descriptions. They're built from conviction."</div>
+          <div class="role-section-title">What You'll Do</div>
+          <ul class="role-list green">
+            <li>Honestly? It depends on what the mission needs. Today might be research. Tomorrow might be operations.</li>
+            <li>Fill gaps the founding team doesn't know exist yet</li>
+            <li>Bring energy, initiative, and judgment to whatever is most important right now</li>
+            <li>See something that needs doing and do it without being asked</li>
+            <li>Help shape what Airlock becomes — not just execute someone else's vision</li>
+          </ul>
+          <div class="role-section-title">You Might Be Right For This If</div>
+          <ul class="role-list green">
+            <li>You've joined something early and helped figure it out as you went</li>
+            <li>You're energized by ambiguity, not anxious about it</li>
+            <li>You've done work that didn't have a title — and it was the best work you've ever done</li>
+            <li>You read about Airlock and something clicked that you can't fully explain yet</li>
+          </ul>
+          <div class="role-section-title">You're Probably Not Right For This If</div>
+          <ul class="role-list red">
+            <li>You need a clear role definition before you can contribute</li>
+            <li>You're joining for the equity, not the mission</li>
+            <li>You want work-life balance more than you want to build something that matters right now</li>
+            <li>You need to be managed</li>
+          </ul>
+          <button class="apply-btn" onclick="openApplication('Founding Believer', 'believer')">Apply Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Investors -->
+    <div class="archetype-group">
+      <div class="archetype-label">Investors</div>
+
+      <div class="role-card" data-archetype="investor">
+        <div class="role-header" onclick="toggleRole(this)">
+          <span class="role-title">Investor</span>
+          <span class="role-arrow">&#9662;</span>
+        </div>
+        <div class="role-body">
+          <div class="role-hook">"Most founders pitch investors. We think that's backwards. If you want a seat on this rocket, show us why you belong here. We're not desperate for capital — we built everything you're looking at for $245. We're looking for partners who bring more than a check. Conviction, network, domain expertise, or a perspective that makes us better. Your money is the least interesting thing about you."</div>
+          <div class="role-section-title">What We're Looking For</div>
+          <ul class="role-list green">
+            <li>You've backed founders before the world validated them — and you'd do it again</li>
+            <li>You bring strategic value beyond capital: intros, expertise, pattern recognition</li>
+            <li>You understand infrastructure bets and have the patience for category creation</li>
+            <li>You're aligned with Glass Box transparency — no surveillance capitalism, no data exploitation</li>
+            <li>You want to be part of the story, not just the cap table</li>
+          </ul>
+          <div class="role-section-title">You Might Be Right For This If</div>
+          <ul class="role-list green">
+            <li>You read this entire page and thought "I need to be involved" before you got here</li>
+            <li>You've invested in something everyone else said was too early — and you were right</li>
+            <li>You care about what a company stands for, not just what it returns</li>
+            <li>You'd rather back a founder with receipts than a founder with a pedigree</li>
+          </ul>
+          <div class="role-section-title">You're Probably Not Right For This If</div>
+          <ul class="role-list red">
+            <li>You need a warm intro before you'll look at something</li>
+            <li>You think a solo founder with $245 in R&D spend is a red flag instead of a green one</li>
+            <li>Your due diligence starts and ends with the team's LinkedIn</li>
+            <li>You want a board seat more than you want the company to win</li>
+          </ul>
+          <button class="apply-btn" onclick="openApplication('Investor', 'investor')">Apply to Invest</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Application Form Overlay -->
+<div class="overlay" id="applicationOverlay">
+  <div class="form-container">
+    <button class="form-close" onclick="closeApplication()">&times;</button>
+
+    <!-- Form state -->
+    <div id="formState">
+      <h2>Apply: <span id="formRoleTitle"></span></h2>
+      <div class="form-subtitle">No resume. No cover letter. Just 5 questions. ~20 minutes.</div>
+
+      <div class="timer">
+        <span class="timer-icon">&#9200;</span>
+        <span>Take your time. Honest answers beat polished ones.</span>
+      </div>
+
+      <form id="applicationForm" onsubmit="submitApplication(event)">
+
+        <div class="form-group">
+          <label><span class="q-number">1</span> What's something you believe about how people work that most people around you disagree with?</label>
+          <span class="hint">There's no right answer. We want to know how you think.</span>
+          <textarea name="q1" maxlength="1500" placeholder="Be specific. The interesting answer is the honest one." required oninput="updateCount(this)"></textarea>
+          <div class="char-count"><span>0</span> / 1500</div>
+        </div>
+
+        <div class="form-group">
+          <label><span class="q-number">2</span> Tell me about a time you were in a room where the direction was wrong and you knew it. What did you do?</label>
+          <span class="hint">We care about what happened after, not just that you spoke up.</span>
+          <textarea name="q2" maxlength="1500" placeholder="What was the situation? What did you actually do? What happened?" required oninput="updateCount(this)"></textarea>
+          <div class="char-count"><span>0</span> / 1500</div>
+        </div>
+
+        <div class="form-group">
+          <label><span class="q-number">3</span> What's the last thing you changed your mind about that actually cost you something?</label>
+          <span class="hint">A relationship, an opportunity, a belief you were attached to.</span>
+          <textarea name="q3" maxlength="1500" placeholder="The messy, specific answer is more valuable than the clean one." required oninput="updateCount(this)"></textarea>
+          <div class="char-count"><span>0</span> / 1500</div>
+        </div>
+
+        <div class="form-group">
+          <label><span class="q-number">4</span> What about this posting made you stop scrolling? Be specific.</label>
+          <textarea name="q4" maxlength="1000" placeholder="Was it the role? The company? A specific line? Something else entirely?" required oninput="updateCount(this)"></textarea>
+          <div class="char-count"><span>0</span> / 1000</div>
+        </div>
+
+        <div class="form-group">
+          <label><span class="q-number">5</span> <span id="q5Label"></span></label>
+          <span class="hint" id="q5Hint"></span>
+          <textarea name="q5" maxlength="1500" placeholder="" id="q5Input" required oninput="updateCount(this)"></textarea>
+          <div class="char-count"><span>0</span> / 1500</div>
+        </div>
+
+        <hr class="form-divider">
+
+        <div class="form-group">
+          <label>Your name</label>
+          <input type="text" name="name" placeholder="First and last" required>
+        </div>
+
+        <div class="form-group">
+          <label>Email</label>
+          <input type="text" name="email" placeholder="you@example.com" required>
+        </div>
+
+        <div class="form-group">
+          <label>LinkedIn <span style="color: var(--text-muted); font-weight: 400;">(optional)</span></label>
+          <input type="url" name="linkedin" placeholder="https://linkedin.com/in/...">
+        </div>
+
+        <button type="submit" class="submit-btn">Submit Application</button>
+        <div class="form-footer">No resume required. We'll be in touch if there's a fit.</div>
+      </form>
+    </div>
+
+    <!-- Success state -->
+    <div class="success-state" id="successState">
+      <div class="success-icon">&#10003;</div>
+      <h2>We got it.</h2>
+      <p>Thanks for taking the time to answer honestly. If there's a fit, we'll reach out. In the meantime — you can learn more about what we're building at <strong>airlocklabs.io</strong></p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Toggle role cards
+  function toggleRole(header) {
+    const card = header.parentElement;
+    const wasActive = card.classList.contains('active');
+    // Close all
+    document.querySelectorAll('.role-card').forEach(c => c.classList.remove('active'));
+    // Toggle clicked
+    if (!wasActive) card.classList.add('active');
+  }
+
+  // Archetype-specific Q5
+  const archetypeQ5 = {
+    challenger: {
+      label: "What's the most important question nobody is asking about AI right now?",
+      hint: "Not a prediction. A question. The kind that changes the conversation.",
+      placeholder: "The question that, if answered, would change how the industry thinks."
+    },
+    navigator: {
+      label: "Describe a time you got someone into a room they didn't have access to. How did you do it and what happened?",
+      hint: "We want the story. The relationship. The move.",
+      placeholder: "Who was it? What room? How did you make it happen?"
+    },
+    translator: {
+      label: "Explain what a patent is to a smart 12-year-old. Now explain why someone should care.",
+      hint: "Two parts. Don't overthink it.",
+      placeholder: "First: what it is. Then: why it matters."
+    },
+    believer: {
+      label: "What's something you'd build or fix if you had 18 months, a small team, and no permission to ask for?",
+      hint: "This tells us what you care about when nobody's watching.",
+      placeholder: "No constraints. What would you build?"
+    },
+    investor: {
+      label: "What's the most contrarian bet you've made — and what did it teach you about your own judgment?",
+      hint: "We're not asking for your portfolio. We're asking how you think when the consensus is wrong.",
+      placeholder: "The bet, the reasoning, and what you learned."
+    }
+  };
+
+  function openApplication(roleTitle, archetype) {
+    document.getElementById('formRoleTitle').textContent = roleTitle;
+    const q5 = archetypeQ5[archetype];
+    document.getElementById('q5Label').textContent = q5.label;
+    document.getElementById('q5Hint').textContent = q5.hint;
+    document.getElementById('q5Input').placeholder = q5.placeholder;
+    document.getElementById('applicationOverlay').classList.add('active');
+    document.getElementById('formState').style.display = 'block';
+    document.getElementById('successState').classList.remove('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeApplication() {
+    document.getElementById('applicationOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  function updateCount(el) {
+    const counter = el.parentElement.querySelector('.char-count span');
+    if (counter) counter.textContent = el.value.length;
+  }
+
+  function submitApplication(e) {
+    e.preventDefault();
+    const form = e.target;
+    const role = document.getElementById('formRoleTitle').textContent;
+    const name = form.name.value;
+    const email = form.email.value;
+    const linkedin = form.linkedin.value || 'Not provided';
+    const q1Label = 'What\'s something you believe about how people work that most people around you disagree with?';
+    const q2Label = 'Tell me about a time you were in a room where the direction was wrong and you knew it. What did you do?';
+    const q3Label = 'What\'s the last thing you changed your mind about that actually cost you something?';
+    const q4Label = 'What about this posting made you stop scrolling?';
+    const q5Label = document.getElementById('q5Label').textContent;
+
+    const subject = encodeURIComponent('Airlock Application: ' + role + ' — ' + name);
+    const body = encodeURIComponent(
+      'APPLICATION: ' + role + '\n' +
+      '━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n' +
+      'Name: ' + name + '\n' +
+      'Email: ' + email + '\n' +
+      'LinkedIn: ' + linkedin + '\n\n' +
+      '━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n' +
+      'Q1: ' + q1Label + '\n\n' +
+      form.q1.value + '\n\n' +
+      '━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n' +
+      'Q2: ' + q2Label + '\n\n' +
+      form.q2.value + '\n\n' +
+      '━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n' +
+      'Q3: ' + q3Label + '\n\n' +
+      form.q3.value + '\n\n' +
+      '━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n' +
+      'Q4: ' + q4Label + '\n\n' +
+      form.q4.value + '\n\n' +
+      '━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n' +
+      'Q5: ' + q5Label + '\n\n' +
+      form.q5.value + '\n\n' +
+      '━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n' +
+      'Sent from airlocklabs.io/careers'
+    );
+
+    window.location.href = 'mailto:admin@airlocklabs.io?subject=' + subject + '&body=' + body;
+
+    // Show success after a short delay (gives mailto time to open)
+    setTimeout(function() {
+      document.getElementById('formState').style.display = 'none';
+      document.getElementById('successState').classList.add('active');
+    }, 500);
+  }
+
+  // Close overlay on escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeApplication();
+  });
+
+  // Close overlay on background click
+  document.getElementById('applicationOverlay').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) closeApplication();
+  });
+</script>
+
+</body>
+</html>

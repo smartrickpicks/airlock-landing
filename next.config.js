@@ -6,6 +6,10 @@ const nextConfig = {
         source: '/',
         destination: '/the-descent.html',
       },
+      {
+        source: '/careers',
+        destination: '/join-airlock.html',
+      },
     ]
   },
 }
