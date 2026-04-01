@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kyle Kempler — Airlock Labs</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  /* === VIEWPORT FITTING: MANDATORY BASE === */
+  html, body { height:100%; overflow-x:hidden; margin:0; padding:0; }
+  html { scroll-snap-type:y mandatory; scroll-behavior:smooth; }
+  * { box-sizing:border-box; }
+
+  :root {
+    --bg:#07090D; --raised:#0C0F16; --overlay:#111620; --border:#1A1F2E;
+    --otto:#7C5CFC; --accent:#00D1FF; --gold:#F5A623; --success:#22C55E;
+    --warning:#EAB308; --error:#EF4444; --pareto:#FF6B35;
+    --text:#E8ECF2; --text2:#8B95A8; --text3:#505A6E;
+    --otto-glow:rgba(124,92,252,0.25); --accent-glow:rgba(0,209,255,0.2);
+    --title-size:clamp(2rem,5.5vw,4.5rem);
+    --h2-size:clamp(1.4rem,3.5vw,2.8rem);
+    --h3-size:clamp(1rem,2.2vw,1.6rem);
+    --body-size:clamp(0.8rem,1.4vw,1.1rem);
+    --small-size:clamp(0.65rem,1vw,0.85rem);
+    --mono:'JetBrains Mono',monospace;
+    --sans:'Inter',system-ui,sans-serif;
+    --slide-padding:clamp(2rem,5vw,5rem);
+  }
+
+  body { background:var(--bg); color:var(--text); font-family:var(--sans); -webkit-font-smoothing:antialiased; }
+
+  .slide {
+    width:100vw; height:100vh; height:100dvh; overflow:hidden;
+    scroll-snap-align:start; display:flex; flex-direction:column;
+    position:relative; justify-content:center; align-items:center;
+    padding:var(--slide-padding);
+  }
+
+  /* Subtle grid bg */
+  .slide::before {
+    content:''; position:absolute; inset:0; opacity:0.03;
+    background-image:
+      linear-gradient(rgba(124,92,252,0.3) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(124,92,252,0.3) 1px, transparent 1px);
+    background-size:60px 60px; pointer-events:none;
+  }
+
+  /* === Typography === */
+  .tag { font-family:var(--mono); font-size:var(--small-size); font-weight:600;
+    text-transform:uppercase; letter-spacing:3px; color:var(--otto); margin-bottom:20px; }
+  .hero { font-size:var(--title-size); font-weight:900; line-height:1.05;
+    text-align:center; letter-spacing:-2px; max-width:900px; }
+  .headline { font-size:var(--h2-size); font-weight:800; line-height:1.15;
+    text-align:center; letter-spacing:-1px; max-width:800px; }
+  .sub { font-size:var(--body-size); color:var(--text2); text-align:center;
+    margin-top:16px; max-width:650px; line-height:1.6; }
+  .mono { font-family:var(--mono); }
+  .gradient { background:linear-gradient(135deg,#E8ECF2,var(--otto));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .pareto-gradient { background:linear-gradient(135deg,var(--pareto),var(--gold));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .accent-gradient { background:linear-gradient(135deg,var(--otto),var(--accent));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+
+  /* === Stat Cards === */
+  .stats { display:flex; gap:clamp(12px,2vw,24px); margin-top:clamp(24px,4vh,48px);
+    flex-wrap:wrap; justify-content:center; }
+  .stat { background:var(--raised); border:1px solid var(--border); border-radius:12px;
+    padding:clamp(16px,2vw,32px) clamp(20px,3vw,40px); text-align:center; min-width:140px; }
+  .stat-num { font-family:var(--mono); font-size:clamp(1.5rem,3.5vw,3rem);
+    font-weight:700; line-height:1; }
+  .stat-num.otto-c { color:var(--accent); }
+  .stat-num.gold { color:var(--gold); }
+  .stat-num.green { color:var(--success); }
+  .stat-num.pareto-c { color:var(--pareto); }
+  .stat-label { font-size:var(--small-size); color:var(--text3); margin-top:8px; }
+
+  /* === Cards === */
+  .card-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:clamp(12px,1.5vw,20px); margin-top:clamp(20px,3vh,40px);
+    width:100%; max-width:950px; }
+  .card { background:var(--raised); border:1px solid var(--border); border-radius:12px;
+    padding:clamp(16px,2vw,28px); text-align:left; }
+  .card .card-tag { font-family:var(--mono); font-size:9px; font-weight:700;
+    text-transform:uppercase; letter-spacing:2px; color:var(--otto); margin-bottom:10px; display:block; }
+  .card h3 { font-size:var(--h3-size); font-weight:700; margin-bottom:8px; }
+  .card p { font-size:var(--small-size); color:var(--text2); line-height:1.5; }
+
+  /* === Nav === */
+  .nav { position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    display:flex; gap:6px; z-index:100; background:var(--raised);
+    border:1px solid var(--border); border-radius:20px; padding:6px 14px; }
+  .nav-dot { width:7px; height:7px; border-radius:50%; background:var(--border);
+    cursor:pointer; transition:all .3s; }
+  .nav-dot.active { background:var(--otto); box-shadow:0 0 8px var(--otto-glow); }
+  .nav-dot:hover { background:var(--text3); }
+  .counter { position:fixed; top:24px; right:32px; font-family:var(--mono);
+    font-size:10px; color:var(--text3); z-index:100; }
+  .logo { position:fixed; top:24px; left:32px; font-family:var(--mono);
+    font-size:11px; font-weight:700; color:var(--text3); letter-spacing:3px;
+    text-transform:uppercase; z-index:100; }
+
+  /* === Animations === */
+  @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes pulseGlow { 0%,100%{box-shadow:0 0 20px rgba(124,92,252,0)} 50%{box-shadow:0 0 40px rgba(124,92,252,0.15)} }
+  .reveal { opacity:0; }
+  .slide.in-view .reveal { animation:fadeUp .6s ease forwards; }
+  .slide.in-view .reveal:nth-child(2) { animation-delay:.15s; }
+  .slide.in-view .reveal:nth-child(3) { animation-delay:.3s; }
+  .slide.in-view .reveal:nth-child(4) { animation-delay:.45s; }
+  .slide.in-view .reveal:nth-child(5) { animation-delay:.6s; }
+
+  @media (prefers-reduced-motion:reduce) {
+    .reveal { opacity:1; animation:none !important; }
+    html { scroll-behavior:auto; }
+  }
+
+  /* === Responsive === */
+  @media (max-width:768px) {
+    .card-row { grid-template-columns:1fr; }
+  }
+
+  /* === Team Grid === */
+  .team-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+    gap:clamp(10px,1.5vw,16px); margin-top:clamp(20px,3vh,36px);
+    width:100%; max-width:800px; }
+  .team-card { background:var(--raised); border:1px solid var(--border); border-radius:10px;
+    padding:clamp(12px,1.5vw,20px); text-align:center; }
+  .team-card .name { font-weight:700; font-size:var(--body-size); color:var(--text); }
+  .team-card .role { font-family:var(--mono); font-size:9px; font-weight:600;
+    text-transform:uppercase; letter-spacing:2px; color:var(--otto); margin-top:4px; }
+  .team-card .detail { font-size:var(--small-size); color:var(--text3); margin-top:6px; line-height:1.4; }
+  .team-card.you { border-color:rgba(124,92,252,0.4); background:rgba(124,92,252,0.06); }
+
+  /* === Ask List === */
+  .ask-list { display:flex; flex-direction:column; gap:16px; margin-top:clamp(20px,3vh,36px);
+    max-width:750px; width:100%; }
+  .ask-item { display:flex; gap:16px; align-items:flex-start; background:var(--raised);
+    border:1px solid var(--border); border-radius:12px; padding:clamp(16px,2vw,24px); }
+  .ask-num { font-family:var(--mono); font-size:var(--h3-size); font-weight:700;
+    color:var(--otto); min-width:32px; }
+  .ask-content { font-size:var(--body-size); color:var(--text2); line-height:1.6; }
+  .ask-content strong { color:var(--text); }
+</style>
+</head>
+<body>
+
+<!-- === PASSWORD GATE === -->
+<div id="pw-gate" style="position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">
+  <div style="font-family:var(--mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:3px;color:var(--otto);margin-bottom:8px">Airlock Labs</div>
+  <div style="font-size:clamp(1.2rem,2.5vw,1.8rem);font-weight:700;color:var(--text);text-align:center">This document is private.</div>
+  <div style="font-size:var(--body-size);color:var(--text3);margin-bottom:8px">Enter password to continue.</div>
+  <input id="pw-input" type="password" placeholder="Password" autofocus
+    style="background:var(--raised);border:1px solid var(--border);border-radius:8px;padding:12px 20px;color:var(--text);font-family:var(--mono);font-size:14px;width:240px;text-align:center;outline:none"
+    onfocus="this.style.borderColor='var(--otto)'" onblur="this.style.borderColor='var(--border)'">
+  <div id="pw-error" style="font-size:12px;color:var(--error);font-family:var(--mono);opacity:0;transition:opacity .3s">Wrong password</div>
+</div>
+<script>
+(function(){
+  const KEY = 'airlock_kyle_auth';
+  if (sessionStorage.getItem(KEY) === '1') { document.getElementById('pw-gate').remove(); return; }
+  document.getElementById('pw-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      if (this.value.toLowerCase() === 'traderverse') {
+        sessionStorage.setItem(KEY, '1');
+        document.getElementById('pw-gate').remove();
+      } else {
+        document.getElementById('pw-error').style.opacity = '1';
+        this.value = '';
+      }
+    }
+  });
+})();
+</script>
+
+<!-- === FIXED ELEMENTS === -->
+<div class="logo">Airlock Labs</div>
+<div class="counter"><span id="current">1</span> / <span id="total">9</span></div>
+
+<!-- ===== SLIDE 1: Title ===== -->
+<section class="slide" id="s1">
+  <div class="tag reveal">For Kyle Kempler &middot; From Zac</div>
+  <h1 class="hero reveal"><span class="gradient">I need your brain.</span></h1>
+  <p class="sub reveal" style="margin-top:24px;color:var(--text3);font-family:var(--mono);font-size:var(--small-size)">Not your job title. Not your resume. Your brain.</p>
+</section>
+
+<!-- ===== SLIDE 2: The Story ===== -->
+<section class="slide" id="s2">
+  <div class="tag reveal">NFT NYC &middot; 2021</div>
+  <h2 class="headline reveal">You walked up to me at a <span class="accent-gradient">music event</span> like you already knew me.</h2>
+  <p class="sub reveal">I was wearing a TraderVerse hoodie. You were the first person that night who actually gave a shit about what we were building &mdash; not the hype, the thing itself. You helped me get home safe and we've been friends since.</p>
+  <p class="sub reveal" style="margin-top:16px;color:var(--text);font-weight:600;font-size:var(--h3-size)">I'm not going to pitch you. I tried that. You didn't respond.</p>
+  <p class="sub reveal" style="font-size:var(--small-size);color:var(--text3)">So instead I'm going to show you what I've been building and ask you the questions I can't answer alone.</p>
+</section>
+
+<!-- ===== SLIDE 3: The Tech (60 seconds) ===== -->
+<section class="slide" id="s3">
+  <div class="tag reveal">60 Seconds &middot; Then We Talk Money</div>
+  <h2 class="headline reveal">We built a <span class="accent-gradient">routing layer</span> between AI tasks and AI models.</h2>
+  <p class="sub reveal">Instead of picking one expensive model for everything, we route each task to the model that's best at it. We took the top 4 spots on a public benchmark. The models are commodities. The routing is the product.</p>
+  <div class="stats reveal">
+    <div class="stat"><div class="stat-num green">22.2/23</div><div class="stat-label">Benchmark Score</div></div>
+    <div class="stat"><div class="stat-num green">100%</div><div class="stat-label">Success Rate</div></div>
+    <div class="stat"><div class="stat-num otto-c">$0.39</div><div class="stat-label">Our Cost</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--error)">$4.08</div><div class="stat-label">Best Single Model</div></div>
+  </div>
+  <p class="sub reveal" style="margin-top:16px;font-size:var(--small-size);color:var(--text3)">That's the last time I'll talk about the tech. Now let's talk about why I need a finance brain.</p>
+</section>
+
+<!-- ===== SLIDE 4: The Numbers ===== -->
+<section class="slide" id="s4">
+  <div class="tag reveal">The Numbers You'll Care About</div>
+  <h2 class="headline reveal">Unit economics a <span class="pareto-gradient">Citibank director</span> can stress-test.</h2>
+  <div class="stats reveal">
+    <div class="stat"><div class="stat-num otto-c">$0.39</div><div class="stat-label">Cost per Run (Our Router)</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--error)">$4.08</div><div class="stat-label">Cost per Run (Best Model)</div></div>
+    <div class="stat"><div class="stat-num green">10.5x</div><div class="stat-label">Cost Advantage</div></div>
+  </div>
+  <div class="stats reveal" style="margin-top:clamp(12px,2vh,20px)">
+    <div class="stat"><div class="stat-num gold">$245</div><div class="stat-label">Total R&D to Build</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--text)">$0</div><div class="stat-label">VC Raised</div></div>
+    <div class="stat"><div class="stat-num pareto-c">4</div><div class="stat-label">Patents Filed</div></div>
+  </div>
+  <p class="sub reveal" style="margin-top:20px;color:var(--text);font-weight:500">I own the IP free and clear. Zero dilution. Zero debt. The cap table is a blank canvas and I need someone who knows how to paint it.</p>
+</section>
+
+<!-- ===== SLIDE 5: Why You ===== -->
+<section class="slide" id="s5">
+  <div class="tag reveal">The Real Ask</div>
+  <h2 class="headline reveal">You sit inside the <span class="accent-gradient">financial machine</span> every day.</h2>
+  <p class="sub reveal">You see how fintech companies raise. You see how institutional money moves. You understand cap tables, venture structures, and what makes a CFO's life hell at a startup vs. a bank.</p>
+  <p class="sub reveal" style="margin-top:16px;color:var(--text);font-weight:600">I don't have that lens. You do.</p>
+  <div class="card-row reveal" style="margin-top:clamp(16px,3vh,32px)">
+    <div class="card">
+      <span class="card-tag">What I know</span>
+      <h3>Product & IP</h3>
+      <p>4 patents. A routing engine that beats every model on the benchmark. A team that builds fast. The technology is done.</p>
+    </div>
+    <div class="card" style="border-color:rgba(245,166,35,0.3);background:rgba(245,166,35,0.03)">
+      <span class="card-tag" style="color:var(--gold)">What I don't know</span>
+      <h3>The money side</h3>
+      <p>How to structure a raise. What valuation makes sense at this stage. How to protect the cap table while still getting the capital we need to scale.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 6: What I Need ===== -->
+<section class="slide" id="s6">
+  <div class="tag reveal">The Ask</div>
+  <h2 class="headline reveal">What I actually <span style="color:var(--gold)">need</span>.</h2>
+  <div class="ask-list reveal">
+    <div class="ask-item">
+      <div class="ask-num">01</div>
+      <div class="ask-content"><strong>A fundraising framework.</strong> Seed? Pre-seed? SAFE notes? Convertible? What structure protects a founder who already owns 100% of the IP?</div>
+    </div>
+    <div class="ask-item">
+      <div class="ask-num">02</div>
+      <div class="ask-content"><strong>A valuation sanity check.</strong> 4 patents, 10.5x cost advantage, zero competition on the benchmark. What's the defensible number?</div>
+    </div>
+    <div class="ask-item">
+      <div class="ask-num">03</div>
+      <div class="ask-content"><strong>A financial model.</strong> What does the path from $0 revenue to Series A look like when your unit economics are already this strong?</div>
+    </div>
+    <div class="ask-item">
+      <div class="ask-num">04</div>
+      <div class="ask-content"><strong>Your honest take.</strong> Am I ready to raise? What would a Citibank director tell a friend before he walked into a room full of VCs?</div>
+    </div>
+  </div>
+  <p class="sub reveal" style="margin-top:20px;font-size:var(--small-size);color:var(--text3)">I'm not asking you to leave your job. I'm asking you to help me not fuck up the most important financial decision of my life.</p>
+</section>
+
+<!-- ===== SLIDE 7: The Roster ===== -->
+<section class="slide" id="s7">
+  <div class="tag reveal">The Roster</div>
+  <h2 class="headline reveal">This isn't a <span style="color:var(--text3)">side project</span>. This is <span class="accent-gradient">the team</span>.</h2>
+  <div class="team-grid reveal">
+    <div class="team-card">
+      <div class="name">Zac Holwerda</div>
+      <div class="role">CEO &middot; Co-Founder</div>
+      <div class="detail">4 patents. Product, vision, code. Detroit.</div>
+    </div>
+    <div class="team-card">
+      <div class="name">Otto</div>
+      <div class="role">Chief Agent Officer</div>
+      <div class="detail">The AI that built the routing engine.</div>
+    </div>
+    <div class="team-card">
+      <div class="name">Alex Moyer</div>
+      <div class="role">COO &middot; Co-Founder</div>
+      <div class="detail">UMich. Arriving Detroit April 2.</div>
+    </div>
+    <div class="team-card">
+      <div class="name">Matt Kalhoun</div>
+      <div class="role">CTO &middot; Co-Founder</div>
+      <div class="detail">Built HiperWeb &mdash; GovTech ERP, 240+ municipalities.</div>
+    </div>
+    <div class="team-card">
+      <div class="name">Erin Beck / INTROL</div>
+      <div class="role">GPU Infrastructure</div>
+      <div class="detail">#14 Inc 5000. 100K+ GPUs. Chicago.</div>
+    </div>
+    <div class="team-card">
+      <div class="name">Eric Sawitoski</div>
+      <div class="role">Creative Advisor</div>
+      <div class="detail">Aon Global Creative Director. Emmy winner.</div>
+    </div>
+    <div class="team-card you">
+      <div class="name">You</div>
+      <div class="role">CFO</div>
+      <div class="detail">The chair is empty.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 8: The Opportunity ===== -->
+<section class="slide" id="s8">
+  <div class="tag reveal">The Opportunity</div>
+  <h2 class="headline reveal">Three deals on the table. <span class="pareto-gradient">No CFO to model them.</span></h2>
+  <div class="card-row reveal">
+    <div class="card">
+      <span class="card-tag">INTROL</span>
+      <h3>GPU Infrastructure</h3>
+      <p>#14 Inc 5000. 100K+ GPUs deployed. 9,594% growth. Bootstrapped. Our routing software makes their hardware more valuable.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">HiperWeb</span>
+      <h3>GovTech ERP</h3>
+      <p>240+ municipalities, villages, museums. Our CTO built it. Each one is a routing node. That's 240+ recurring revenue streams.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">CORE:DETROIT</span>
+      <h3>Civic AI</h3>
+      <p>City-by-city AI deployment. $52 of every $100 at a local business stays local. Our routing increases the $52 side. Replicable to every city.</p>
+    </div>
+  </div>
+  <p class="sub reveal" style="margin-top:16px;font-size:var(--small-size);color:var(--text3)">These are real partnerships, not pitch deck fantasies. I need someone who can model the revenue and tell me which one to close first.</p>
+</section>
+
+<!-- ===== SLIDE 9: The Close ===== -->
+<section class="slide" id="s9" style="gap:0">
+  <div class="tag reveal" style="margin-bottom:clamp(16px,3vh,32px)">April 2026</div>
+  <h1 class="hero reveal" style="font-size:clamp(1.4rem,4vw,3rem);max-width:800px;letter-spacing:-1px"><span class="gradient">I sent you a website. You didn't respond.</span></h1>
+  <div style="height:clamp(8px,2vh,16px)" class="reveal"></div>
+  <p class="sub reveal" style="font-size:var(--h3-size);color:var(--text2);font-weight:600">I sent you a job offer. You didn't respond.</p>
+  <div style="height:clamp(8px,2vh,16px)" class="reveal"></div>
+  <p class="sub reveal" style="font-size:var(--body-size);color:var(--text3);max-width:600px">So this time I'm not asking you to be my CFO. I'm asking you for one conversation. Help me think through the raise. Help me not make a mistake. That's it.</p>
+  <div style="height:clamp(16px,3vh,24px)" class="reveal"></div>
+  <p class="sub reveal" style="font-size:var(--body-size);color:var(--text);font-weight:500;max-width:550px">And if somewhere in that conversation you start to see what I see &mdash; that this is a nine-figure company with an empty CFO chair and your name on the door &mdash; then we'll talk about that too.</p>
+  <div style="height:clamp(16px,3vh,24px)" class="reveal"></div>
+  <p class="sub reveal" style="font-size:var(--h2-size);color:var(--text);font-weight:800">One call, Kyle.</p>
+  <p class="sub reveal" style="margin-top:clamp(16px,3vh,32px);color:var(--text3);font-family:var(--mono);font-size:var(--small-size)">Zac Holwerda &middot; maverick@airlocklabs.io &middot; Detroit</p>
+</section>
+
+<!-- ===== NAV DOTS ===== -->
+<nav class="nav" id="nav"></nav>
+
+<script>
+/* === Presentation Controller === */
+const slides = document.querySelectorAll('.slide');
+const nav = document.getElementById('nav');
+const totalEl = document.getElementById('total');
+const currentEl = document.getElementById('current');
+totalEl.textContent = slides.length;
+
+// Build nav dots
+slides.forEach((_, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+  dot.onclick = () => scrollTo(i);
+  nav.appendChild(dot);
+});
+
+// Intersection Observer for reveal animations
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('in-view');
+      const idx = [...slides].indexOf(e.target);
+      currentEl.textContent = idx + 1;
+      document.querySelectorAll('.nav-dot').forEach((d,i) =>
+        d.classList.toggle('active', i === idx));
+    } else {
+      e.target.classList.remove('in-view');
+    }
+  });
+}, { threshold: 0.6 });
+
+slides.forEach(s => obs.observe(s));
+slides[0].classList.add('in-view');
+
+function scrollTo(i) {
+  slides[i].scrollIntoView({ behavior: 'smooth' });
+}
+
+// Keyboard nav
+document.addEventListener('keydown', e => {
+  const cur = [...slides].findIndex(s => s.classList.contains('in-view'));
+  if ((e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ') && cur < slides.length - 1) {
+    e.preventDefault(); scrollTo(cur + 1);
+  }
+  if ((e.key === 'ArrowUp' || e.key === 'ArrowLeft') && cur > 0) {
+    e.preventDefault(); scrollTo(cur - 1);
+  }
+});
+
+// Touch / swipe nav
+let touchY = 0;
+document.addEventListener('touchstart', e => { touchY = e.touches[0].clientY; }, { passive: true });
+document.addEventListener('touchend', e => {
+  const cur = [...slides].findIndex(s => s.classList.contains('in-view'));
+  const diff = touchY - e.changedTouches[0].clientY;
+  if (Math.abs(diff) > 50) {
+    if (diff > 0 && cur < slides.length - 1) scrollTo(cur + 1);
+    if (diff < 0 && cur > 0) scrollTo(cur - 1);
+  }
+}, { passive: true });
+
+// Wheel nav (debounced)
+let wheelLock = false;
+document.addEventListener('wheel', e => {
+  if (wheelLock) return;
+  const cur = [...slides].findIndex(s => s.classList.contains('in-view'));
+  if (e.deltaY > 30 && cur < slides.length - 1) { wheelLock = true; scrollTo(cur + 1); setTimeout(() => wheelLock = false, 800); }
+  if (e.deltaY < -30 && cur > 0) { wheelLock = true; scrollTo(cur - 1); setTimeout(() => wheelLock = false, 800); }
+}, { passive: true });
+</script>
+</body>
+</html>
