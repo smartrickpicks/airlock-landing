@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>An Investment in Airlock — Family Seed Deck</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  /* === VIEWPORT FITTING: MANDATORY BASE === */
+  html, body { height:100%; overflow-x:hidden; margin:0; padding:0; }
+  html { scroll-snap-type:y mandatory; scroll-behavior:smooth; }
+  * { box-sizing:border-box; }
+
+  :root {
+    --bg:#07090D; --raised:#0C0F16; --overlay:#111620; --border:#1A1F2E;
+    --otto:#7C5CFC; --accent:#00D1FF; --gold:#F5A623; --success:#22C55E;
+    --warning:#EAB308; --error:#EF4444; --pareto:#FF6B35;
+    --text:#E8ECF2; --text2:#8B95A8; --text3:#505A6E;
+    --otto-glow:rgba(124,92,252,0.25); --accent-glow:rgba(0,209,255,0.2);
+    --title-size:clamp(2rem,5.5vw,4.5rem);
+    --h2-size:clamp(1.4rem,3.5vw,2.8rem);
+    --h3-size:clamp(1rem,2.2vw,1.6rem);
+    --body-size:clamp(0.8rem,1.4vw,1.1rem);
+    --small-size:clamp(0.65rem,1vw,0.85rem);
+    --mono:'JetBrains Mono',monospace;
+    --sans:'Inter',system-ui,sans-serif;
+    --slide-padding:clamp(2rem,5vw,5rem);
+  }
+
+  body { background:var(--bg); color:var(--text); font-family:var(--sans); -webkit-font-smoothing:antialiased; }
+
+  .slide {
+    width:100vw; height:100vh; height:100dvh; overflow:hidden;
+    scroll-snap-align:start; display:flex; flex-direction:column;
+    position:relative; justify-content:center; align-items:center;
+    padding:var(--slide-padding);
+  }
+
+  /* Subtle grid bg */
+  .slide::before {
+    content:''; position:absolute; inset:0; opacity:0.03;
+    background-image:
+      linear-gradient(rgba(124,92,252,0.3) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(124,92,252,0.3) 1px, transparent 1px);
+    background-size:60px 60px; pointer-events:none;
+  }
+
+  /* === Typography === */
+  .tag { font-family:var(--mono); font-size:var(--small-size); font-weight:600;
+    text-transform:uppercase; letter-spacing:3px; color:var(--otto); margin-bottom:20px; }
+  .hero { font-size:var(--title-size); font-weight:900; line-height:1.05;
+    text-align:center; letter-spacing:-2px; max-width:900px; }
+  .headline { font-size:var(--h2-size); font-weight:800; line-height:1.15;
+    text-align:center; letter-spacing:-1px; max-width:800px; }
+  .sub { font-size:var(--body-size); color:var(--text2); text-align:center;
+    margin-top:16px; max-width:650px; line-height:1.6; }
+  .mono { font-family:var(--mono); }
+  .gradient { background:linear-gradient(135deg,#E8ECF2,var(--otto));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .pareto-gradient { background:linear-gradient(135deg,var(--pareto),var(--gold));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .accent-gradient { background:linear-gradient(135deg,var(--otto),var(--accent));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+
+  /* === Stat Cards === */
+  .stats { display:flex; gap:clamp(12px,2vw,24px); margin-top:clamp(24px,4vh,48px);
+    flex-wrap:wrap; justify-content:center; }
+  .stat { background:var(--raised); border:1px solid var(--border); border-radius:12px;
+    padding:clamp(16px,2vw,32px) clamp(20px,3vw,40px); text-align:center; min-width:140px; }
+  .stat-num { font-family:var(--mono); font-size:clamp(1.5rem,3.5vw,3rem);
+    font-weight:700; line-height:1; }
+  .stat-num.otto-c { color:var(--accent); }
+  .stat-num.gold { color:var(--gold); }
+  .stat-num.green { color:var(--success); }
+  .stat-num.pareto-c { color:var(--pareto); }
+  .stat-label { font-size:var(--small-size); color:var(--text3); margin-top:8px;
+    text-transform:uppercase; letter-spacing:1px; font-weight:600; }
+
+  /* === Leaderboard Table === */
+  .board { width:100%; max-width:900px; border-collapse:collapse; margin-top:clamp(20px,3vh,40px); }
+  .board th { text-align:left; font-family:var(--mono); font-size:var(--small-size);
+    font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--text3);
+    padding:10px 16px; border-bottom:1px solid var(--border); }
+  .board td { padding:12px 16px; border-bottom:1px solid rgba(26,31,46,0.5);
+    color:var(--text2); font-size:var(--body-size); }
+  .board .us { color:var(--accent); font-weight:600; }
+  .board .us-row td { background:rgba(124,92,252,0.04); }
+  .board .pareto-row td { background:rgba(255,107,53,0.06); border-left:2px solid var(--pareto); }
+  .board .pareto-row .us { color:var(--pareto); }
+  .board .dim { color:var(--text3); }
+
+  /* === Cards === */
+  .card-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:clamp(12px,1.5vw,20px); margin-top:clamp(20px,3vh,40px);
+    width:100%; max-width:950px; }
+  .card { background:var(--raised); border:1px solid var(--border); border-radius:12px;
+    padding:clamp(16px,2vw,28px); text-align:left; }
+  .card .card-tag { font-family:var(--mono); font-size:9px; font-weight:700;
+    text-transform:uppercase; letter-spacing:2px; color:var(--otto); margin-bottom:10px; display:block; }
+  .card h3 { font-size:var(--h3-size); font-weight:700; margin-bottom:8px; }
+  .card p { font-size:var(--small-size); color:var(--text2); line-height:1.5; }
+
+  /* === Nav === */
+  .nav { position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    display:flex; gap:6px; z-index:100; background:var(--raised);
+    border:1px solid var(--border); border-radius:20px; padding:6px 14px; }
+  .nav-dot { width:7px; height:7px; border-radius:50%; background:var(--border);
+    cursor:pointer; transition:all .3s; }
+  .nav-dot.active { background:var(--otto); box-shadow:0 0 8px var(--otto-glow); }
+  .nav-dot:hover { background:var(--text3); }
+  .counter { position:fixed; top:24px; right:32px; font-family:var(--mono);
+    font-size:10px; color:var(--text3); z-index:100; }
+  .logo { position:fixed; top:24px; left:32px; font-family:var(--mono);
+    font-size:11px; font-weight:700; color:var(--text3); letter-spacing:3px;
+    text-transform:uppercase; z-index:100; }
+
+  /* === Animations === */
+  @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes pulseGlow { 0%,100%{box-shadow:0 0 20px rgba(124,92,252,0)} 50%{box-shadow:0 0 40px rgba(124,92,252,0.15)} }
+  .reveal { opacity:0; }
+  .slide.in-view .reveal { animation:fadeUp .6s ease forwards; }
+  .slide.in-view .reveal:nth-child(2) { animation-delay:.15s; }
+  .slide.in-view .reveal:nth-child(3) { animation-delay:.3s; }
+  .slide.in-view .reveal:nth-child(4) { animation-delay:.45s; }
+
+  @media (prefers-reduced-motion:reduce) {
+    .reveal { opacity:1; animation:none !important; }
+    html { scroll-behavior:auto; }
+  }
+
+  /* === Responsive === */
+  @media (max-width:768px) {
+    .board td, .board th { padding:8px 10px; font-size:var(--small-size); }
+  }
+
+  /* === Budget Table === */
+  .budget { width:100%; max-width:700px; border-collapse:collapse; margin-top:clamp(20px,3vh,36px); }
+  .budget th { text-align:left; font-family:var(--mono); font-size:var(--small-size);
+    font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--text3);
+    padding:10px 16px; border-bottom:1px solid var(--border); }
+  .budget td { padding:12px 16px; border-bottom:1px solid rgba(26,31,46,0.5);
+    color:var(--text2); font-size:var(--body-size); }
+  .budget .amount { font-family:var(--mono); color:var(--accent); font-weight:600; text-align:right; }
+  .budget .total-row td { border-top:2px solid var(--otto); color:var(--text); font-weight:700; }
+
+  /* === Revenue Table === */
+  .rev-table { width:100%; max-width:650px; border-collapse:collapse; margin-top:clamp(16px,2vh,32px); }
+  .rev-table th { text-align:left; font-family:var(--mono); font-size:var(--small-size);
+    font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--text3);
+    padding:8px 16px; border-bottom:1px solid var(--border); }
+  .rev-table td { padding:10px 16px; border-bottom:1px solid rgba(26,31,46,0.5);
+    color:var(--text2); font-size:var(--body-size); }
+  .rev-table .highlight { color:var(--success); font-weight:600; font-family:var(--mono); }
+
+  /* === Timeline === */
+  .timeline { display:flex; flex-direction:column; gap:16px; margin-top:clamp(20px,3vh,36px);
+    max-width:700px; width:100%; }
+  .tl-item { display:flex; gap:16px; align-items:flex-start; }
+  .tl-month { font-family:var(--mono); font-size:var(--small-size); font-weight:700;
+    color:var(--otto); min-width:60px; text-transform:uppercase; padding-top:2px; }
+  .tl-content { font-size:var(--body-size); color:var(--text2); line-height:1.6; }
+  .tl-content strong { color:var(--text); }
+
+  /* === Team Grid === */
+  .team-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:clamp(10px,1.5vw,16px); margin-top:clamp(20px,3vh,36px);
+    width:100%; max-width:800px; }
+  .team-card { background:var(--raised); border:1px solid var(--border); border-radius:10px;
+    padding:clamp(12px,1.5vw,20px); text-align:center; }
+  .team-card .name { font-weight:700; font-size:var(--body-size); color:var(--text); }
+  .team-card .role { font-family:var(--mono); font-size:9px; font-weight:600;
+    text-transform:uppercase; letter-spacing:2px; color:var(--otto); margin-top:4px; }
+  .team-card .detail { font-size:var(--small-size); color:var(--text3); margin-top:6px; line-height:1.4; }
+</style>
+</head>
+<body>
+
+<div class="logo">Airlock Labs</div>
+<div class="counter"><span id="current">1</span> / <span id="total">10</span></div>
+
+<!-- ===== SLIDE 1: Title ===== -->
+<section class="slide" id="s1">
+  <div class="tag reveal">For Tom Holwerda &middot; April 2026</div>
+  <h1 class="hero reveal"><span class="gradient">An Investment in Airlock</span></h1>
+  <p class="sub reveal">Zac Holwerda &middot; Founder &middot; Detroit</p>
+</section>
+
+<!-- ===== SLIDE 2: What I Found ===== -->
+<section class="slide" id="s2">
+  <div class="tag reveal">The Discovery</div>
+  <h2 class="headline reveal">I built an AI system that knows <span style="color:var(--accent)">which model to use</span> for each task.</h2>
+  <p class="sub reveal">It beats the most expensive model on the market. At one-tenth the cost.</p>
+  <div class="stats reveal">
+    <div class="stat"><div class="stat-num green">100%</div><div class="stat-label">Our Success Rate</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--text3)">93.3%</div><div class="stat-label">Opus Success Rate</div></div>
+    <div class="stat"><div class="stat-num otto-c">$0.39</div><div class="stat-label">Our Cost</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--error)">$4.08</div><div class="stat-label">Their Cost</div></div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 3: Why It Matters ===== -->
+<section class="slide" id="s3">
+  <div class="tag reveal">Why It Matters</div>
+  <h2 class="headline reveal">Every company using AI is <span style="color:var(--error)">overpaying</span>.</h2>
+  <p class="sub reveal">Imagine sending the same HVAC crew to every job — furnace installs, thermostat swaps, boiler replacements. Same truck, same hourly rate, regardless of what the job actually needs.<br><br>That's what every AI company is doing right now. One model for everything.</p>
+  <p class="sub reveal" style="margin-top:24px;font-weight:700;color:var(--text)">We built the dispatch system that sends the right crew to the right job.</p>
+</section>
+
+<!-- ===== SLIDE 4: The Proof ===== -->
+<section class="slide" id="s4">
+  <div class="tag reveal">Results</div>
+  <h2 class="headline reveal">Four submissions. <span style="color:var(--success)">Top four spots.</span></h2>
+  <table class="board reveal">
+    <thead>
+      <tr><th>#</th><th>Submission</th><th>Score</th><th>SR%</th><th>Cost</th></tr>
+    </thead>
+    <tbody>
+      <tr class="pareto-row"><td class="us">1</td><td class="us">airlock/pareto</td><td class="us">22.2/23</td><td class="us">100%</td><td class="us">$0.39</td></tr>
+      <tr class="us-row"><td class="us">2</td><td class="us">airlock/otto-value</td><td class="us">20.8/23</td><td class="us">100%</td><td class="us">$0.19</td></tr>
+      <tr class="us-row"><td class="us">3</td><td class="us">airlock/otto-free</td><td class="us">20.1/23</td><td class="us">100%</td><td class="us">$0.13</td></tr>
+      <tr class="us-row"><td class="us">4</td><td class="us">airlock/otto-speed</td><td class="us">20.1/23</td><td class="us">100%</td><td class="us">$0.13</td></tr>
+      <tr><td class="dim">5</td><td>Claude Opus 4.6</td><td>21.5/23</td><td>93.3%</td><td class="dim">$4.08</td></tr>
+    </tbody>
+  </table>
+  <p class="sub reveal">Every model we use is publicly available. The value is in knowing which one to send.</p>
+</section>
+
+<!-- ===== SLIDE 5: Where I Am Today ===== -->
+<section class="slide" id="s5">
+  <div class="tag reveal">Current State</div>
+  <h2 class="headline reveal">Here's where things stand.</h2>
+  <div class="card-row reveal">
+    <div class="card"><span class="card-tag">Prototype</span><h3>Working Product</h3><p>Benchmark results proving the router works. Real tasks, real scores, real costs.</p></div>
+    <div class="card"><span class="card-tag">Meetup</span><h3>Detroit Demo</h3><p>Live demo for engineers, April 2. They pay $0.50 to try to beat us.</p></div>
+    <div class="card"><span class="card-tag">Research</span><h3>Wayne State</h3><p>$200K grant proposal to Dr. Reynolds. Cultural Algorithms partnership.</p></div>
+    <div class="card"><span class="card-tag">People</span><h3>Team Forming</h3><p>COO moving to Detroit this week. GPU ops, storytelling, brand — people saying yes.</p></div>
+  </div>
+  <p class="sub reveal" style="color:var(--warning)">$600 in the bank.</p>
+</section>
+
+<!-- ===== SLIDE 6: The Team ===== -->
+<section class="slide" id="s6">
+  <div class="tag reveal">The People</div>
+  <h2 class="headline reveal">The team coming together.</h2>
+  <div class="team-grid reveal">
+    <div class="team-card">
+      <div class="name">Zac Holwerda</div>
+      <div class="role">CEO &middot; Founder</div>
+      <div class="detail">3 patents filed. Product, vision, code.</div>
+    </div>
+    <div class="team-card">
+      <div class="name">Otto</div>
+      <div class="role">Chief Agent Officer</div>
+      <div class="detail">The AI. Not a chatbot — a team member.</div>
+    </div>
+    <div class="team-card">
+      <div class="name">Alex Moyer</div>
+      <div class="role">COO</div>
+      <div class="detail">UMich engineer. Moving to Detroit April 2.</div>
+    </div>
+    <div class="team-card">
+      <div class="name">Erin Beck</div>
+      <div class="role">GPU Infrastructure</div>
+      <div class="detail">Exec at INTROL. #14 Inc 5000.</div>
+    </div>
+    <div class="team-card">
+      <div class="name">Dr. Reynolds</div>
+      <div class="role">Research Partner</div>
+      <div class="detail">Wayne State. 30 years Cultural Algorithms.</div>
+    </div>
+    <div class="team-card">
+      <div class="name">Jamie + Katie</div>
+      <div class="role">Story &middot; Brand</div>
+      <div class="detail">Launch House alumni. Building the narrative.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 7: The Ask ===== -->
+<section class="slide" id="s7">
+  <div class="tag reveal">What I Need</div>
+  <h2 class="headline reveal"><span class="accent-gradient">$25,000</span></h2>
+  <p class="sub reveal">Three months of full-time focus.</p>
+  <table class="budget reveal">
+    <thead>
+      <tr><th>What</th><th style="text-align:right">Amount</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Personal runway (3 months)</td><td class="amount">$9,000</td></tr>
+      <tr><td>Mac Studio M4 Ultra</td><td class="amount">$4,000</td></tr>
+      <tr><td>API costs (6+ months)</td><td class="amount">$3,000</td></tr>
+      <tr><td>Contractors (story + brand)</td><td class="amount">$2,000</td></tr>
+      <tr><td>Equipment (MacBook)</td><td class="amount">$2,000</td></tr>
+      <tr><td>Buffer</td><td class="amount">$5,000</td></tr>
+      <tr class="total-row"><td>Total</td><td class="amount" style="color:var(--text)">$25,000</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ===== SLIDE 8: What You Get ===== -->
+<section class="slide" id="s8">
+  <div class="tag reveal">The Deal</div>
+  <h2 class="headline reveal">Your money back first.<br>Then <span class="accent-gradient">a piece of everything</span>.</h2>
+  <p class="sub reveal">Loan to Airlock Technologies. Principal repaid from first revenue.<br>Then 2–3% of gross revenue — forever.</p>
+  <table class="rev-table reveal">
+    <thead>
+      <tr><th>Airlock Revenue</th><th>2% to You</th><th>3% to You</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>$500K/yr</td><td>$10,000</td><td>$15,000</td></tr>
+      <tr><td>$1M/yr</td><td class="highlight">$20,000</td><td class="highlight">$30,000</td></tr>
+      <tr><td>$5M/yr</td><td class="highlight">$100,000</td><td class="highlight">$150,000</td></tr>
+      <tr><td>$10M/yr</td><td class="highlight">$200,000</td><td class="highlight">$300,000</td></tr>
+    </tbody>
+  </table>
+  <p class="sub reveal" style="margin-top:24px;font-weight:600;color:var(--text)">This is a retirement asset, not a gamble.</p>
+</section>
+
+<!-- ===== SLIDE 9: The 3-Month Map ===== -->
+<section class="slide" id="s9">
+  <div class="tag reveal">The Plan</div>
+  <h2 class="headline reveal">What happens with <span style="color:var(--success)">three months</span> of focus.</h2>
+  <div class="timeline reveal">
+    <div class="tl-item">
+      <div class="tl-month">April</div>
+      <div class="tl-content"><strong>PinchBench crown achieved.</strong> Live meetup demo. Alex starts full-time.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-month">May</div>
+      <div class="tl-content"><strong>Public launch.</strong> Wayne State grant decision. First paying users.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-month">June</div>
+      <div class="tl-content"><strong>Revenue traction.</strong> Positioned for institutional raise or grant funding.</div>
+    </div>
+  </div>
+  <p class="sub reveal" style="margin-top:24px;color:var(--text3);font-size:var(--small-size)">At the end of three months, either this is working and I raise real money — or I know it's not and you get your $25K back.</p>
+</section>
+
+<!-- ===== SLIDE 10: Close ===== -->
+<section class="slide" id="s10">
+  <h1 class="hero reveal"><span class="gradient">Thanks, Dad.</span></h1>
+  <p class="sub reveal" style="margin-top:24px;font-size:var(--h3-size);color:var(--text2)"><br></p>
+  <p class="sub reveal" style="margin-top:40px;color:var(--text3)">maverick@airlocklabs.io &middot; airlocklabs.io &middot; Detroit</p>
+  <p class="sub reveal" style="font-family:var(--mono);font-size:var(--small-size);color:var(--text3);margin-top:16px">Built with Otto in a Detroit apartment.</p>
+</section>
+
+<!-- ===== NAV DOTS ===== -->
+<nav class="nav" id="nav"></nav>
+
+<script>
+/* === Presentation Controller === */
+const slides = document.querySelectorAll('.slide');
+const nav = document.getElementById('nav');
+const totalEl = document.getElementById('total');
+const currentEl = document.getElementById('current');
+totalEl.textContent = slides.length;
+
+// Build nav dots
+slides.forEach((_, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+  dot.onclick = () => scrollTo(i);
+  nav.appendChild(dot);
+});
+
+// Intersection Observer for reveal animations
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('in-view');
+      const idx = [...slides].indexOf(e.target);
+      currentEl.textContent = idx + 1;
+      document.querySelectorAll('.nav-dot').forEach((d,i) =>
+        d.classList.toggle('active', i === idx));
+    } else {
+      e.target.classList.remove('in-view');
+    }
+  });
+}, { threshold: 0.6 });
+
+slides.forEach(s => obs.observe(s));
+slides[0].classList.add('in-view');
+
+function scrollTo(i) {
+  slides[i].scrollIntoView({ behavior: 'smooth' });
+}
+
+// Keyboard nav
+document.addEventListener('keydown', e => {
+  const cur = [...slides].findIndex(s => s.classList.contains('in-view'));
+  if ((e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ') && cur < slides.length - 1) {
+    e.preventDefault(); scrollTo(cur + 1);
+  }
+  if ((e.key === 'ArrowUp' || e.key === 'ArrowLeft') && cur > 0) {
+    e.preventDefault(); scrollTo(cur - 1);
+  }
+});
+
+// Touch nav
+let touchY = 0;
+document.addEventListener('touchstart', e => touchY = e.touches[0].clientY, {passive:true});
+document.addEventListener('touchend', e => {
+  const dy = touchY - e.changedTouches[0].clientY;
+  const cur = [...slides].findIndex(s => s.classList.contains('in-view'));
+  if (dy > 50 && cur < slides.length - 1) scrollTo(cur + 1);
+  if (dy < -50 && cur > 0) scrollTo(cur - 1);
+}, {passive:true});
+</script>
+</body>
+</html>
