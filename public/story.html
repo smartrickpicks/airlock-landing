@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jamie Russo — Airlock Labs</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  /* === VIEWPORT FITTING: MANDATORY BASE === */
+  html, body { height:100%; overflow-x:hidden; margin:0; padding:0; }
+  html { scroll-snap-type:y mandatory; scroll-behavior:smooth; }
+  * { box-sizing:border-box; }
+
+  :root {
+    --bg:#07090D; --raised:#0C0F16; --overlay:#111620; --border:#1A1F2E;
+    --otto:#7C5CFC; --accent:#00D1FF; --gold:#F5A623; --success:#22C55E;
+    --warning:#EAB308; --error:#EF4444; --pareto:#FF6B35;
+    --text:#E8ECF2; --text2:#8B95A8; --text3:#505A6E;
+    --otto-glow:rgba(124,92,252,0.25); --accent-glow:rgba(0,209,255,0.2);
+    --title-size:clamp(2rem,5.5vw,4.5rem);
+    --h2-size:clamp(1.4rem,3.5vw,2.8rem);
+    --h3-size:clamp(1rem,2.2vw,1.6rem);
+    --body-size:clamp(0.8rem,1.4vw,1.1rem);
+    --small-size:clamp(0.65rem,1vw,0.85rem);
+    --mono:'JetBrains Mono',monospace;
+    --sans:'Inter',system-ui,sans-serif;
+    --slide-padding:clamp(2rem,5vw,5rem);
+  }
+
+  body { background:var(--bg); color:var(--text); font-family:var(--sans); -webkit-font-smoothing:antialiased; }
+
+  .slide {
+    width:100vw; height:100vh; height:100dvh; overflow:hidden;
+    scroll-snap-align:start; display:flex; flex-direction:column;
+    position:relative; justify-content:center; align-items:center;
+    padding:var(--slide-padding);
+  }
+
+  /* Subtle grid bg */
+  .slide::before {
+    content:''; position:absolute; inset:0; opacity:0.03;
+    background-image:
+      linear-gradient(rgba(124,92,252,0.3) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(124,92,252,0.3) 1px, transparent 1px);
+    background-size:60px 60px; pointer-events:none;
+  }
+
+  /* === Typography === */
+  .tag { font-family:var(--mono); font-size:var(--small-size); font-weight:600;
+    text-transform:uppercase; letter-spacing:3px; color:var(--otto); margin-bottom:20px; }
+  .hero { font-size:var(--title-size); font-weight:900; line-height:1.05;
+    text-align:center; letter-spacing:-2px; max-width:900px; }
+  .headline { font-size:var(--h2-size); font-weight:800; line-height:1.15;
+    text-align:center; letter-spacing:-1px; max-width:800px; }
+  .sub { font-size:var(--body-size); color:var(--text2); text-align:center;
+    margin-top:16px; max-width:650px; line-height:1.6; }
+  .mono { font-family:var(--mono); }
+  .gradient { background:linear-gradient(135deg,#E8ECF2,var(--otto));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .pareto-gradient { background:linear-gradient(135deg,var(--pareto),var(--gold));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .accent-gradient { background:linear-gradient(135deg,var(--otto),var(--accent));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+
+  /* === Stat Cards === */
+  .stats { display:flex; gap:clamp(12px,2vw,24px); margin-top:clamp(24px,4vh,48px);
+    flex-wrap:wrap; justify-content:center; }
+  .stat { background:var(--raised); border:1px solid var(--border); border-radius:12px;
+    padding:clamp(16px,2vw,32px) clamp(20px,3vw,40px); text-align:center; min-width:140px; }
+  .stat-num { font-family:var(--mono); font-size:clamp(1.5rem,3.5vw,3rem);
+    font-weight:700; line-height:1; }
+  .stat-num.otto-c { color:var(--accent); }
+  .stat-num.gold { color:var(--gold); }
+  .stat-num.green { color:var(--success); }
+  .stat-num.pareto-c { color:var(--pareto); }
+  .stat-label { font-size:var(--small-size); color:var(--text3); margin-top:8px;
+    text-transform:uppercase; letter-spacing:1px; font-weight:600; }
+
+  /* === Leaderboard Table === */
+  .board { width:100%; max-width:900px; border-collapse:collapse; margin-top:clamp(20px,3vh,40px); }
+  .board th { text-align:left; font-family:var(--mono); font-size:var(--small-size);
+    font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--text3);
+    padding:10px 16px; border-bottom:1px solid var(--border); }
+  .board td { padding:12px 16px; border-bottom:1px solid rgba(26,31,46,0.5);
+    color:var(--text2); font-size:var(--body-size); }
+  .board .us { color:var(--accent); font-weight:600; }
+  .board .us-row td { background:rgba(124,92,252,0.04); }
+  .board .pareto-row td { background:rgba(255,107,53,0.06); border-left:2px solid var(--pareto); }
+  .board .pareto-row .us { color:var(--pareto); }
+  .board .dim { color:var(--text3); }
+
+  /* === Cards === */
+  .card-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:clamp(12px,1.5vw,20px); margin-top:clamp(20px,3vh,40px);
+    width:100%; max-width:950px; }
+  .card { background:var(--raised); border:1px solid var(--border); border-radius:12px;
+    padding:clamp(16px,2vw,28px); text-align:left; }
+  .card .card-tag { font-family:var(--mono); font-size:9px; font-weight:700;
+    text-transform:uppercase; letter-spacing:2px; color:var(--otto); margin-bottom:10px; display:block; }
+  .card h3 { font-size:var(--h3-size); font-weight:700; margin-bottom:8px; }
+  .card p { font-size:var(--small-size); color:var(--text2); line-height:1.5; }
+
+  /* === Nav === */
+  .nav { position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    display:flex; gap:6px; z-index:100; background:var(--raised);
+    border:1px solid var(--border); border-radius:20px; padding:6px 14px; }
+  .nav-dot { width:7px; height:7px; border-radius:50%; background:var(--border);
+    cursor:pointer; transition:all .3s; }
+  .nav-dot.active { background:var(--otto); box-shadow:0 0 8px var(--otto-glow); }
+  .nav-dot:hover { background:var(--text3); }
+  .counter { position:fixed; top:24px; right:32px; font-family:var(--mono);
+    font-size:10px; color:var(--text3); z-index:100; }
+  .logo { position:fixed; top:24px; left:32px; font-family:var(--mono);
+    font-size:11px; font-weight:700; color:var(--text3); letter-spacing:3px;
+    text-transform:uppercase; z-index:100; }
+
+  /* === Animations === */
+  @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes pulseGlow { 0%,100%{box-shadow:0 0 20px rgba(124,92,252,0)} 50%{box-shadow:0 0 40px rgba(124,92,252,0.15)} }
+  .reveal { opacity:0; }
+  .slide.in-view .reveal { animation:fadeUp .6s ease forwards; }
+  .slide.in-view .reveal:nth-child(2) { animation-delay:.15s; }
+  .slide.in-view .reveal:nth-child(3) { animation-delay:.3s; }
+  .slide.in-view .reveal:nth-child(4) { animation-delay:.45s; }
+
+  @media (prefers-reduced-motion:reduce) {
+    .reveal { opacity:1; animation:none !important; }
+    html { scroll-behavior:auto; }
+  }
+
+  /* === Responsive === */
+  @media (max-width:768px) {
+    .board td, .board th { padding:8px 10px; font-size:var(--small-size); }
+  }
+
+  /* === Scope List === */
+  .scope-list { display:flex; flex-direction:column; gap:14px; margin-top:clamp(20px,3vh,36px);
+    max-width:700px; width:100%; }
+  .scope-item { display:flex; gap:14px; align-items:flex-start; }
+  .scope-bullet { width:28px; height:28px; border-radius:50%; background:rgba(124,92,252,0.12);
+    display:flex; align-items:center; justify-content:center; color:var(--otto);
+    font-family:var(--mono); font-weight:700; font-size:12px; flex-shrink:0; margin-top:2px; }
+  .scope-text { font-size:var(--body-size); color:var(--text2); line-height:1.6; }
+  .scope-text strong { color:var(--text); }
+
+  /* === Two-Path === */
+  .two-path { display:grid; grid-template-columns:1fr 1fr; gap:clamp(16px,2vw,24px);
+    margin-top:clamp(20px,3vh,40px); width:100%; max-width:800px; }
+  .path-card { background:var(--raised); border:1px solid var(--border); border-radius:12px;
+    padding:clamp(20px,2.5vw,32px); text-align:left; }
+  .path-card .path-label { font-family:var(--mono); font-size:9px; font-weight:700;
+    text-transform:uppercase; letter-spacing:2px; color:var(--otto); margin-bottom:12px; }
+  .path-card h3 { font-size:var(--h3-size); font-weight:700; margin-bottom:10px; color:var(--text); }
+  .path-card p { font-size:var(--small-size); color:var(--text2); line-height:1.5; }
+  @media (max-width:600px) { .two-path { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<!-- PASSWORD GATE -->
+<div id="pw-gate" style="position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">
+  <div style="font-family:var(--mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:3px;color:var(--otto);margin-bottom:8px">Airlock Labs</div>
+  <div style="font-size:clamp(1.2rem,2.5vw,1.8rem);font-weight:700;color:var(--text);text-align:center">This document is private.</div>
+  <div style="font-size:var(--body-size);color:var(--text3);margin-bottom:8px">Enter password to continue.</div>
+  <input id="pw-input" type="password" placeholder="Password" autofocus
+    style="background:var(--raised);border:1px solid var(--border);border-radius:8px;padding:12px 20px;color:var(--text);font-family:var(--mono);font-size:14px;width:240px;text-align:center;outline:none"
+    onfocus="this.style.borderColor='var(--otto)'" onblur="this.style.borderColor='var(--border)'">
+  <div id="pw-error" style="font-size:12px;color:var(--error);font-family:var(--mono);opacity:0;transition:opacity .3s">Wrong password</div>
+</div>
+<script>
+(function(){
+  const KEY = 'airlock_jamie_auth';
+  if (sessionStorage.getItem(KEY) === '1') { document.getElementById('pw-gate').remove(); return; }
+  document.getElementById('pw-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      if (this.value.toLowerCase() === 'launchhouse') {
+        sessionStorage.setItem(KEY, '1');
+        document.getElementById('pw-gate').remove();
+      } else {
+        document.getElementById('pw-error').style.opacity = '1';
+        this.value = '';
+        setTimeout(() => document.getElementById('pw-error').style.opacity = '0', 2000);
+      }
+    }
+  });
+})();
+</script>
+
+<div class="logo">Airlock Labs</div>
+<div class="counter"><span id="current">1</span> / <span id="total">9</span></div>
+
+<!-- ===== SLIDE 1: Personal ===== -->
+<section class="slide" id="s1">
+  <div class="tag reveal">For Jamie Russo &middot; April 2026</div>
+  <h1 class="hero reveal"><span class="gradient">You Said You'd Tell It Differently.</span></h1>
+  <p class="sub reveal">Good. That's why I'm here.</p>
+  <p class="sub reveal" style="margin-top:32px;color:var(--text3);font-size:var(--small-size)">
+    You were right &mdash; it sounds like AI wrote everything. I need someone who makes it human.<br>This is the brief. &mdash; Zac
+  </p>
+</section>
+
+<!-- ===== SLIDE 2: What I Actually Built ===== -->
+<section class="slide" id="s2">
+  <div class="tag reveal">The Short Version</div>
+  <h2 class="headline reveal">I built an AI that knows <span style="color:var(--accent)">which AI to use</span>.</h2>
+  <p class="sub reveal">Not a chatbot. Not a wrapper. A routing engine that matches each task to the right model &mdash; like a talent agency for AI. It beat the most expensive model on the market at 1/10th the cost.</p>
+  <div class="stats reveal">
+    <div class="stat"><div class="stat-num green">100%</div><div class="stat-label">Success Rate</div></div>
+    <div class="stat"><div class="stat-num otto-c">$0.39</div><div class="stat-label">Our Cost Per Run</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--error)">$4.08</div><div class="stat-label">Their Cost Per Run</div></div>
+  </div>
+  <p class="sub reveal" style="margin-top:16px;font-size:var(--small-size);color:var(--text3)">23 real-world tasks. Four submissions. Top four spots on the leaderboard.</p>
+</section>
+
+<!-- ===== SLIDE 3: Why The Story Matters Now ===== -->
+<section class="slide" id="s3">
+  <div class="tag reveal">Timing</div>
+  <h2 class="headline reveal">The tech works. <span style="color:var(--warning)">Nobody knows yet.</span></h2>
+  <p class="sub reveal">I have benchmark results that prove it. A meetup demo tomorrow where engineers pay fifty cents to try to beat us. A research partnership forming with Wayne State. A team coming together.</p>
+  <p class="sub reveal" style="margin-top:24px;color:var(--text);font-weight:600">What I don't have is someone who can tell this story in a way that doesn't sound like a robot wrote it.</p>
+</section>
+
+<!-- ===== SLIDE 4: What You Told Me ===== -->
+<section class="slide" id="s4">
+  <div class="tag reveal">Your Feedback</div>
+  <h2 class="headline reveal">You already <span class="accent-gradient">diagnosed the problem</span>.</h2>
+  <div class="card-row reveal">
+    <div class="card">
+      <span class="card-tag">Observation 1</span>
+      <h3>It sounds like AI</h3>
+      <p>You said it immediately. "I don't think people want that from you." You're right. The irony of an AI company that sounds like AI is not lost on me.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">Observation 2</span>
+      <h3>Traction matters</h3>
+      <p>Without it, the solo founder story is a disadvantage. With it, it's a superpower. We need to tell the story at the right time, in the right order.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">Observation 3</span>
+      <h3>Who's the face?</h3>
+      <p>You asked whether it's me or Otto. That's the right question. The answer shapes everything &mdash; positioning, content, audience.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 5: What I Need From You ===== -->
+<section class="slide" id="s5">
+  <div class="tag reveal">The Ask</div>
+  <h2 class="headline reveal">Help me figure out how <span class="accent-gradient">Jamie Russo tells this story</span>.</h2>
+  <p class="sub reveal">Not how I want it told. Not how AI would tell it. How you would tell it &mdash; knowing what you know about community, positioning, and what actually makes people care.</p>
+  <div class="scope-list reveal">
+    <div class="scope-item">
+      <div class="scope-bullet">1</div>
+      <div class="scope-text"><strong>Origin narrative.</strong> The real story &mdash; Detroit, solo founder, AI that thinks differently. Human version.</div>
+    </div>
+    <div class="scope-item">
+      <div class="scope-bullet">2</div>
+      <div class="scope-text"><strong>Go-to-market positioning.</strong> Who hears this first? Engineers? Founders? Press? In what order?</div>
+    </div>
+    <div class="scope-item">
+      <div class="scope-bullet">3</div>
+      <div class="scope-text"><strong>Content strategy.</strong> What do we publish, where, and how often? LinkedIn, blog, video, podcast?</div>
+    </div>
+    <div class="scope-item">
+      <div class="scope-bullet">4</div>
+      <div class="scope-text"><strong>Voice and tone.</strong> Lock in what Airlock sounds like when a human is talking, not when AI is writing.</div>
+    </div>
+    <div class="scope-item">
+      <div class="scope-bullet">5</div>
+      <div class="scope-text"><strong>The Noah angle.</strong> My brother is part of this story. It stays. Help me figure out how to tell it without it feeling like a sympathy play.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 6: The Two Paths ===== -->
+<section class="slide" id="s6">
+  <div class="tag reveal">How We Work Together</div>
+  <h2 class="headline reveal">Now and <span style="color:var(--success)">later</span>.</h2>
+  <div class="two-path reveal">
+    <div class="path-card">
+      <div class="path-label">Now</div>
+      <h3>Monthly Retainer</h3>
+      <p>First engagement: build the origin narrative, GTM story, and content strategy. Your rate, your terms. I want to pay you for your time and your perspective &mdash; not just your output. This is a collaboration, not a content order.</p>
+    </div>
+    <div class="path-card">
+      <div class="path-label">Later</div>
+      <h3>Head of Story</h3>
+      <p>If we work well together and this thing takes off, I want you running the narrative for the company. Full-time. The person who shapes how the world understands what we built. You set the creative direction.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 7: What You'd Be Working With ===== -->
+<section class="slide" id="s7">
+  <div class="tag reveal">The Assets</div>
+  <h2 class="headline reveal">It's not starting from zero.</h2>
+  <div class="card-row reveal">
+    <div class="card">
+      <span class="card-tag">Product</span>
+      <h3>Live Router</h3>
+      <p>Working benchmark demo. Real results. Engineers can run it tomorrow.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">Research</span>
+      <h3>Wayne State</h3>
+      <p>$200K grant proposal. Cultural Algorithms meets AI routing. Academic credibility.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">Team</span>
+      <h3>People Saying Yes</h3>
+      <p>COO (Alex Moyer), GPU ops (Erin Beck at INTROL), brand (Katie). Founder energy, not corporate.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">Otto</span>
+      <h3>The AI</h3>
+      <p>Not a product demo. A team member. CAO of the company. The thing that makes this story unlike any other.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 8: The Non-Negotiables ===== -->
+<section class="slide" id="s8">
+  <div class="tag reveal">Ground Rules</div>
+  <h2 class="headline reveal">What stays in <span style="color:var(--text)">every version</span> of this story.</h2>
+  <div class="scope-list reveal">
+    <div class="scope-item">
+      <div class="scope-bullet">1</div>
+      <div class="scope-text"><strong>Noah stays.</strong> My brother's story is the north star. Not for sympathy &mdash; because it's the truth about why this exists.</div>
+    </div>
+    <div class="scope-item">
+      <div class="scope-bullet">2</div>
+      <div class="scope-text"><strong>Detroit stays.</strong> Solo founder, building from an apartment, bootstrapped. That's not a weakness &mdash; it's the story.</div>
+    </div>
+    <div class="scope-item">
+      <div class="scope-bullet">3</div>
+      <div class="scope-text"><strong>Otto stays.</strong> The AI is a team member, not a product. That's weird. That's the point. We lean into it.</div>
+    </div>
+    <div class="scope-item">
+      <div class="scope-bullet">4</div>
+      <div class="scope-text"><strong>The numbers are real.</strong> 100% success rate, 1/10th the cost. We don't hype. We show receipts.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 9: Next Step ===== -->
+<section class="slide" id="s9">
+  <div class="tag reveal">Let's Talk</div>
+  <h1 class="hero reveal"><span class="gradient">One call.</span></h1>
+  <p class="sub reveal" style="margin-top:16px;font-size:var(--h3-size);color:var(--text2)">You scope it. You price it. I'll show up ready.</p>
+  <p class="sub reveal" style="margin-top:32px;color:var(--text3)">maverick@airlocklabs.io &middot; airlocklabs.io &middot; Detroit</p>
+  <p class="sub reveal" style="margin-top:16px;font-family:var(--mono);font-size:var(--small-size);color:var(--text3)">You said you'd tell it differently. I'm listening.</p>
+</section>
+
+<!-- ===== NAV DOTS ===== -->
+<nav class="nav" id="nav"></nav>
+
+<script>
+/* === Presentation Controller === */
+const slides = document.querySelectorAll('.slide');
+const nav = document.getElementById('nav');
+const totalEl = document.getElementById('total');
+const currentEl = document.getElementById('current');
+totalEl.textContent = slides.length;
+
+// Build nav dots
+slides.forEach((_, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+  dot.onclick = () => scrollTo(i);
+  nav.appendChild(dot);
+});
+
+// Intersection Observer for reveal animations
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('in-view');
+      const idx = [...slides].indexOf(e.target);
+      currentEl.textContent = idx + 1;
+      document.querySelectorAll('.nav-dot').forEach((d,i) =>
+        d.classList.toggle('active', i === idx));
+    } else {
+      e.target.classList.remove('in-view');
+    }
+  });
+}, { threshold: 0.6 });
+
+slides.forEach(s => obs.observe(s));
+slides[0].classList.add('in-view');
+
+function scrollTo(i) {
+  slides[i].scrollIntoView({ behavior: 'smooth' });
+}
+
+// Keyboard nav
+document.addEventListener('keydown', e => {
+  const cur = [...slides].findIndex(s => s.classList.contains('in-view'));
+  if ((e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ') && cur < slides.length - 1) {
+    e.preventDefault(); scrollTo(cur + 1);
+  }
+  if ((e.key === 'ArrowUp' || e.key === 'ArrowLeft') && cur > 0) {
+    e.preventDefault(); scrollTo(cur - 1);
+  }
+});
+
+// Touch nav
+let touchY = 0;
+document.addEventListener('touchstart', e => touchY = e.touches[0].clientY, {passive:true});
+document.addEventListener('touchend', e => {
+  const dy = touchY - e.changedTouches[0].clientY;
+  const cur = [...slides].findIndex(s => s.classList.contains('in-view'));
+  if (dy > 50 && cur < slides.length - 1) scrollTo(cur + 1);
+  if (dy < -50 && cur > 0) scrollTo(cur - 1);
+}, {passive:true});
+</script>
+</body>
+</html>

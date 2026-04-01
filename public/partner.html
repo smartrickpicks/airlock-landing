@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Airlock + INTROL — Partnership Deck</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  /* === VIEWPORT FITTING: MANDATORY BASE === */
+  html, body { height:100%; overflow-x:hidden; margin:0; padding:0; }
+  html { scroll-snap-type:y mandatory; scroll-behavior:smooth; }
+  * { box-sizing:border-box; }
+
+  :root {
+    --bg:#07090D; --raised:#0C0F16; --overlay:#111620; --border:#1A1F2E;
+    --otto:#7C5CFC; --accent:#00D1FF; --gold:#F5A623; --success:#22C55E;
+    --warning:#EAB308; --error:#EF4444; --pareto:#FF6B35;
+    --text:#E8ECF2; --text2:#8B95A8; --text3:#505A6E;
+    --otto-glow:rgba(124,92,252,0.25); --accent-glow:rgba(0,209,255,0.2);
+    --title-size:clamp(2rem,5.5vw,4.5rem);
+    --h2-size:clamp(1.4rem,3.5vw,2.8rem);
+    --h3-size:clamp(1rem,2.2vw,1.6rem);
+    --body-size:clamp(0.8rem,1.4vw,1.1rem);
+    --small-size:clamp(0.65rem,1vw,0.85rem);
+    --mono:'JetBrains Mono',monospace;
+    --sans:'Inter',system-ui,sans-serif;
+    --slide-padding:clamp(2rem,5vw,5rem);
+  }
+
+  body { background:var(--bg); color:var(--text); font-family:var(--sans); -webkit-font-smoothing:antialiased; }
+
+  .slide {
+    width:100vw; height:100vh; height:100dvh; overflow:hidden;
+    scroll-snap-align:start; display:flex; flex-direction:column;
+    position:relative; justify-content:center; align-items:center;
+    padding:var(--slide-padding);
+  }
+
+  /* Subtle grid bg */
+  .slide::before {
+    content:''; position:absolute; inset:0; opacity:0.03;
+    background-image:
+      linear-gradient(rgba(124,92,252,0.3) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(124,92,252,0.3) 1px, transparent 1px);
+    background-size:60px 60px; pointer-events:none;
+  }
+
+  /* === Typography === */
+  .tag { font-family:var(--mono); font-size:var(--small-size); font-weight:600;
+    text-transform:uppercase; letter-spacing:3px; color:var(--otto); margin-bottom:20px; }
+  .hero { font-size:var(--title-size); font-weight:900; line-height:1.05;
+    text-align:center; letter-spacing:-2px; max-width:900px; }
+  .headline { font-size:var(--h2-size); font-weight:800; line-height:1.15;
+    text-align:center; letter-spacing:-1px; max-width:800px; }
+  .sub { font-size:var(--body-size); color:var(--text2); text-align:center;
+    margin-top:16px; max-width:650px; line-height:1.6; }
+  .mono { font-family:var(--mono); }
+  .gradient { background:linear-gradient(135deg,#E8ECF2,var(--otto));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .pareto-gradient { background:linear-gradient(135deg,var(--pareto),var(--gold));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .accent-gradient { background:linear-gradient(135deg,var(--otto),var(--accent));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+
+  /* === Stat Cards === */
+  .stats { display:flex; gap:clamp(12px,2vw,24px); margin-top:clamp(24px,4vh,48px);
+    flex-wrap:wrap; justify-content:center; }
+  .stat { background:var(--raised); border:1px solid var(--border); border-radius:12px;
+    padding:clamp(16px,2vw,32px) clamp(20px,3vw,40px); text-align:center; min-width:140px; }
+  .stat-num { font-family:var(--mono); font-size:clamp(1.5rem,3.5vw,3rem);
+    font-weight:700; line-height:1; }
+  .stat-num.otto-c { color:var(--accent); }
+  .stat-num.gold { color:var(--gold); }
+  .stat-num.green { color:var(--success); }
+  .stat-num.pareto-c { color:var(--pareto); }
+  .stat-label { font-size:var(--small-size); color:var(--text3); margin-top:8px;
+    text-transform:uppercase; letter-spacing:1px; font-weight:600; }
+
+  /* === Leaderboard Table === */
+  .board { width:100%; max-width:900px; border-collapse:collapse; margin-top:clamp(20px,3vh,40px); }
+  .board th { text-align:left; font-family:var(--mono); font-size:var(--small-size);
+    font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--text3);
+    padding:10px 16px; border-bottom:1px solid var(--border); }
+  .board td { padding:12px 16px; border-bottom:1px solid rgba(26,31,46,0.5);
+    color:var(--text2); font-size:var(--body-size); }
+  .board .us { color:var(--accent); font-weight:600; }
+  .board .us-row td { background:rgba(124,92,252,0.04); }
+  .board .pareto-row td { background:rgba(255,107,53,0.06); border-left:2px solid var(--pareto); }
+  .board .pareto-row .us { color:var(--pareto); }
+  .board .dim { color:var(--text3); }
+
+  /* === Quote === */
+  .quote-box { background:var(--raised); border:1px solid rgba(124,92,252,0.15);
+    border-radius:16px; padding:clamp(24px,3vw,40px); max-width:750px;
+    text-align:left; margin-top:clamp(16px,3vh,32px); }
+  .quote-text { font-size:clamp(0.9rem,1.6vw,1.2rem); color:var(--text2);
+    line-height:1.7; font-style:italic; }
+  .quote-attr { font-family:var(--mono); font-size:var(--small-size); color:var(--text3);
+    margin-top:16px; }
+
+  /* === Big Number === */
+  .big { font-family:var(--mono); font-size:clamp(4rem,12vw,10rem);
+    font-weight:700; line-height:1; }
+
+  /* === Flow diagram === */
+  .flow { display:flex; align-items:center; gap:clamp(8px,1.5vw,16px);
+    margin-top:clamp(24px,4vh,48px); flex-wrap:wrap; justify-content:center; }
+  .flow-node { background:var(--raised); border:1px solid var(--border);
+    border-radius:10px; padding:clamp(12px,1.5vw,20px) clamp(16px,2vw,28px);
+    text-align:center; }
+  .flow-node h4 { font-size:var(--body-size); font-weight:700; color:var(--text); margin-bottom:4px; }
+  .flow-node p { font-size:var(--small-size); color:var(--text3); }
+  .flow-node.primary { border-color:rgba(124,92,252,0.3); background:rgba(124,92,252,0.05); }
+  .flow-arrow { color:var(--text3); font-size:clamp(16px,2vw,24px); }
+
+  /* === Cards === */
+  .card-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:clamp(12px,1.5vw,20px); margin-top:clamp(20px,3vh,40px);
+    width:100%; max-width:950px; }
+  .card { background:var(--raised); border:1px solid var(--border); border-radius:12px;
+    padding:clamp(16px,2vw,28px); text-align:left; }
+  .card .card-tag { font-family:var(--mono); font-size:9px; font-weight:700;
+    text-transform:uppercase; letter-spacing:2px; color:var(--otto); margin-bottom:10px; display:block; }
+  .card h3 { font-size:var(--h3-size); font-weight:700; margin-bottom:8px; }
+  .card p { font-size:var(--small-size); color:var(--text2); line-height:1.5; }
+
+  /* === Nav === */
+  .nav { position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    display:flex; gap:6px; z-index:100; background:var(--raised);
+    border:1px solid var(--border); border-radius:20px; padding:6px 14px; }
+  .nav-dot { width:7px; height:7px; border-radius:50%; background:var(--border);
+    cursor:pointer; transition:all .3s; }
+  .nav-dot.active { background:var(--otto); box-shadow:0 0 8px var(--otto-glow); }
+  .nav-dot:hover { background:var(--text3); }
+  .counter { position:fixed; top:24px; right:32px; font-family:var(--mono);
+    font-size:10px; color:var(--text3); z-index:100; }
+  .logo { position:fixed; top:24px; left:32px; font-family:var(--mono);
+    font-size:11px; font-weight:700; color:var(--text3); letter-spacing:3px;
+    text-transform:uppercase; z-index:100; }
+
+  /* === Animations === */
+  @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes pulseGlow { 0%,100%{box-shadow:0 0 20px rgba(124,92,252,0)} 50%{box-shadow:0 0 40px rgba(124,92,252,0.15)} }
+  .reveal { opacity:0; }
+  .slide.in-view .reveal { animation:fadeUp .6s ease forwards; }
+  .slide.in-view .reveal:nth-child(2) { animation-delay:.15s; }
+  .slide.in-view .reveal:nth-child(3) { animation-delay:.3s; }
+  .slide.in-view .reveal:nth-child(4) { animation-delay:.45s; }
+
+  @media (prefers-reduced-motion:reduce) {
+    .reveal { opacity:1; animation:none !important; }
+    html { scroll-behavior:auto; }
+  }
+
+  /* === Responsive === */
+  @media (max-width:768px) {
+    .board td, .board th { padding:8px 10px; font-size:var(--small-size); }
+    .flow { flex-direction:column; }
+    .flow-arrow { transform:rotate(90deg); }
+  }
+
+  /* === Tier Cards === */
+  .tier-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:clamp(12px,1.5vw,20px); margin-top:clamp(20px,3vh,40px);
+    width:100%; max-width:900px; }
+  .tier { background:var(--raised); border:1px solid var(--border); border-radius:12px;
+    padding:clamp(16px,2vw,28px); text-align:left; }
+  .tier .tier-num { font-family:var(--mono); font-size:clamp(2rem,4vw,3.5rem);
+    font-weight:700; color:var(--otto); line-height:1; margin-bottom:12px; }
+  .tier h3 { font-size:var(--h3-size); font-weight:700; margin-bottom:8px; }
+  .tier p { font-size:var(--small-size); color:var(--text2); line-height:1.5; }
+
+  /* === Pilot Steps === */
+  .pilot-steps { display:flex; flex-direction:column; gap:16px; margin-top:clamp(20px,3vh,36px);
+    max-width:700px; width:100%; }
+  .pilot-step { display:flex; gap:16px; align-items:flex-start; }
+  .pilot-icon { width:36px; height:36px; border-radius:50%; background:rgba(124,92,252,0.12);
+    display:flex; align-items:center; justify-content:center; color:var(--otto);
+    font-family:var(--mono); font-weight:700; font-size:14px; flex-shrink:0; }
+  .pilot-text { font-size:var(--body-size); color:var(--text2); line-height:1.6; }
+  .pilot-text strong { color:var(--text); }
+
+  /* === Comparison Row === */
+  .compare { display:flex; align-items:center; gap:clamp(24px,4vw,48px);
+    margin-top:clamp(24px,4vh,48px); flex-wrap:wrap; justify-content:center; }
+  .compare-col { text-align:center; }
+  .compare-val { font-family:var(--mono); font-size:clamp(2.5rem,6vw,5rem); font-weight:700; line-height:1; }
+  .compare-label { font-size:var(--small-size); color:var(--text3); margin-top:8px;
+    text-transform:uppercase; letter-spacing:1px; font-weight:600; }
+  .compare-vs { font-size:clamp(1.5rem,3vw,2.5rem); color:var(--text3); }
+</style>
+</head>
+<body>
+
+<!-- Password Gate -->
+<div id="pw-gate" style="position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">
+  <div style="font-family:var(--mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:3px;color:var(--otto);margin-bottom:8px">Airlock Labs</div>
+  <div style="font-size:clamp(1.2rem,2.5vw,1.8rem);font-weight:700;color:var(--text);text-align:center">This document is private.</div>
+  <div style="font-size:var(--body-size);color:var(--text3);margin-bottom:8px">Enter password to continue.</div>
+  <input id="pw-input" type="password" placeholder="Password" autofocus
+    style="background:var(--raised);border:1px solid var(--border);border-radius:8px;padding:12px 20px;color:var(--text);font-family:var(--mono);font-size:14px;width:240px;text-align:center;outline:none"
+    onfocus="this.style.borderColor='var(--otto)'" onblur="this.style.borderColor='var(--border)'">
+  <div id="pw-error" style="font-size:12px;color:var(--error);font-family:var(--mono);opacity:0;transition:opacity .3s">Wrong password</div>
+</div>
+<script>
+(function(){
+  const KEY = 'airlock_partner_auth';
+  if (sessionStorage.getItem(KEY) === '1') { document.getElementById('pw-gate').remove(); return; }
+  document.getElementById('pw-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      if (this.value.toLowerCase() === 'erin') {
+        sessionStorage.setItem(KEY, '1');
+        document.getElementById('pw-gate').remove();
+      } else {
+        document.getElementById('pw-error').style.opacity = '1';
+        this.value = '';
+        setTimeout(() => document.getElementById('pw-error').style.opacity = '0', 2000);
+      }
+    }
+  });
+})();
+</script>
+
+<div class="logo">Airlock Labs</div>
+<div class="counter"><span id="current">1</span> / <span id="total">8</span></div>
+
+<!-- ===== SLIDE 1: For Erin ===== -->
+<section class="slide" id="s1">
+  <div class="tag reveal">For Erin Beck &middot; April 2026</div>
+  <h1 class="hero reveal"><span class="gradient">Airlock + INTROL</span></h1>
+  <p class="sub reveal">I need your eyes on this before it goes anywhere.<br>You know these people &mdash; I don't.<br>Tell me what lands and what doesn't.</p>
+  <p class="sub reveal" style="margin-top:32px;color:var(--text3);font-size:var(--small-size)">This is a draft. Not a final pitch. &mdash; Zac</p>
+</section>
+
+<!-- ===== SLIDE 2: The Problem ===== -->
+<section class="slide" id="s2">
+  <div class="tag reveal">The Problem</div>
+  <h2 class="headline reveal">Every AI company is <span style="color:var(--error)">wasting GPUs</span>.</h2>
+  <p class="sub reveal">They deploy thousands of GPUs and run one model across all of them. A $50K cluster running a $0.001/token task is like running a crane to hang a picture frame.</p>
+  <p class="sub reveal" style="margin-top:24px;font-weight:700;color:var(--text)">INTROL deploys 100,000+ GPUs. What if those deployments were 2&ndash;3x more efficient?</p>
+</section>
+
+<!-- ===== SLIDE 3: What Airlock Built ===== -->
+<section class="slide" id="s3">
+  <div class="tag reveal">The Discovery</div>
+  <h2 class="headline reveal">We built a router, <span class="accent-gradient">not a model</span>.</h2>
+  <p class="sub reveal">Cognitive routing matches each AI task to the right model based on thinking style &mdash; not cost, not speed, but how the task needs to be solved.</p>
+  <div class="compare reveal">
+    <div class="compare-col">
+      <div class="compare-val" style="color:var(--success)">$0.39</div>
+      <div class="compare-label">Airlock &middot; 100% SR</div>
+    </div>
+    <div class="compare-vs">vs</div>
+    <div class="compare-col">
+      <div class="compare-val" style="color:var(--error)">$4.08</div>
+      <div class="compare-label">Opus &middot; 93.3% SR</div>
+    </div>
+  </div>
+  <p class="sub reveal" style="margin-top:24px;font-size:var(--small-size);color:var(--text3)">PinchBench benchmark &mdash; 23 real-world tasks. Four Airlock submissions took the top four spots.</p>
+</section>
+
+<!-- ===== SLIDE 4: Why This Matters to INTROL ===== -->
+<section class="slide" id="s4">
+  <div class="tag reveal">The Fit</div>
+  <h2 class="headline reveal">You deploy the hardware.<br><span class="accent-gradient">We optimize what runs on it.</span></h2>
+  <div class="card-row reveal">
+    <div class="card">
+      <span class="card-tag">Today</span>
+      <h3>World-Class Deployment</h3>
+      <p>Rack, cable, commission, maintain. INTROL is the best at this. 100K+ GPUs prove it.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">Tomorrow</span>
+      <h3>Intelligent Infrastructure</h3>
+      <p>Not just GPUs &mdash; GPUs that know what to run. Software layer that makes every deployment smarter.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">The Moat</span>
+      <h3>Nobody Else Has This</h3>
+      <p>No other GPU deployment company offers a routing optimization layer. First mover advantage.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 5: The Opportunity ===== -->
+<section class="slide" id="s5">
+  <div class="tag reveal">Three Tiers</div>
+  <h2 class="headline reveal">How we make <span style="color:var(--success)">each other stronger</span>.</h2>
+  <div class="tier-row reveal">
+    <div class="tier">
+      <div class="tier-num">01</div>
+      <h3>Software Bundle</h3>
+      <p>Airlock routing included with INTROL deployments. New line item, new margin. Every client gets smarter infrastructure automatically.</p>
+    </div>
+    <div class="tier">
+      <div class="tier-num">02</div>
+      <h3>Joint Case Study</h3>
+      <p>Pick one client. Prove routing efficiency on their cluster. 30 days. Measurable results. If it works, we have a story to tell together.</p>
+    </div>
+    <div class="tier">
+      <div class="tier-num">03</div>
+      <h3>Infrastructure Access</h3>
+      <p>Airlock gets compute at cost. INTROL gets a software product to sell. Both companies grow without competing.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 6: Quiet Pilot ===== -->
+<section class="slide" id="s6">
+  <div class="tag reveal">The Proposal</div>
+  <h2 class="headline reveal">One client. 30 days.<br><span style="color:var(--text3)">Nobody outside the room knows.</span></h2>
+  <div class="pilot-steps reveal">
+    <div class="pilot-step">
+      <div class="pilot-icon">1</div>
+      <div class="pilot-text"><strong>Select</strong> an INTROL client running AI workloads on a GPU cluster.</div>
+    </div>
+    <div class="pilot-step">
+      <div class="pilot-icon">2</div>
+      <div class="pilot-text"><strong>Deploy</strong> Airlock routing alongside their existing setup. Non-invasive.</div>
+    </div>
+    <div class="pilot-step">
+      <div class="pilot-icon">3</div>
+      <div class="pilot-text"><strong>Measure</strong> compute utilization, cost per task, success rate, GPU idle time.</div>
+    </div>
+    <div class="pilot-step">
+      <div class="pilot-icon">4</div>
+      <div class="pilot-text"><strong>Compare</strong> single-model baseline vs routed workloads. 30 days of data.</div>
+    </div>
+    <div class="pilot-step">
+      <div class="pilot-icon">5</div>
+      <div class="pilot-text"><strong>Decide.</strong> If it works &rarr; case study + product line. If not &rarr; we learned, nobody's reputation is on the line.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 7: The Numbers ===== -->
+<section class="slide" id="s7">
+  <div class="tag reveal">Proof</div>
+  <h2 class="headline reveal">The efficiency gap is <span class="pareto-gradient">massive</span>.</h2>
+  <div class="stats reveal">
+    <div class="stat"><div class="stat-num pareto-c">10x</div><div class="stat-label">Cost Reduction</div></div>
+    <div class="stat"><div class="stat-num green">100%</div><div class="stat-label">Task Success</div></div>
+    <div class="stat"><div class="stat-num otto-c">7</div><div class="stat-label">Models Routed</div></div>
+    <div class="stat"><div class="stat-num gold">23</div><div class="stat-label">Task Types</div></div>
+  </div>
+  <p class="sub reveal">Single-model approach: $4.08 per run, 93.3% success.<br>Airlock routing: $0.39 per run, 100% success.<br>Same tasks. Same hardware. Different brain.</p>
+  <p class="sub reveal" style="margin-top:16px;color:var(--text3);font-size:var(--small-size)">Imagine this efficiency applied across 100,000+ deployed GPUs.</p>
+</section>
+
+<!-- ===== SLIDE 8: Next Steps ===== -->
+<section class="slide" id="s8">
+  <div class="tag reveal">Let's Talk</div>
+  <h1 class="hero reveal"><span class="gradient">One meeting.<br>30 minutes.<br>We show the router live.</span></h1>
+  <p class="sub reveal" style="margin-top:32px">maverick@airlocklabs.io &middot; airlocklabs.io &middot; Detroit</p>
+  <p class="sub reveal" style="margin-top:24px;color:var(--text3);font-size:var(--small-size);font-family:var(--mono)">Two bootstrapped companies. Zero outside funding between us. Let's build something.</p>
+</section>
+
+<!-- ===== NAV DOTS ===== -->
+<nav class="nav" id="nav"></nav>
+
+<script>
+/* === Presentation Controller === */
+const slides = document.querySelectorAll('.slide');
+const nav = document.getElementById('nav');
+const totalEl = document.getElementById('total');
+const currentEl = document.getElementById('current');
+totalEl.textContent = slides.length;
+
+// Build nav dots
+slides.forEach((_, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+  dot.onclick = () => scrollTo(i);
+  nav.appendChild(dot);
+});
+
+// Intersection Observer for reveal animations
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('in-view');
+      const idx = [...slides].indexOf(e.target);
+      currentEl.textContent = idx + 1;
+      document.querySelectorAll('.nav-dot').forEach((d,i) =>
+        d.classList.toggle('active', i === idx));
+    } else {
+      e.target.classList.remove('in-view');
+    }
+  });
+}, { threshold: 0.6 });
+
+slides.forEach(s => obs.observe(s));
+slides[0].classList.add('in-view');
+
+function scrollTo(i) {
+  slides[i].scrollIntoView({ behavior: 'smooth' });
+}
+
+// Keyboard nav
+document.addEventListener('keydown', e => {
+  const cur = [...slides].findIndex(s => s.classList.contains('in-view'));
+  if ((e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ') && cur < slides.length - 1) {
+    e.preventDefault(); scrollTo(cur + 1);
+  }
+  if ((e.key === 'ArrowUp' || e.key === 'ArrowLeft') && cur > 0) {
+    e.preventDefault(); scrollTo(cur - 1);
+  }
+});
+
+// Touch nav
+let touchY = 0;
+document.addEventListener('touchstart', e => touchY = e.touches[0].clientY, {passive:true});
+document.addEventListener('touchend', e => {
+  const dy = touchY - e.changedTouches[0].clientY;
+  const cur = [...slides].findIndex(s => s.classList.contains('in-view'));
+  if (dy > 50 && cur < slides.length - 1) scrollTo(cur + 1);
+  if (dy < -50 && cur > 0) scrollTo(cur - 1);
+}, {passive:true});
+</script>
+</body>
+</html>
