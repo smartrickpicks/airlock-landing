@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eric Spritz — Airlock Labs</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  /* === VIEWPORT FITTING: MANDATORY BASE === */
+  html, body { height:100%; overflow-x:hidden; margin:0; padding:0; }
+  html { scroll-snap-type:y mandatory; scroll-behavior:smooth; }
+  * { box-sizing:border-box; }
+
+  :root {
+    --bg:#07090D; --raised:#0C0F16; --overlay:#111620; --border:#1A1F2E;
+    --otto:#7C5CFC; --accent:#00D1FF; --gold:#F5A623; --success:#22C55E;
+    --warning:#EAB308; --error:#EF4444; --pareto:#FF6B35;
+    --text:#E8ECF2; --text2:#8B95A8; --text3:#505A6E;
+    --otto-glow:rgba(124,92,252,0.25); --accent-glow:rgba(0,209,255,0.2);
+    --title-size:clamp(2rem,5.5vw,4.5rem);
+    --h2-size:clamp(1.4rem,3.5vw,2.8rem);
+    --h3-size:clamp(1rem,2.2vw,1.6rem);
+    --body-size:clamp(0.8rem,1.4vw,1.1rem);
+    --small-size:clamp(0.65rem,1vw,0.85rem);
+    --mono:'JetBrains Mono',monospace;
+    --sans:'Inter',system-ui,sans-serif;
+    --slide-padding:clamp(2rem,5vw,5rem);
+  }
+
+  body { background:var(--bg); color:var(--text); font-family:var(--sans); -webkit-font-smoothing:antialiased; }
+
+  .slide {
+    width:100vw; height:100vh; height:100dvh; overflow:hidden;
+    scroll-snap-align:start; display:flex; flex-direction:column;
+    position:relative; justify-content:center; align-items:center;
+    padding:var(--slide-padding);
+  }
+
+  /* Subtle grid bg */
+  .slide::before {
+    content:''; position:absolute; inset:0; opacity:0.03;
+    background-image:
+      linear-gradient(rgba(124,92,252,0.3) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(124,92,252,0.3) 1px, transparent 1px);
+    background-size:60px 60px; pointer-events:none;
+  }
+
+  /* === Typography === */
+  .tag { font-family:var(--mono); font-size:var(--small-size); font-weight:600;
+    text-transform:uppercase; letter-spacing:3px; color:var(--otto); margin-bottom:20px; }
+  .hero { font-size:var(--title-size); font-weight:900; line-height:1.05;
+    text-align:center; letter-spacing:-2px; max-width:900px; }
+  .headline { font-size:var(--h2-size); font-weight:800; line-height:1.15;
+    text-align:center; letter-spacing:-1px; max-width:800px; }
+  .sub { font-size:var(--body-size); color:var(--text2); text-align:center;
+    margin-top:16px; max-width:650px; line-height:1.6; }
+  .mono { font-family:var(--mono); }
+  .gradient { background:linear-gradient(135deg,#E8ECF2,var(--otto));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .pareto-gradient { background:linear-gradient(135deg,var(--pareto),var(--gold));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .accent-gradient { background:linear-gradient(135deg,var(--otto),var(--accent));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+
+  /* === Stat Cards === */
+  .stats { display:flex; gap:clamp(12px,2vw,24px); margin-top:clamp(24px,4vh,48px);
+    flex-wrap:wrap; justify-content:center; }
+  .stat { background:var(--raised); border:1px solid var(--border); border-radius:12px;
+    padding:clamp(16px,2vw,32px) clamp(20px,3vw,40px); text-align:center; min-width:140px; }
+  .stat-num { font-family:var(--mono); font-size:clamp(1.5rem,3.5vw,3rem);
+    font-weight:700; line-height:1; }
+  .stat-num.otto-c { color:var(--accent); }
+  .stat-num.gold { color:var(--gold); }
+  .stat-num.green { color:var(--success); }
+  .stat-num.pareto-c { color:var(--pareto); }
+  .stat-label { font-size:var(--small-size); color:var(--text3); margin-top:8px; }
+
+  /* === Cards === */
+  .card-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:clamp(12px,1.5vw,20px); margin-top:clamp(20px,3vh,40px);
+    width:100%; max-width:950px; }
+  .card { background:var(--raised); border:1px solid var(--border); border-radius:12px;
+    padding:clamp(16px,2vw,28px); text-align:left; }
+  .card .card-tag { font-family:var(--mono); font-size:9px; font-weight:700;
+    text-transform:uppercase; letter-spacing:2px; color:var(--otto); margin-bottom:10px; display:block; }
+  .card h3 { font-size:var(--h3-size); font-weight:700; margin-bottom:8px; }
+  .card p { font-size:var(--small-size); color:var(--text2); line-height:1.5; }
+
+  /* === Nav === */
+  .nav { position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    display:flex; gap:6px; z-index:100; background:var(--raised);
+    border:1px solid var(--border); border-radius:20px; padding:6px 14px; }
+  .nav-dot { width:7px; height:7px; border-radius:50%; background:var(--border);
+    cursor:pointer; transition:all .3s; }
+  .nav-dot.active { background:var(--otto); box-shadow:0 0 8px var(--otto-glow); }
+  .nav-dot:hover { background:var(--text3); }
+  .counter { position:fixed; top:24px; right:32px; font-family:var(--mono);
+    font-size:10px; color:var(--text3); z-index:100; }
+  .logo { position:fixed; top:24px; left:32px; font-family:var(--mono);
+    font-size:11px; font-weight:700; color:var(--text3); letter-spacing:3px;
+    text-transform:uppercase; z-index:100; }
+
+  /* === Animations === */
+  @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes pulseGlow { 0%,100%{box-shadow:0 0 20px rgba(124,92,252,0)} 50%{box-shadow:0 0 40px rgba(124,92,252,0.15)} }
+  .reveal { opacity:0; }
+  .slide.in-view .reveal { animation:fadeUp .6s ease forwards; }
+  .slide.in-view .reveal:nth-child(2) { animation-delay:.15s; }
+  .slide.in-view .reveal:nth-child(3) { animation-delay:.3s; }
+  .slide.in-view .reveal:nth-child(4) { animation-delay:.45s; }
+  .slide.in-view .reveal:nth-child(5) { animation-delay:.6s; }
+
+  @media (prefers-reduced-motion:reduce) {
+    .reveal { opacity:1; animation:none !important; }
+    html { scroll-behavior:auto; }
+  }
+
+  /* === Responsive === */
+  @media (max-width:768px) {
+    .card-row { grid-template-columns:1fr; }
+  }
+
+  /* === Team Grid === */
+  .team-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+    gap:clamp(10px,1.5vw,16px); margin-top:clamp(20px,3vh,36px);
+    width:100%; max-width:800px; }
+  .team-card { background:var(--raised); border:1px solid var(--border); border-radius:10px;
+    padding:clamp(12px,1.5vw,20px); text-align:center; }
+  .team-card .name { font-weight:700; font-size:var(--body-size); color:var(--text); }
+  .team-card .role { font-family:var(--mono); font-size:9px; font-weight:600;
+    text-transform:uppercase; letter-spacing:2px; color:var(--otto); margin-top:4px; }
+  .team-card .detail { font-size:var(--small-size); color:var(--text3); margin-top:6px; line-height:1.4; }
+  .team-card.you { border-color:rgba(124,92,252,0.4); background:rgba(124,92,252,0.06); }
+
+  /* === Ask List === */
+  .ask-list { display:flex; flex-direction:column; gap:16px; margin-top:clamp(20px,3vh,36px);
+    max-width:750px; width:100%; }
+  .ask-item { display:flex; gap:16px; align-items:flex-start; background:var(--raised);
+    border:1px solid var(--border); border-radius:12px; padding:clamp(16px,2vw,24px); }
+  .ask-num { font-family:var(--mono); font-size:var(--h3-size); font-weight:700;
+    color:var(--otto); min-width:32px; }
+  .ask-content { font-size:var(--body-size); color:var(--text2); line-height:1.6; }
+  .ask-content strong { color:var(--text); }
+</style>
+</head>
+<body>
+
+<!-- === PASSWORD GATE === -->
+<div id="pw-gate" style="position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">
+  <div style="font-family:var(--mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:3px;color:var(--otto);margin-bottom:8px">Airlock Labs</div>
+  <div style="font-size:clamp(1.2rem,2.5vw,1.8rem);font-weight:700;color:var(--text);text-align:center">This document is private.</div>
+  <div style="font-size:var(--body-size);color:var(--text3);margin-bottom:8px">Enter password to continue.</div>
+  <input id="pw-input" type="password" placeholder="Password" autofocus
+    style="background:var(--raised);border:1px solid var(--border);border-radius:8px;padding:12px 20px;color:var(--text);font-family:var(--mono);font-size:14px;width:240px;text-align:center;outline:none"
+    onfocus="this.style.borderColor='var(--otto)'" onblur="this.style.borderColor='var(--border)'">
+  <div id="pw-error" style="font-size:12px;color:var(--error);font-family:var(--mono);opacity:0;transition:opacity .3s">Wrong password</div>
+</div>
+<script>
+(function(){
+  const KEY = 'airlock_spritz_auth';
+  if (sessionStorage.getItem(KEY) === '1') { document.getElementById('pw-gate').remove(); return; }
+  document.getElementById('pw-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      if (this.value.toLowerCase() === 'servicenow') {
+        sessionStorage.setItem(KEY, '1');
+        document.getElementById('pw-gate').remove();
+      } else {
+        document.getElementById('pw-error').style.opacity = '1';
+        this.value = '';
+        setTimeout(() => document.getElementById('pw-error').style.opacity = '0', 2000);
+      }
+    }
+  });
+})();
+</script>
+
+<div class="logo">Airlock Labs</div>
+<div class="counter"><span id="current">1</span> / <span id="total">10</span></div>
+
+<!-- ===== SLIDE 1: Title ===== -->
+<section class="slide" id="s1">
+  <div class="tag reveal">For Eric Spritz &middot; From Zac</div>
+  <h1 class="hero reveal"><span class="gradient">I Need Your Brain For An Hour.</span></h1>
+  <p class="sub reveal">Here's what I want to spend our April call on.</p>
+</section>
+
+<!-- ===== SLIDE 2: I'm Not Going to Pitch You ===== -->
+<section class="slide" id="s2">
+  <div class="tag reveal">Ground Rules</div>
+  <h2 class="headline reveal"><span style="color:var(--text2)">I'm not going to</span> <span style="color:var(--text3);text-decoration:line-through">pitch you</span>.</h2>
+  <p class="sub reveal">You're tired of AI. You don't want a new job. That's fine.</p>
+  <p class="sub reveal">You gave me an hour a month. I want to use it well.</p>
+  <p class="sub reveal" style="color:var(--text);font-weight:600">What I have isn't an AI pitch. It's three real deals with real friction that need the best sales mind I know.</p>
+</section>
+
+<!-- ===== SLIDE 3: The Technology (60 Seconds) ===== -->
+<section class="slide" id="s3">
+  <div class="tag reveal">The Technology &middot; 60 Seconds</div>
+  <h2 class="headline reveal">We built a <span class="accent-gradient">routing layer</span> between AI tasks and AI models.</h2>
+  <p class="sub reveal">Instead of picking one expensive model for everything, we route each task to the model that's best at it. We took the top 4 spots on a public benchmark. The models are commodities. The routing is the product.</p>
+  <div class="stats reveal">
+    <div class="stat"><div class="stat-num green">22.2/23</div><div class="stat-label">Benchmark Score</div></div>
+    <div class="stat"><div class="stat-num green">100%</div><div class="stat-label">Success Rate</div></div>
+    <div class="stat"><div class="stat-num otto-c">$0.39</div><div class="stat-label">Our Cost</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--error)">$4.08</div><div class="stat-label">Best Single Model</div></div>
+  </div>
+  <p class="sub reveal" style="margin-top:16px;font-size:var(--small-size);color:var(--text3)">That's the last time I'll talk about the tech. Now let's talk about the deals.</p>
+</section>
+
+<!-- ===== SLIDE 4: Deal #1 — GPU Infrastructure ===== -->
+<section class="slide" id="s4">
+  <div class="tag reveal">Deal #1 &middot; GPU Infrastructure</div>
+  <h2 class="headline reveal">The <span class="pareto-gradient">enterprise distribution</span> puzzle.</h2>
+  <div class="card-row reveal">
+    <div class="card">
+      <span class="card-tag">The Partner</span>
+      <h3>INTROL</h3>
+      <p>#14 on Inc 5000. 100K+ GPUs deployed. 9,594% growth. Fully bootstrapped. Chicago.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">The Feedback</span>
+      <h3>Due Diligence Wall</h3>
+      <p>Their clients have massive due diligence. Selling software on top of hardware labor would be a whole new business arm. They want a demo first.</p>
+    </div>
+    <div class="card" style="border-color:rgba(245,166,35,0.3);background:rgba(245,166,35,0.03)">
+      <span class="card-tag" style="color:var(--gold)">The Question</span>
+      <h3>For You</h3>
+      <p>How do we structure a licensing or referral model that gets our routing software onto their GPU deployments without creating a new sales motion for them?</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 5: Deal #2 — Municipal ERP ===== -->
+<section class="slide" id="s5">
+  <div class="tag reveal">Deal #2 &middot; Municipal ERP</div>
+  <h2 class="headline reveal">240 cities. 240 <span class="accent-gradient">routing nodes</span>.</h2>
+  <div class="card-row reveal">
+    <div class="card">
+      <span class="card-tag">The Partner</span>
+      <h3>HiperWeb</h3>
+      <p>240 cities. Municipal ERP. Acquired by gWorks. Spokane WA pilot city. Tyler Technologies ($15B+ public) is the comp.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">The Opportunity</span>
+      <h3>Civic AI at Scale</h3>
+      <p>240 microservices serving 240 cities. Each one could route through our engine. That's 240 CORE nodes &mdash; civic AI for every city they serve.</p>
+    </div>
+    <div class="card" style="border-color:rgba(245,166,35,0.3);background:rgba(245,166,35,0.03)">
+      <span class="card-tag" style="color:var(--gold)">The Question</span>
+      <h3>For You</h3>
+      <p>How do you sell an AI routing layer into government procurement? What does the licensing look like when your distribution channel is a govtech ERP?</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 6: Deal #3 — Civic AI ===== -->
+<section class="slide" id="s6">
+  <div class="tag reveal">Deal #3 &middot; Civic AI</div>
+  <h2 class="headline reveal"><span class="gradient">Detroit First.</span></h2>
+  <div class="card-row reveal">
+    <div class="card">
+      <span class="card-tag">The Vision</span>
+      <h3>DetroitGPT</h3>
+      <p>Civic AI for local commerce. Ask "what's the best BBQ in Detroit?" and get an answer that routes to local businesses, not whoever paid Google the most.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">The Economics</span>
+      <h3>Local Dollar Multiplier</h3>
+      <p>$52 of every $100 at an independent business stays local. $13.60 at a chain. Our routing increases the $52 side.</p>
+    </div>
+    <div class="card" style="border-color:rgba(245,166,35,0.3);background:rgba(245,166,35,0.03)">
+      <span class="card-tag" style="color:var(--gold)">The Question</span>
+      <h3>For You</h3>
+      <p>How do you sell a city on adopting an AI layer? Is this B2G, a B2B play through local chambers, or a consumer product that cities endorse?</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 7: What I Actually Need ===== -->
+<section class="slide" id="s7">
+  <div class="tag reveal">The Ask</div>
+  <h2 class="headline reveal">What I actually <span style="color:var(--gold)">need</span>.</h2>
+  <div class="ask-list reveal">
+    <div class="ask-item">
+      <div class="ask-num">01</div>
+      <div class="ask-content"><strong>A licensing framework.</strong> How we package routing for enterprise partners. Referral? White-label? Embedded? SaaS?</div>
+    </div>
+    <div class="ask-item">
+      <div class="ask-num">02</div>
+      <div class="ask-content"><strong>A sales motion.</strong> What's the playbook for selling through distribution partners instead of direct?</div>
+    </div>
+    <div class="ask-item">
+      <div class="ask-num">03</div>
+      <div class="ask-content"><strong>A pipeline model.</strong> How many deals like INTROL do we need to build a real revenue forecast?</div>
+    </div>
+    <div class="ask-item">
+      <div class="ask-num">04</div>
+      <div class="ask-content"><strong>Your honest take.</strong> Is this real? What am I missing? What would you do differently?</div>
+    </div>
+  </div>
+  <p class="sub reveal" style="margin-top:20px;font-size:var(--small-size);color:var(--text3)">I don't need a business plan. I need an hour with the best sales strategist I know.</p>
+</section>
+
+<!-- ===== SLIDE 8: The Roster ===== -->
+<section class="slide" id="s8">
+  <div class="tag reveal">The Roster</div>
+  <h2 class="headline reveal">This isn't a <span style="color:var(--text3)">hobby</span>. This is <span class="accent-gradient">the team</span>.</h2>
+  <div class="team-grid reveal">
+    <div class="team-card">
+      <div class="name">Zac Holwerda</div>
+      <div class="role">CEO &middot; Co-Founder</div>
+      <div class="detail">3 patents. Product, vision, code. Detroit.</div>
+    </div>
+    <div class="team-card">
+      <div class="name">Otto</div>
+      <div class="role">Chief Agent Officer</div>
+      <div class="detail">The AI that built the routing engine.</div>
+    </div>
+    <div class="team-card">
+      <div class="name">Alex Moyer</div>
+      <div class="role">COO &middot; Co-Founder</div>
+      <div class="detail">UMich. Arriving Detroit April 2.</div>
+    </div>
+    <div class="team-card">
+      <div class="name">Matt Kalhoun</div>
+      <div class="role">CTO &middot; Co-Founder</div>
+      <div class="detail">HiperWeb. 240 cities.</div>
+    </div>
+    <div class="team-card">
+      <div class="name">Kyle Kempler</div>
+      <div class="role">CFO</div>
+      <div class="detail">Citibank fintech director. NYC.</div>
+    </div>
+    <div class="team-card">
+      <div class="name">Erin Beck / INTROL</div>
+      <div class="role">GPU Infrastructure</div>
+      <div class="detail">#14 Inc 5000. Chicago.</div>
+    </div>
+    <div class="team-card">
+      <div class="name">Eric Sawitoski</div>
+      <div class="role">Creative Advisor</div>
+      <div class="detail">Team architect.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 9: The Math ===== -->
+<section class="slide" id="s9">
+  <div class="tag reveal">The Math You'll Appreciate</div>
+  <h2 class="headline reveal">Unit economics a <span class="pareto-gradient">sales leader</span> can sell.</h2>
+  <div class="stats reveal">
+    <div class="stat"><div class="stat-num otto-c">$0.39</div><div class="stat-label">Cost per Run (Our Router)</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--error)">$4.08</div><div class="stat-label">Cost per Run (Best Model)</div></div>
+    <div class="stat"><div class="stat-num green">10.5x</div><div class="stat-label">Cost Advantage</div></div>
+  </div>
+  <div class="stats reveal" style="margin-top:clamp(12px,2vh,20px)">
+    <div class="stat"><div class="stat-num gold">$245</div><div class="stat-label">Total R&D to Build</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--text)">$0</div><div class="stat-label">VC Raised</div></div>
+    <div class="stat"><div class="stat-num pareto-c">3</div><div class="stat-label">Patents Filed</div></div>
+  </div>
+  <p class="sub reveal" style="margin-top:20px;color:var(--text);font-weight:500">I built a product that costs pennies to run, has zero competition on the benchmark, and I own the IP free and clear. Now I need someone who knows how to turn that into revenue.</p>
+</section>
+
+<!-- ===== SLIDE 10: The Close ===== -->
+<section class="slide" id="s10" style="gap:0">
+  <div class="tag reveal" style="margin-bottom:clamp(16px,3vh,32px)">April 2026</div>
+  <h1 class="hero reveal" style="font-size:clamp(1.6rem,4.5vw,3.5rem);max-width:800px;letter-spacing:-1px"><span class="gradient">You said one call a month.</span></h1>
+  <div style="height:clamp(16px,3vh,32px)" class="reveal"></div>
+  <p class="sub reveal" style="font-size:var(--h3-size);color:var(--text2);font-weight:600">This is what I want to spend it on.</p>
+  <div style="height:clamp(16px,3vh,32px)" class="reveal"></div>
+  <p class="sub reveal" style="font-size:var(--h2-size);color:var(--text);font-weight:800">When's good this week?</p>
+  <p class="sub reveal" style="margin-top:clamp(24px,4vh,48px);color:var(--text3);font-family:var(--mono);font-size:var(--small-size)">Zac Holwerda &middot; maverick@airlocklabs.io &middot; Detroit</p>
+</section>
+
+<!-- ===== NAV DOTS ===== -->
+<nav class="nav" id="nav"></nav>
+
+<script>
+/* === Presentation Controller === */
+const slides = document.querySelectorAll('.slide');
+const nav = document.getElementById('nav');
+const totalEl = document.getElementById('total');
+const currentEl = document.getElementById('current');
+totalEl.textContent = slides.length;
+
+// Build nav dots
+slides.forEach((_, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+  dot.onclick = () => scrollTo(i);
+  nav.appendChild(dot);
+});
+
+// Intersection Observer for reveal animations
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('in-view');
+      const idx = [...slides].indexOf(e.target);
+      currentEl.textContent = idx + 1;
+      document.querySelectorAll('.nav-dot').forEach((d,i) =>
+        d.classList.toggle('active', i === idx));
+    } else {
+      e.target.classList.remove('in-view');
+    }
+  });
+}, { threshold: 0.6 });
+
+slides.forEach(s => obs.observe(s));
+slides[0].classList.add('in-view');
+
+function scrollTo(i) {
+  slides[i].scrollIntoView({ behavior: 'smooth' });
+}
+
+// Keyboard nav
+document.addEventListener('keydown', e => {
+  const cur = [...slides].findIndex(s => s.classList.contains('in-view'));
+  if ((e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ') && cur < slides.length - 1) {
+    e.preventDefault(); scrollTo(cur + 1);
+  }
+  if ((e.key === 'ArrowUp' || e.key === 'ArrowLeft') && cur > 0) {
+    e.preventDefault(); scrollTo(cur - 1);
+  }
+});
+
+// Touch nav
+let touchY = 0;
+document.addEventListener('touchstart', e => touchY = e.touches[0].clientY, {passive:true});
+document.addEventListener('touchend', e => {
+  const dy = touchY - e.changedTouches[0].clientY;
+  const cur = [...slides].findIndex(s => s.classList.contains('in-view'));
+  if (dy > 50 && cur < slides.length - 1) scrollTo(cur + 1);
+  if (dy < -50 && cur > 0) scrollTo(cur - 1);
+}, {passive:true});
+</script>
+</body>
+</html>
