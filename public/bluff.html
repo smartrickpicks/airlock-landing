@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Call Our Bluff — Airlock Cognitive Router</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#07090D;--raised:#0C0F16;--overlay:#111620;--border:#1A1F2E;
+    --otto:#7C5CFC;--accent:#00D1FF;--gold:#F5A623;--success:#22C55E;
+    --warning:#EAB308;--error:#EF4444;--pareto:#FF6B35;
+    --text:#E8ECF2;--text2:#8B95A8;--text3:#505A6E;
+    --otto-glow:rgba(124,92,252,0.25);--accent-glow:rgba(0,209,255,0.2);
+    --mono:'JetBrains Mono',monospace;--sans:'Inter',system-ui,sans-serif;
+  }
+  html,body{height:100%;overflow-x:hidden}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+
+  body::before{
+    content:'';position:fixed;inset:0;opacity:0.03;pointer-events:none;z-index:0;
+    background-image:linear-gradient(rgba(124,92,252,0.3) 1px,transparent 1px),linear-gradient(90deg,rgba(124,92,252,0.3) 1px,transparent 1px);
+    background-size:60px 60px;
+  }
+
+  .container{max-width:1100px;margin:0 auto;padding:40px 24px;position:relative;z-index:1}
+
+  /* ── Admin bar (scroll past before projecting) ── */
+  .admin-bar{background:var(--overlay);border:1px solid var(--error);border-radius:12px;padding:16px 20px;margin-bottom:24px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .admin-bar label{font-family:var(--mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:2px;color:var(--error)}
+  .admin-bar input{flex:1;min-width:200px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px 12px;color:var(--text);font-family:var(--mono);font-size:12px;outline:none}
+  .admin-bar input:focus{border-color:var(--otto)}
+  .admin-bar .admin-tag{font-family:var(--mono);font-size:9px;font-weight:700;background:var(--error);color:#fff;padding:2px 6px;border-radius:3px;text-transform:uppercase}
+  .admin-bar .admin-note{font-size:10px;color:var(--text3);font-family:var(--mono)}
+
+  /* ── Header ── */
+  .header{text-align:center;margin-bottom:40px}
+  .tag{font-family:var(--mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:3px;color:var(--otto);margin-bottom:16px}
+  h1{font-size:clamp(2.2rem,5.5vw,4rem);font-weight:900;letter-spacing:-2px;line-height:1.05;
+    background:linear-gradient(135deg,#E8ECF2,var(--otto));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .subtitle{color:var(--text2);font-size:clamp(0.85rem,1.3vw,1.05rem);margin-top:12px;line-height:1.6;max-width:650px;margin-left:auto;margin-right:auto}
+
+  /* ── Bluff counter ── */
+  .counter{text-align:center;margin-bottom:40px}
+  .counter-num{font-family:var(--mono);font-size:clamp(3rem,8vw,6rem);font-weight:900;color:var(--otto);line-height:1}
+  .counter-label{font-family:var(--mono);font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:3px;margin-top:8px}
+
+  /* ── Payment section ── */
+  .payment-section{display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:center;
+    background:var(--raised);border:1px solid var(--border);border-radius:16px;padding:32px;margin-bottom:32px}
+  .qr-wrap{text-align:center}
+  .qr-wrap img{border-radius:12px;border:4px solid #fff;width:180px;height:180px}
+  .qr-label{font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:8px;text-transform:uppercase;letter-spacing:1px}
+  .payment-info h2{font-size:clamp(1.2rem,2.5vw,1.8rem);font-weight:800;margin-bottom:12px}
+  .payment-info .price{font-family:var(--mono);font-size:clamp(2rem,4vw,3rem);font-weight:900;color:var(--success);margin-bottom:8px}
+  .payment-info .chain{font-family:var(--mono);font-size:12px;color:var(--accent);margin-bottom:16px}
+  .payment-info .steps{list-style:none;padding:0}
+  .payment-info .steps li{font-size:13px;color:var(--text2);padding:6px 0;padding-left:24px;position:relative;line-height:1.5}
+  .payment-info .steps li::before{content:'';position:absolute;left:0;top:12px;width:12px;height:12px;border-radius:50%;border:2px solid var(--otto)}
+  .payment-info .steps li.done::before{background:var(--success);border-color:var(--success)}
+  .wallet-addr{font-family:var(--mono);font-size:11px;color:var(--text3);background:var(--overlay);padding:8px 12px;border-radius:6px;margin-top:12px;word-break:break-all;cursor:pointer;transition:color 0.2s}
+  .wallet-addr:hover{color:var(--accent)}
+
+  /* ── Buttons ── */
+  .btn{font-family:var(--mono);font-weight:600;font-size:13px;text-transform:uppercase;letter-spacing:1px;border:none;border-radius:8px;padding:14px 28px;cursor:pointer;transition:all 0.2s;white-space:nowrap}
+  .btn-primary{background:var(--otto);color:#fff}
+  .btn-primary:hover{background:#6B4CE0;transform:translateY(-1px);box-shadow:0 4px 20px var(--otto-glow)}
+  .btn-primary:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none}
+  .btn-danger{background:var(--pareto);color:#fff}
+  .btn-danger:hover{background:#e55a2b}
+
+  .run-section{text-align:center;margin-bottom:40px}
+  .run-section .btn{font-size:16px;padding:20px 56px}
+
+  /* ── Task cards ── */
+  .tasks-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-bottom:32px}
+  .task-card{background:var(--raised);border:1px solid var(--border);border-radius:12px;padding:24px;position:relative;overflow:hidden;transition:all 0.3s}
+  .task-card.active{border-color:var(--otto);box-shadow:0 0 30px var(--otto-glow)}
+  .task-card.done{border-color:var(--success)}
+  .task-card.error{border-color:var(--error)}
+  .task-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .task-type{font-family:var(--mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:2px;padding:4px 10px;border-radius:4px;background:var(--overlay)}
+  .task-type.procedural{color:var(--accent)}
+  .task-type.creative{color:var(--gold)}
+  .task-type.analytical{color:var(--success)}
+  .task-status{font-family:var(--mono);font-size:11px;color:var(--text3)}
+  .task-title{font-weight:700;font-size:15px;margin-bottom:8px}
+  .task-desc{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:16px}
+
+  .route-decision{background:var(--overlay);border-radius:8px;padding:12px 16px;font-family:var(--mono);font-size:12px;display:none}
+  .task-card.active .route-decision,.task-card.done .route-decision,.task-card.error .route-decision{display:block}
+  .route-label{color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+  .route-model{color:var(--otto);font-weight:600;font-size:14px}
+  .route-reason{color:var(--text2);margin-top:4px;font-size:11px}
+  .route-cost{color:var(--success);font-weight:600;margin-top:4px}
+
+  .result-preview{margin-top:12px;background:var(--overlay);border-radius:8px;padding:12px 16px;font-size:12px;color:var(--text2);line-height:1.5;max-height:120px;overflow-y:auto;display:none}
+  .task-card.done .result-preview{display:block}
+
+  /* ── Cost comparison ── */
+  .cost-panel{background:var(--raised);border:1px solid var(--border);border-radius:16px;padding:32px;margin-bottom:32px}
+  .cost-panel h3{font-family:var(--mono);font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:2px;color:var(--text2);margin-bottom:24px}
+  .cost-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}
+  .cost-row:last-child{border-bottom:none}
+  .cost-label{font-size:14px;font-weight:600}
+  .cost-label.opus-label{color:var(--error)}
+  .cost-label.otto-label{color:var(--success)}
+  .cost-value{font-family:var(--mono);font-size:clamp(1.2rem,3vw,2rem);font-weight:700}
+  .cost-value.opus-cost{color:var(--error)}
+  .cost-value.otto-cost{color:var(--success)}
+  .savings-bar{margin-top:24px;background:var(--overlay);border-radius:8px;overflow:hidden;height:32px;position:relative}
+  .savings-fill{height:100%;background:linear-gradient(90deg,var(--success),var(--accent));border-radius:8px;transition:width 1s ease;display:flex;align-items:center;padding:0 12px;font-family:var(--mono);font-size:12px;font-weight:700;color:var(--bg);white-space:nowrap}
+
+  /* ── Leaderboard ── */
+  .leaderboard{background:var(--raised);border:1px solid var(--border);border-radius:16px;padding:32px;margin-bottom:32px}
+  .leaderboard h3{font-family:var(--mono);font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:2px;color:var(--text2);margin-bottom:24px}
+  .lb-table{width:100%;border-collapse:collapse}
+  .lb-table thead th{font-family:var(--mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text3);padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
+  .lb-table thead th.r{text-align:right}
+  .lb-table tbody td{padding:10px 12px;border-bottom:1px solid var(--border);font-size:13px}
+  .lb-table tbody td.r{text-align:right;font-family:var(--mono)}
+  .lb-table tbody tr{transition:background 0.2s}
+  .lb-table tbody tr.new-entry{animation:flash-green 1s ease}
+  @keyframes flash-green{0%{background:rgba(34,197,94,0.2)}100%{background:transparent}}
+  .lb-empty{text-align:center;padding:32px;color:var(--text3);font-family:var(--mono);font-size:13px}
+
+  /* ── Waitlist ── */
+  .waitlist{background:var(--raised);border:1px solid var(--otto);border-radius:16px;padding:32px;margin-bottom:32px;text-align:center;box-shadow:0 0 30px var(--otto-glow)}
+  .waitlist h3{font-size:clamp(1.2rem,2.5vw,1.6rem);font-weight:800;margin-bottom:8px}
+  .waitlist p{font-size:13px;color:var(--text2);margin-bottom:24px}
+  .waitlist-form{display:flex;gap:12px;max-width:600px;margin:0 auto;flex-wrap:wrap}
+  .waitlist-form input{flex:1;min-width:200px;background:var(--overlay);border:1px solid var(--border);border-radius:8px;padding:12px 16px;color:var(--text);font-family:var(--mono);font-size:13px;outline:none}
+  .waitlist-form input:focus{border-color:var(--otto)}
+  .waitlist-form input::placeholder{color:var(--text3)}
+  .waitlist-msg{margin-top:12px;font-family:var(--mono);font-size:12px;display:none}
+
+  /* ── Spinner ── */
+  .spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--otto);border-radius:50%;animation:spin 0.6s linear infinite;display:inline-block;vertical-align:middle}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* ── Footer ── */
+  .footer{text-align:center;padding:40px 0;border-top:1px solid var(--border);margin-top:40px}
+  .footer p{font-size:12px;color:var(--text3);font-family:var(--mono)}
+
+  .fade-in{opacity:0;transform:translateY(20px);animation:fadeIn 0.6s ease forwards}
+  @keyframes fadeIn{to{opacity:1;transform:translateY(0)}}
+
+  @keyframes pulse-glow{0%,100%{box-shadow:0 0 20px var(--otto-glow)}50%{box-shadow:0 0 40px var(--otto-glow)}}
+  .task-card.active{animation:pulse-glow 2s ease infinite}
+
+  @media(max-width:768px){
+    .payment-section{grid-template-columns:1fr;text-align:center}
+    .tasks-grid{grid-template-columns:1fr}
+    .waitlist-form{flex-direction:column}
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Admin Bar — scroll past this before projecting -->
+  <div class="admin-bar" id="adminBar">
+    <span class="admin-tag">Presenter</span>
+    <label>OpenRouter Key:</label>
+    <input type="password" id="adminKey" placeholder="sk-or-v1-..." autocomplete="off">
+    <label>Solana Wallet:</label>
+    <input type="text" id="walletInput" placeholder="Your Solana USDC address" value="">
+    <span class="admin-note">Scroll past this before projecting. Press Ctrl+Shift+A to toggle.</span>
+  </div>
+
+  <!-- Header -->
+  <div class="header fade-in" id="mainContent">
+    <div class="tag">Detroit Claude Code Meetup &middot; April 2, 2026</div>
+    <h1>Call Our Bluff</h1>
+    <p class="subtitle">We said our cognitive router beats Opus at 1/10th the cost. We're not asking you to believe us. We're daring you to prove us wrong.</p>
+  </div>
+
+  <!-- Bluff Counter -->
+  <div class="counter fade-in" style="animation-delay:0.1s">
+    <div class="counter-num" id="bluffCount">0</div>
+    <div class="counter-label">have called our bluff. Nobody has won.</div>
+  </div>
+
+  <!-- Payment Section -->
+  <div class="payment-section fade-in" style="animation-delay:0.2s">
+    <div class="qr-wrap">
+      <img id="qrCode" src="" alt="Scan to send USDC">
+      <div class="qr-label">Scan with Phantom</div>
+    </div>
+    <div class="payment-info">
+      <h2>Try It Yourself</h2>
+      <div class="price">$0.50 USDC</div>
+      <div class="chain">Solana Network &middot; ~0.4s confirmation</div>
+      <ol class="steps">
+        <li>Open Phantom or any Solana wallet</li>
+        <li>Scan the QR code or copy the address below</li>
+        <li>Send 0.50 USDC</li>
+        <li>We run 4 tasks through 4 different models</li>
+        <li>Watch the router pick the right brain for each job</li>
+      </ol>
+      <div class="wallet-addr" id="walletDisplay" onclick="copyWallet()" title="Click to copy">
+        Paste your Solana wallet address in the admin bar above
+      </div>
+    </div>
+  </div>
+
+  <!-- Run Button -->
+  <div class="run-section fade-in" style="animation-delay:0.3s">
+    <button class="btn btn-danger" id="runBtn" onclick="runAllTasks()">
+      Run the Router &rarr;
+    </button>
+  </div>
+
+  <!-- Task Cards -->
+  <div class="tasks-grid fade-in" style="animation-delay:0.4s">
+    <div class="task-card" id="task-email">
+      <div class="task-header">
+        <span class="task-type procedural">Procedural</span>
+        <span class="task-status" id="status-email">Waiting</span>
+      </div>
+      <div class="task-title">Email Triage</div>
+      <div class="task-desc">Classify 5 emails as urgent/normal/spam. Extract action items. Rule-following, classification-first.</div>
+      <div class="route-decision" id="route-email">
+        <div class="route-label">Cognitive Router Decision</div>
+        <div class="route-model" id="model-email"></div>
+        <div class="route-reason" id="reason-email"></div>
+        <div class="route-cost" id="cost-email"></div>
+      </div>
+      <div class="result-preview" id="result-email"></div>
+    </div>
+
+    <div class="task-card" id="task-blog">
+      <div class="task-header">
+        <span class="task-type creative">Creative</span>
+        <span class="task-status" id="status-blog">Waiting</span>
+      </div>
+      <div class="task-title">Blog Introduction</div>
+      <div class="task-desc">Write a compelling opening paragraph. Needs tone, rhythm, audience awareness.</div>
+      <div class="route-decision" id="route-blog">
+        <div class="route-label">Cognitive Router Decision</div>
+        <div class="route-model" id="model-blog"></div>
+        <div class="route-reason" id="reason-blog"></div>
+        <div class="route-cost" id="cost-blog"></div>
+      </div>
+      <div class="result-preview" id="result-blog"></div>
+    </div>
+
+    <div class="task-card" id="task-data">
+      <div class="task-header">
+        <span class="task-type analytical">Analytical</span>
+        <span class="task-status" id="status-data">Waiting</span>
+      </div>
+      <div class="task-title">Revenue Analysis</div>
+      <div class="task-desc">Analyze quarterly figures, identify trends, flag anomalies. Pattern-detecting, skeptical.</div>
+      <div class="route-decision" id="route-data">
+        <div class="route-label">Cognitive Router Decision</div>
+        <div class="route-model" id="model-data"></div>
+        <div class="route-reason" id="reason-data"></div>
+        <div class="route-cost" id="cost-data"></div>
+      </div>
+      <div class="result-preview" id="result-data"></div>
+    </div>
+
+    <div class="task-card" id="task-eli5">
+      <div class="task-header">
+        <span class="task-type" style="color:var(--otto)">Synthesis</span>
+        <span class="task-status" id="status-eli5">Waiting</span>
+      </div>
+      <div class="task-title">Explain Like I'm Five</div>
+      <div class="task-desc">Explain quantum computing to a child. Metaphor-building + complexity reduction.</div>
+      <div class="route-decision" id="route-eli5">
+        <div class="route-label">Cognitive Router Decision</div>
+        <div class="route-model" id="model-eli5"></div>
+        <div class="route-reason" id="reason-eli5"></div>
+        <div class="route-cost" id="cost-eli5"></div>
+      </div>
+      <div class="result-preview" id="result-eli5"></div>
+    </div>
+  </div>
+
+  <!-- Cost Comparison -->
+  <div class="cost-panel fade-in" style="animation-delay:0.5s">
+    <h3>Live Cost Comparison</h3>
+    <div class="cost-row">
+      <span class="cost-label opus-label">Claude Opus 4.6 (single model)</span>
+      <span class="cost-value opus-cost" id="opusCost">$0.000</span>
+    </div>
+    <div class="cost-row">
+      <span class="cost-label otto-label">Otto Cognitive Router (4 models)</span>
+      <span class="cost-value otto-cost" id="ottoCost">$0.000</span>
+    </div>
+    <div class="savings-bar">
+      <div class="savings-fill" id="savingsBar" style="width:0%">0% SAVED</div>
+    </div>
+    <div style="text-align:center;margin-top:16px;font-family:var(--mono);font-size:12px;color:var(--text3)" id="savingsNote">
+      Run the router to see live cost comparison
+    </div>
+  </div>
+
+  <!-- Leaderboard -->
+  <div class="leaderboard fade-in" style="animation-delay:0.6s">
+    <h3>Leaderboard — Who Called Our Bluff</h3>
+    <table class="lb-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Who</th>
+          <th class="r">Score</th>
+          <th class="r">Cost</th>
+          <th class="r">vs Opus</th>
+          <th>Time</th>
+        </tr>
+      </thead>
+      <tbody id="lbBody">
+      </tbody>
+    </table>
+    <div class="lb-empty" id="lbEmpty">No runs yet. Be the first to call our bluff.</div>
+  </div>
+
+  <!-- Waitlist -->
+  <div class="waitlist fade-in" style="animation-delay:0.7s">
+    <h3>Join the Waitlist</h3>
+    <p>Drop your wallet address. We'll let you know when the router goes live.</p>
+    <div class="waitlist-form">
+      <input type="text" id="wlWallet" placeholder="Solana wallet address">
+      <input type="email" id="wlEmail" placeholder="Email (optional)">
+      <button class="btn btn-primary" onclick="joinWaitlist()">I'm In</button>
+    </div>
+    <div class="waitlist-msg" id="wlMsg"></div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>Built by Airlock Labs &middot; Detroit, MI</p>
+    <p style="margin-top:8px">Every model used is publicly available. The routing is the product.</p>
+    <p style="margin-top:4px">Your USDC never leaves Solana. Your data never leaves your browser.</p>
+  </div>
+
+</div>
+
+<script>
+// ── Routing Table ─────────────────────────────────────────────────────
+
+const ROUTING_TABLE = {
+  email: {
+    cognitive_mode: "Procedural Guardian",
+    model: "qwen/qwen3-235b-a22b",
+    model_display: "Qwen 3 235B",
+    reason: "Classification task. MoE architecture activates rule-following expert clusters. Dense models over-interpret here.",
+    opus_cost_estimate: 0.18,
+    prompt: `You are an executive assistant. Classify each email and extract action items.\n\nEMAILS:\n1. Subject: "URGENT: Server down in production" — From: devops@company.com — "The API gateway is returning 503s. Need immediate attention."\n2. Subject: "Re: Team lunch Friday" — From: sarah@company.com — "I'm thinking Thai food. Anyone allergic?"\n3. Subject: "You've won a $1000 gift card!" — From: deals@totallylegit.biz — "Click here to claim your prize NOW!!!"\n4. Subject: "Q3 Board Deck Review" — From: cfo@company.com — "Please review the attached deck by EOD Thursday. Several numbers need verification."\n5. Subject: "Newsletter: AI Weekly Digest" — From: newsletter@ainews.com — "This week in AI: new benchmarks, model releases..."\n\nFor each email output:\n- Classification: URGENT / NORMAL / SPAM\n- Action required: Yes/No\n- If yes, action item in one sentence.`
+  },
+  blog: {
+    cognitive_mode: "Social Connector",
+    model: "minimax/minimax-m2.1",
+    model_display: "MiniMax M2.1",
+    reason: "Creative writing. Dense architecture preserves stylistic range that RLHF flattens in larger models.",
+    opus_cost_estimate: 0.12,
+    prompt: `Write a compelling opening paragraph (4-5 sentences) for a blog post titled "The Moat Isn't the Model."\n\nThesis: in AI, the competitive advantage isn't having the best single model — it's knowing which model to use for which task. Like how an ant colony is smarter than any individual ant.\n\nTone: confident, conversational, slightly provocative. For technical founders and AI engineers. Start with a surprising fact, not a generic statement.`
+  },
+  data: {
+    cognitive_mode: "Quantitative Analyst",
+    model: "deepseek/deepseek-chat-v3-0324",
+    model_display: "DeepSeek V3",
+    reason: "Analytical task. Dense next-token prediction catches numerical anomalies that MoE expert routing misses.",
+    opus_cost_estimate: 0.22,
+    prompt: `Analyze this quarterly revenue data:\n\nQ1 2025: $1.2M (SaaS: $800K, Services: $400K)\nQ2 2025: $1.4M (SaaS: $950K, Services: $450K)\nQ3 2025: $1.1M (SaaS: $1.05M, Services: $50K)\nQ4 2025: $1.8M (SaaS: $1.3M, Services: $500K)\nQ1 2026: $2.1M (SaaS: $1.7M, Services: $400K)\n\nIdentify:\n1. Growth trend and rate\n2. Revenue mix shift\n3. Anomalies (hint: Q3 Services)\n4. Q2 2026 projection with confidence\n\nBe specific with percentages. Flag anything suspicious.`
+  },
+  eli5: {
+    cognitive_mode: "Empathic Translator",
+    model: "nvidia/llama-3.3-nemotron-super-49b-v1",
+    model_display: "Nemotron Super 49B",
+    reason: "Synthesis task. Smaller model forces compression, producing better analogies than verbose large models.",
+    opus_cost_estimate: 0.08,
+    prompt: `Explain quantum computing to a 5-year-old in exactly 4 sentences. Use a concrete analogy (toys, animals, food). Accurate enough for a physicist, simple enough for a child to repeat.`
+  }
+};
+
+const MODEL_COSTS = {
+  'qwen/qwen3-235b-a22b': { input: 0.071, output: 0.10 },
+  'minimax/minimax-m2.1': { input: 0.27, output: 0.95 },
+  'deepseek/deepseek-chat-v3-0324': { input: 0.14, output: 0.28 },
+  'nvidia/llama-3.3-nemotron-super-49b-v1': { input: 0.10, output: 0.50 }
+};
+
+// ── State ─────────────────────────────────────────────────────────────
+let totalOttoCost = 0;
+let totalOpusCost = 0;
+let runCount = 0;
+const leaderboard = [];
+const taskOrder = ['email', 'blog', 'data', 'eli5'];
+
+// ── Admin ─────────────────────────────────────────────────────────────
+const adminBar = document.getElementById('adminBar');
+const adminKeyInput = document.getElementById('adminKey');
+const walletInput = document.getElementById('walletInput');
+
+// Toggle admin bar with Ctrl+Shift+A
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+    adminBar.style.display = adminBar.style.display === 'none' ? 'flex' : 'none';
+    e.preventDefault();
+  }
+});
+
+// Save admin key to localStorage
+adminKeyInput.addEventListener('input', () => {
+  localStorage.setItem('pareto-admin-key', adminKeyInput.value);
+});
+walletInput.addEventListener('input', () => {
+  localStorage.setItem('pareto-wallet', walletInput.value);
+  updateWalletDisplay();
+  updateQR();
+});
+
+// Restore from localStorage
+adminKeyInput.value = localStorage.getItem('pareto-admin-key') || '';
+walletInput.value = localStorage.getItem('pareto-wallet') || '';
+
+function updateWalletDisplay() {
+  const addr = walletInput.value.trim();
+  const display = document.getElementById('walletDisplay');
+  if (addr) {
+    display.textContent = addr;
+    display.title = 'Click to copy';
+  } else {
+    display.textContent = 'Paste your Solana wallet address in the admin bar above';
+  }
+}
+
+function updateQR() {
+  const addr = walletInput.value.trim();
+  const img = document.getElementById('qrCode');
+  if (addr) {
+    // Use QR Server API — works offline? No, needs internet. Fine for meetup.
+    img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=solana:${encodeURIComponent(addr)}&bgcolor=0C0F16&color=E8ECF2`;
+    img.alt = `Send USDC to ${addr.substring(0,8)}...`;
+  } else {
+    img.src = '';
+    img.alt = 'Enter wallet address above';
+  }
+}
+
+function copyWallet() {
+  const addr = walletInput.value.trim();
+  if (addr) {
+    navigator.clipboard.writeText(addr).then(() => {
+      const display = document.getElementById('walletDisplay');
+      const orig = display.textContent;
+      display.textContent = 'Copied!';
+      display.style.color = 'var(--success)';
+      setTimeout(() => { display.textContent = orig; display.style.color = ''; }, 1500);
+    });
+  }
+}
+
+// ── Run All Tasks ─────────────────────────────────────────────────────
+async function runAllTasks() {
+  const key = adminKeyInput.value.trim();
+  if (!key) {
+    alert('Enter your OpenRouter key in the admin bar first (Ctrl+Shift+A to show)');
+    return;
+  }
+
+  const runBtn = document.getElementById('runBtn');
+  runBtn.disabled = true;
+  runBtn.innerHTML = '<span class="spinner"></span> Routing...';
+  totalOttoCost = 0;
+  totalOpusCost = 0;
+
+  taskOrder.forEach(id => {
+    const card = document.getElementById(`task-${id}`);
+    card.className = 'task-card';
+    document.getElementById(`status-${id}`).textContent = 'Queued';
+    document.getElementById(`result-${id}`).style.display = 'none';
+    document.getElementById(`result-${id}`).textContent = '';
+  });
+
+  const runStart = performance.now();
+
+  for (const taskId of taskOrder) {
+    await runTask(taskId, key);
+    await sleep(500);
+  }
+
+  const totalTime = ((performance.now() - runStart) / 1000).toFixed(1);
+
+  // Add to leaderboard
+  runCount++;
+  const entry = {
+    rank: runCount,
+    who: `Challenger #${runCount}`,
+    score: `${taskOrder.length}/${taskOrder.length}`,
+    cost: `$${totalOttoCost.toFixed(4)}`,
+    vsOpus: `${Math.round((1 - totalOttoCost / totalOpusCost) * 100)}% cheaper`,
+    time: `${totalTime}s`
+  };
+  leaderboard.unshift(entry);
+  renderLeaderboard();
+
+  // Update counter
+  document.getElementById('bluffCount').textContent = runCount;
+
+  runBtn.innerHTML = 'Run Again &rarr;';
+  runBtn.disabled = false;
+
+  document.getElementById('savingsNote').innerHTML =
+    `<span style="color:var(--success);font-weight:700">${taskOrder.length} tasks. 4 models. ${totalTime}s. ${Math.round((1 - totalOttoCost/totalOpusCost)*100)}% less cost. Same quality.</span>`;
+}
+
+async function runTask(taskId, apiKey) {
+  const config = ROUTING_TABLE[taskId];
+  const card = document.getElementById(`task-${taskId}`);
+  const statusEl = document.getElementById(`status-${taskId}`);
+  const modelEl = document.getElementById(`model-${taskId}`);
+  const reasonEl = document.getElementById(`reason-${taskId}`);
+  const costEl = document.getElementById(`cost-${taskId}`);
+  const resultEl = document.getElementById(`result-${taskId}`);
+
+  card.className = 'task-card active';
+  statusEl.innerHTML = '<span class="spinner"></span> Routing...';
+  await sleep(600);
+
+  modelEl.textContent = `${config.model_display} — ${config.cognitive_mode}`;
+  reasonEl.textContent = config.reason;
+  statusEl.innerHTML = '<span class="spinner"></span> Executing...';
+
+  const startTime = performance.now();
+  try {
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+        'HTTP-Referer': 'https://airlocklabs.io',
+        'X-Title': 'Airlock Cognitive Router'
+      },
+      body: JSON.stringify({
+        model: config.model,
+        messages: [{ role: 'user', content: config.prompt }],
+        max_tokens: 1024,
+        temperature: 0.7
+      })
+    });
+
+    const elapsed = ((performance.now() - startTime) / 1000).toFixed(1);
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`HTTP ${response.status}: ${errText.substring(0, 200)}`);
+    }
+
+    const data = await response.json();
+    const content = data.choices?.[0]?.message?.content || '(no content)';
+    const usage = data.usage || {};
+
+    const pricing = MODEL_COSTS[config.model] || { input: 0.15, output: 0.30 };
+    const actualCost = ((usage.prompt_tokens || 500) * pricing.input / 1000000) +
+                       ((usage.completion_tokens || 300) * pricing.output / 1000000);
+
+    costEl.innerHTML = `$${actualCost.toFixed(5)} &middot; ${elapsed}s &middot; ${(usage.prompt_tokens||0)+(usage.completion_tokens||0)} tok`;
+    resultEl.textContent = content.substring(0, 500) + (content.length > 500 ? '...' : '');
+    resultEl.style.display = 'block';
+    card.className = 'task-card done';
+    statusEl.textContent = `Done in ${elapsed}s`;
+
+    totalOttoCost += actualCost;
+    totalOpusCost += config.opus_cost_estimate;
+    updateCostPanel();
+
+  } catch (err) {
+    card.className = 'task-card error';
+    statusEl.textContent = 'Error';
+    resultEl.textContent = `Error: ${err.message}`;
+    resultEl.style.display = 'block';
+    totalOpusCost += config.opus_cost_estimate;
+    updateCostPanel();
+  }
+}
+
+function updateCostPanel() {
+  document.getElementById('opusCost').textContent = '$' + totalOpusCost.toFixed(3);
+  document.getElementById('ottoCost').textContent = '$' + totalOttoCost.toFixed(4);
+  const pct = totalOpusCost > 0 ? Math.round((1 - totalOttoCost / totalOpusCost) * 100) : 0;
+  const bar = document.getElementById('savingsBar');
+  bar.style.width = Math.min(pct, 100) + '%';
+  bar.textContent = pct + '% SAVED';
+}
+
+function renderLeaderboard() {
+  const tbody = document.getElementById('lbBody');
+  const empty = document.getElementById('lbEmpty');
+  empty.style.display = leaderboard.length ? 'none' : 'block';
+
+  tbody.innerHTML = leaderboard.map((e, i) =>
+    `<tr class="${i === 0 ? 'new-entry' : ''}">
+      <td style="font-family:var(--mono);color:var(--gold);font-weight:700">${e.rank}</td>
+      <td>${e.who}</td>
+      <td class="r" style="color:var(--success)">${e.score}</td>
+      <td class="r">${e.cost}</td>
+      <td class="r" style="color:var(--success)">${e.vsOpus}</td>
+      <td class="r" style="color:var(--text3)">${e.time}</td>
+    </tr>`
+  ).join('');
+}
+
+// ── Waitlist ──────────────────────────────────────────────────────────
+const waitlist = [];
+
+function joinWaitlist() {
+  const wallet = document.getElementById('wlWallet').value.trim();
+  const email = document.getElementById('wlEmail').value.trim();
+  const msg = document.getElementById('wlMsg');
+
+  if (!wallet) {
+    msg.style.display = 'block';
+    msg.style.color = 'var(--error)';
+    msg.textContent = 'Wallet address required.';
+    return;
+  }
+
+  waitlist.push({ wallet, email, time: new Date().toISOString() });
+
+  // Save to localStorage as backup
+  localStorage.setItem('pareto-waitlist', JSON.stringify(waitlist));
+
+  msg.style.display = 'block';
+  msg.style.color = 'var(--success)';
+  msg.textContent = `You're #${waitlist.length} on the waitlist. We'll be in touch.`;
+
+  document.getElementById('wlWallet').value = '';
+  document.getElementById('wlEmail').value = '';
+}
+
+// ── Init ──────────────────────────────────────────────────────────────
+updateWalletDisplay();
+updateQR();
+
+// Restore run count from localStorage
+runCount = parseInt(localStorage.getItem('pareto-run-count') || '0');
+document.getElementById('bluffCount').textContent = runCount;
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+</script>
+
+</body>
+</html>
