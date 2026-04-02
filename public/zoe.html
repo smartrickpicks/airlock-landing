@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zoe Swinton — Airlock Labs</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  /* === VIEWPORT FITTING: MANDATORY BASE === */
+  html, body { height:100%; overflow-x:hidden; margin:0; padding:0; }
+  html { scroll-snap-type:y mandatory; scroll-behavior:smooth; }
+  * { box-sizing:border-box; }
+
+  :root {
+    --bg:#07090D; --raised:#0C0F16; --overlay:#111620; --border:#1A1F2E;
+    --otto:#7C5CFC; --accent:#00D1FF; --gold:#F5A623; --success:#22C55E;
+    --warning:#EAB308; --error:#EF4444; --civic:#3B82F6;
+    --text:#E8ECF2; --text2:#8B95A8; --text3:#505A6E;
+    --otto-glow:rgba(124,92,252,0.25); --civic-glow:rgba(59,130,246,0.2);
+    --title-size:clamp(2rem,5.5vw,4.5rem);
+    --h2-size:clamp(1.4rem,3.5vw,2.8rem);
+    --h3-size:clamp(1rem,2.2vw,1.6rem);
+    --body-size:clamp(0.8rem,1.4vw,1.1rem);
+    --small-size:clamp(0.65rem,1vw,0.85rem);
+    --mono:'JetBrains Mono',monospace;
+    --sans:'Inter',system-ui,sans-serif;
+    --slide-padding:clamp(2rem,5vw,5rem);
+  }
+
+  body { background:var(--bg); color:var(--text); font-family:var(--sans); -webkit-font-smoothing:antialiased; }
+
+  .slide {
+    width:100vw; height:100vh; height:100dvh; overflow:hidden;
+    scroll-snap-align:start; display:flex; flex-direction:column;
+    position:relative; justify-content:center; align-items:center;
+    padding:var(--slide-padding);
+  }
+
+  /* Subtle grid bg */
+  .slide::before {
+    content:''; position:absolute; inset:0; opacity:0.03;
+    background-image:
+      linear-gradient(rgba(59,130,246,0.3) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59,130,246,0.3) 1px, transparent 1px);
+    background-size:60px 60px; pointer-events:none;
+  }
+
+  /* === Typography === */
+  .tag { font-family:var(--mono); font-size:var(--small-size); font-weight:600;
+    text-transform:uppercase; letter-spacing:3px; color:var(--civic); margin-bottom:20px; }
+  .hero { font-size:var(--title-size); font-weight:900; line-height:1.05;
+    text-align:center; letter-spacing:-2px; max-width:900px; }
+  .headline { font-size:var(--h2-size); font-weight:800; line-height:1.15;
+    text-align:center; letter-spacing:-1px; max-width:800px; }
+  .sub { font-size:var(--body-size); color:var(--text2); text-align:center;
+    margin-top:16px; max-width:650px; line-height:1.6; }
+  .mono { font-family:var(--mono); }
+  .gradient { background:linear-gradient(135deg,#E8ECF2,var(--civic));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .civic-gradient { background:linear-gradient(135deg,var(--civic),var(--accent));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .warm-gradient { background:linear-gradient(135deg,var(--gold),var(--warning));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+
+  /* === Stat Cards === */
+  .stats { display:flex; gap:clamp(12px,2vw,24px); margin-top:clamp(24px,4vh,48px);
+    flex-wrap:wrap; justify-content:center; }
+  .stat { background:var(--raised); border:1px solid var(--border); border-radius:12px;
+    padding:clamp(16px,2vw,32px) clamp(20px,3vw,40px); text-align:center; min-width:140px; }
+  .stat-num { font-family:var(--mono); font-size:clamp(1.5rem,3.5vw,3rem);
+    font-weight:700; line-height:1; }
+  .stat-num.civic-c { color:var(--civic); }
+  .stat-num.gold { color:var(--gold); }
+  .stat-num.green { color:var(--success); }
+  .stat-num.accent-c { color:var(--accent); }
+  .stat-label { font-size:var(--small-size); color:var(--text3); margin-top:8px;
+    text-transform:uppercase; letter-spacing:1px; font-weight:600; }
+
+  /* === Cards === */
+  .card-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:clamp(12px,1.5vw,20px); margin-top:clamp(20px,3vh,40px);
+    width:100%; max-width:950px; }
+  .card { background:var(--raised); border:1px solid var(--border); border-radius:12px;
+    padding:clamp(16px,2vw,28px); text-align:left; }
+  .card .card-tag { font-family:var(--mono); font-size:9px; font-weight:700;
+    text-transform:uppercase; letter-spacing:2px; color:var(--civic); margin-bottom:10px; display:block; }
+  .card h3 { font-size:var(--h3-size); font-weight:700; margin-bottom:8px; }
+  .card p { font-size:var(--small-size); color:var(--text2); line-height:1.5; }
+
+  /* === Nav === */
+  .nav { position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    display:flex; gap:6px; z-index:100; background:var(--raised);
+    border:1px solid var(--border); border-radius:20px; padding:6px 14px; }
+  .nav-dot { width:7px; height:7px; border-radius:50%; background:var(--border);
+    cursor:pointer; transition:all .3s; }
+  .nav-dot.active { background:var(--civic); box-shadow:0 0 8px var(--civic-glow); }
+  .nav-dot:hover { background:var(--text3); }
+  .counter { position:fixed; top:24px; right:32px; font-family:var(--mono);
+    font-size:10px; color:var(--text3); z-index:100; }
+  .logo { position:fixed; top:24px; left:32px; font-family:var(--mono);
+    font-size:11px; font-weight:700; color:var(--text3); letter-spacing:3px;
+    text-transform:uppercase; z-index:100; }
+
+  /* === Scope List === */
+  .scope-list { display:flex; flex-direction:column; gap:14px; margin-top:clamp(20px,3vh,36px);
+    max-width:700px; width:100%; }
+  .scope-item { display:flex; gap:14px; align-items:flex-start; }
+  .scope-bullet { width:28px; height:28px; border-radius:50%; background:rgba(59,130,246,0.12);
+    display:flex; align-items:center; justify-content:center; color:var(--civic);
+    font-family:var(--mono); font-weight:700; font-size:12px; flex-shrink:0; margin-top:2px; }
+  .scope-text { font-size:var(--body-size); color:var(--text2); line-height:1.6; }
+  .scope-text strong { color:var(--text); }
+
+  /* === Venn / Overlap visual === */
+  .overlap-visual { display:flex; align-items:center; justify-content:center;
+    margin-top:clamp(20px,3vh,40px); gap:0; position:relative; }
+  .circle { width:clamp(130px,18vw,200px); height:clamp(130px,18vw,200px);
+    border-radius:50%; display:flex; align-items:center; justify-content:center;
+    text-align:center; font-size:var(--small-size); font-weight:600;
+    padding:20px; line-height:1.4; }
+  .circle-left { background:rgba(59,130,246,0.12); border:1px solid rgba(59,130,246,0.3);
+    color:var(--civic); margin-right:calc(-1 * clamp(20px,3vw,40px)); z-index:1; }
+  .circle-right { background:rgba(124,92,252,0.12); border:1px solid rgba(124,92,252,0.3);
+    color:var(--otto); margin-left:calc(-1 * clamp(20px,3vw,40px)); z-index:1; }
+  .circle-center { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    z-index:2; font-size:var(--small-size); color:var(--text); font-weight:700;
+    text-align:center; width:clamp(80px,10vw,120px); }
+
+  /* === Animations === */
+  @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+  .reveal { opacity:0; }
+  .slide.in-view .reveal { animation:fadeUp .6s ease forwards; }
+  .slide.in-view .reveal:nth-child(2) { animation-delay:.15s; }
+  .slide.in-view .reveal:nth-child(3) { animation-delay:.3s; }
+  .slide.in-view .reveal:nth-child(4) { animation-delay:.45s; }
+  .slide.in-view .reveal:nth-child(5) { animation-delay:.6s; }
+
+  @media (prefers-reduced-motion:reduce) {
+    .reveal { opacity:1; animation:none !important; }
+    html { scroll-behavior:auto; }
+  }
+
+  @media (max-width:768px) {
+    .card-row { grid-template-columns:1fr; }
+    .overlap-visual { flex-direction:column; }
+    .circle-left { margin-right:0; margin-bottom:calc(-1 * clamp(15px,2vh,30px)); }
+    .circle-right { margin-left:0; margin-top:calc(-1 * clamp(15px,2vh,30px)); }
+    .circle-center { top:50%; }
+  }
+
+  @media (max-height:700px) {
+    :root {
+      --slide-padding:clamp(0.75rem,3vw,2rem);
+      --title-size:clamp(1.25rem,4.5vw,2.5rem);
+      --h2-size:clamp(1rem,3vw,1.75rem);
+    }
+  }
+
+  @media (max-height:600px) {
+    :root {
+      --slide-padding:clamp(0.5rem,2.5vw,1.5rem);
+      --title-size:clamp(1.1rem,4vw,2rem);
+      --body-size:clamp(0.7rem,1.2vw,0.95rem);
+    }
+    .nav { display:none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- PASSWORD GATE -->
+<div id="pw-gate" style="position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">
+  <div style="font-family:var(--mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:3px;color:var(--civic);margin-bottom:8px">Airlock Labs</div>
+  <div style="font-size:clamp(1.2rem,2.5vw,1.8rem);font-weight:700;color:var(--text);text-align:center">This document is private.</div>
+  <div style="font-size:var(--body-size);color:var(--text3);margin-bottom:8px">Enter password to continue.</div>
+  <input id="pw-input" type="password" placeholder="Password" autofocus
+    style="background:var(--raised);border:1px solid var(--border);border-radius:8px;padding:12px 20px;color:var(--text);font-family:var(--mono);font-size:14px;width:240px;text-align:center;outline:none"
+    onfocus="this.style.borderColor='var(--civic)'" onblur="this.style.borderColor='var(--border)'">
+  <div id="pw-error" style="font-size:12px;color:var(--error);font-family:var(--mono);opacity:0;transition:opacity .3s">Wrong password</div>
+</div>
+<script>
+(function(){
+  const KEY = 'airlock_zoe_auth';
+  if (sessionStorage.getItem(KEY) === '1') { document.getElementById('pw-gate').remove(); return; }
+  document.getElementById('pw-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      if (this.value.toLowerCase() === 'bernie') {
+        sessionStorage.setItem(KEY, '1');
+        document.getElementById('pw-gate').remove();
+      } else {
+        document.getElementById('pw-error').style.opacity = '1';
+        this.value = '';
+        setTimeout(() => document.getElementById('pw-error').style.opacity = '0', 2000);
+      }
+    }
+  });
+})();
+</script>
+
+<div class="logo">Airlock Labs</div>
+<div class="counter"><span id="current">1</span> / <span id="total">9</span></div>
+
+<!-- ===== SLIDE 1: Personal ===== -->
+<section class="slide" id="s1">
+  <div class="tag reveal">For Zoe Swinton &middot; April 2026</div>
+  <h1 class="hero reveal"><span class="gradient">Remember the admin table?</span></h1>
+  <p class="sub reveal">Grand Rapids. Bernie's office. March 2020. You ran that campaign office. Noah and I showed up and wouldn't leave.</p>
+  <p class="sub reveal" style="margin-top:32px;color:var(--text3);font-size:var(--small-size)">
+    I told you I was building something with behavioral intelligence. You said it sounded cool.<br>This is what I meant. &mdash; Zac
+  </p>
+</section>
+
+<!-- ===== SLIDE 2: What I Built ===== -->
+<section class="slide" id="s2">
+  <div class="tag reveal">The Short Version</div>
+  <h2 class="headline reveal">I built an AI that understands <span style="color:var(--civic)">how people actually work</span>.</h2>
+  <p class="sub reveal">Not a chatbot. A behavioral routing engine. It reads how someone communicates, what drives them, and adapts in real time &mdash; matching them to the right AI, the right tone, the right approach. Like a campaign manager who actually knows every volunteer.</p>
+  <div class="stats reveal">
+    <div class="stat"><div class="stat-num civic-c">17</div><div class="stat-label">Behavioral Profiles</div></div>
+    <div class="stat"><div class="stat-num gold">4</div><div class="stat-label">Core Drives</div></div>
+    <div class="stat"><div class="stat-num green">100%</div><div class="stat-label">Benchmark Success</div></div>
+    <div class="stat"><div class="stat-num accent-c">1/10th</div><div class="stat-label">The Cost</div></div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 3: Your Background Is The Point ===== -->
+<section class="slide" id="s3">
+  <div class="tag reveal">Why This Is For You</div>
+  <h2 class="headline reveal">Your <span class="civic-gradient">entire education</span> is what we're building.</h2>
+  <p class="sub reveal">Ethics & Public Policy. Anthropology. Psychology. You literally studied the three pillars of behavioral intelligence &mdash; the ethics of using it, the cultural systems it operates in, and the human behavior underneath.</p>
+  <div class="overlap-visual reveal">
+    <div class="circle circle-left">Ethics &<br>Public Policy</div>
+    <div class="circle-center">Behavioral<br>Intelligence</div>
+    <div class="circle circle-right">Anthropology<br>+ Psychology</div>
+  </div>
+  <p class="sub reveal" style="margin-top:20px;font-size:var(--small-size);color:var(--text3)">Five years of digital organizing for the working class isn't a side note. It's the use case. You've been doing this work by instinct &mdash; we're building the system that scales it.</p>
+</section>
+
+<!-- ===== SLIDE 4: What This Means for Civic ===== -->
+<section class="slide" id="s4">
+  <div class="tag reveal">The Civic Layer</div>
+  <h2 class="headline reveal">Imagine <span style="color:var(--gold)">voter outreach</span> that actually adapts.</h2>
+  <div class="card-row reveal">
+    <div class="card">
+      <span class="card-tag">SMS at Scale</span>
+      <h3>Beyond blast texting</h3>
+      <p>You manage SMS for 8 million members. What if the message adapted to whether someone is detail-driven or action-first? Not A/B testing &mdash; behavioral matching.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">Constituent Engagement</span>
+      <h3>Meet people where they are</h3>
+      <p>A high-patience person needs different framing than a high-dominance one. Same policy. Different entry point. Better response rates.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">GovTech</span>
+      <h3>Voting systems that listen</h3>
+      <p>Ballot design, civic UX, public comment systems &mdash; all of these assume one-size-fits-all communication. Behavioral intelligence says otherwise.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 5: What We Proved ===== -->
+<section class="slide" id="s5">
+  <div class="tag reveal">Receipts</div>
+  <h2 class="headline reveal">This isn't theoretical. <span style="color:var(--success)">It works.</span></h2>
+  <p class="sub reveal">We entered a public AI benchmark with 23 real-world tasks. Our routing engine &mdash; using behavioral intelligence to pick the right model for each task &mdash; took the top four spots on the leaderboard.</p>
+  <div class="stats reveal">
+    <div class="stat"><div class="stat-num green">100%</div><div class="stat-label">Task Success</div></div>
+    <div class="stat"><div class="stat-num accent-c">$0.39</div><div class="stat-label">Our Cost</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--error)">$4.08</div><div class="stat-label">GPT-4 Cost</div></div>
+  </div>
+  <p class="sub reveal" style="margin-top:16px;font-size:var(--small-size);color:var(--text3)">Same tasks. Better results. A fraction of the price. The behavioral layer is the difference.</p>
+</section>
+
+<!-- ===== SLIDE 6: The Bigger Picture ===== -->
+<section class="slide" id="s6">
+  <div class="tag reveal">Where This Goes</div>
+  <h2 class="headline reveal">Sovereignty for <span class="warm-gradient">the people who need it most</span>.</h2>
+  <div class="scope-list reveal">
+    <div class="scope-item">
+      <div class="scope-bullet">1</div>
+      <div class="scope-text"><strong>CORE Detroit.</strong> Civic AI for city government. Behavioral intelligence helping cities actually communicate with residents &mdash; not broadcast at them.</div>
+    </div>
+    <div class="scope-item">
+      <div class="scope-bullet">2</div>
+      <div class="scope-text"><strong>Working class tools.</strong> The people WorkMoney serves &mdash; hourly workers, gig workers, families stretching paychecks &mdash; deserve AI that adapts to them, not the other way around.</div>
+    </div>
+    <div class="scope-item">
+      <div class="scope-bullet">3</div>
+      <div class="scope-text"><strong>Campaign intelligence.</strong> What if the next Bernie-style campaign had behavioral routing in the field office? Not manipulating voters &mdash; meeting them where they are.</div>
+    </div>
+    <div class="scope-item">
+      <div class="scope-bullet">4</div>
+      <div class="scope-text"><strong>Digital sovereignty.</strong> No API keys exposed. No data sold. Users own their behavioral profiles. This is the anti-Cambridge Analytica.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 7: The Team ===== -->
+<section class="slide" id="s7">
+  <div class="tag reveal">Who's Building This</div>
+  <h2 class="headline reveal">Not a startup. <span style="color:var(--accent)">A movement.</span></h2>
+  <div class="card-row reveal">
+    <div class="card">
+      <span class="card-tag">Founder</span>
+      <h3>Zac Holwerda</h3>
+      <p>Detroit. Solo founder. Military, construction, then head of product. Built the routing engine and the behavioral layer from an apartment.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">CAO</span>
+      <h3>Otto</h3>
+      <p>The AI. Not a product &mdash; a team member. Chief Autonomy Officer. Runs on the behavioral profiles. Proof the system works.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">Research</span>
+      <h3>Wayne State</h3>
+      <p>Partnership forming with Dr. Reynolds. Cultural Algorithms meets behavioral AI. Academic rigor behind the routing engine.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">IP</span>
+      <h3>4 Patents Filed</h3>
+      <p>Behavioral routing, security framework, calibration system, and sync protocol. The IP is protected. This isn't vaporware.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 8: Noah ===== -->
+<section class="slide" id="s8">
+  <div class="tag reveal">The North Star</div>
+  <h2 class="headline reveal">You know <span style="color:var(--gold)">Noah</span>.</h2>
+  <p class="sub reveal">You met him at the campaign office. My brother. He has a brain injury that makes communication unpredictable. The world gives him one-size-fits-all interfaces and expects him to adapt.</p>
+  <p class="sub reveal" style="margin-top:20px;color:var(--text);font-weight:600">I'm building the opposite. Technology that adapts to the person.</p>
+  <p class="sub reveal" style="margin-top:16px;font-size:var(--small-size);color:var(--text3)">That's not a pitch. That's why it exists. Noah is the reason every behavioral profile matters &mdash; because every person communicates differently, and the system should be smart enough to meet them there.</p>
+</section>
+
+<!-- ===== SLIDE 9: Not An Ask ===== -->
+<section class="slide" id="s9">
+  <div class="tag reveal">No Ask</div>
+  <h1 class="hero reveal"><span class="gradient">Just thought you should see this.</span></h1>
+  <p class="sub reveal" style="margin-top:16px;font-size:var(--h3-size);color:var(--text2)">Some people need to be convinced. You already get it.</p>
+  <p class="sub reveal" style="margin-top:24px;color:var(--text3)">If any of this sparks something &mdash; a thought, a connection, a "what if" &mdash; you know where to find me. No role, no pitch, no deadline. Just a door that's open.</p>
+  <p class="sub reveal" style="margin-top:32px;color:var(--text3)">maverick@airlocklabs.io &middot; airlocklabs.io &middot; Detroit</p>
+  <p class="sub reveal" style="margin-top:16px;font-family:var(--mono);font-size:var(--small-size);color:var(--text3)">Still the same kid from the admin table. Just building bigger.</p>
+</section>
+
+<!-- ===== NAV DOTS ===== -->
+<nav class="nav" id="nav"></nav>
+
+<script>
+/* === Presentation Controller === */
+const slides = document.querySelectorAll('.slide');
+const nav = document.getElementById('nav');
+const totalEl = document.getElementById('total');
+const currentEl = document.getElementById('current');
+totalEl.textContent = slides.length;
+
+// Build nav dots
+slides.forEach((_, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+  dot.onclick = () => scrollTo(i);
+  nav.appendChild(dot);
+});
+
+// Intersection Observer for reveal animations
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('in-view');
+      const idx = [...slides].indexOf(e.target);
+      currentEl.textContent = idx + 1;
+      document.querySelectorAll('.nav-dot').forEach((d,i) =>
+        d.classList.toggle('active', i === idx));
+    } else {
+      e.target.classList.remove('in-view');
+    }
+  });
+}, { threshold: 0.6 });
+
+slides.forEach(s => obs.observe(s));
+slides[0].classList.add('in-view');
+
+function scrollTo(i) {
+  slides[i].scrollIntoView({ behavior: 'smooth' });
+}
+
+// Keyboard nav
+document.addEventListener('keydown', e => {
+  const cur = [...slides].findIndex(s => s.classList.contains('in-view'));
+  if ((e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ') && cur < slides.length - 1) {
+    e.preventDefault(); scrollTo(cur + 1);
+  }
+  if ((e.key === 'ArrowUp' || e.key === 'ArrowLeft') && cur > 0) {
+    e.preventDefault(); scrollTo(cur - 1);
+  }
+});
+
+// Touch nav
+let touchY = 0;
+document.addEventListener('touchstart', e => touchY = e.touches[0].clientY, {passive:true});
+document.addEventListener('touchend', e => {
+  const dy = touchY - e.changedTouches[0].clientY;
+  const cur = [...slides].findIndex(s => s.classList.contains('in-view'));
+  if (dy > 50 && cur < slides.length - 1) scrollTo(cur + 1);
+  if (dy < -50 && cur > 0) scrollTo(cur - 1);
+}, {passive:true});
+</script>
+</body>
+</html>
