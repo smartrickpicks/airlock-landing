@@ -179,7 +179,7 @@
   if (sessionStorage.getItem(KEY) === '1') { document.getElementById('pw-gate').remove(); return; }
   document.getElementById('pw-input').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') {
-      if (this.value.toLowerCase() === 'book') {
+      if (this.value.toLowerCase() === 'whisper') {
         sessionStorage.setItem(KEY, '1');
         document.getElementById('pw-gate').remove();
       } else {
@@ -259,7 +259,7 @@
     <div class="team-card">
       <div class="name">Zac Holwerda</div>
       <div class="role">CEO &middot; Co-Founder</div>
-      <div class="detail">4 patents. Product, vision, code.</div>
+      <div class="detail">3 patents. Product, vision, code.</div>
     </div>
     <div class="team-card">
       <div class="name">Otto</div>
@@ -277,19 +277,9 @@
       <div class="detail">HiperWeb. 240 cities. ERP architect.</div>
     </div>
     <div class="team-card">
-      <div class="name">Kyle Kempler</div>
-      <div class="role">CFO</div>
-      <div class="detail">Citibank fintech director. NYC.</div>
-    </div>
-    <div class="team-card">
       <div class="name">Erin Beck / INTROL</div>
       <div class="role">GPU Infrastructure</div>
-      <div class="detail">#14 Inc 5000. 100K+ GPUs. Chicago.</div>
-    </div>
-    <div class="team-card">
-      <div class="name">Liz</div>
-      <div class="role">Press &middot; Personal Brand</div>
-      <div class="detail">Copywriting, production, Netflix. Chicago.</div>
+      <div class="detail">#14 Inc 5000. 100K+ GPUs deployed.</div>
     </div>
     <div class="team-card you">
       <div class="name">Creative Advisor &amp; Team Architect</div>
