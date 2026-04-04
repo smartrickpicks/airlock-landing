@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>James — Maverick Industries</title>
+<style>
+  /* === PASSWORD GATE === */
+  #gate { position:fixed; inset:0; z-index:9999; background:#07090D;
+    display:flex; flex-direction:column; justify-content:center; align-items:center;
+    font-family:'Inter',system-ui,sans-serif; }
+  #gate.unlocked { display:none; }
+  #gate input { background:#0C0F16; border:1px solid #1A1F2E; border-radius:8px;
+    color:#E8ECF2; padding:14px 24px; font-size:16px; text-align:center;
+    font-family:'JetBrains Mono',monospace; letter-spacing:2px; outline:none;
+    width:280px; transition:border-color .3s; }
+  #gate input:focus { border-color:#7C5CFC; }
+  #gate input::placeholder { color:#505A6E; letter-spacing:1px; }
+  #gate .gate-label { font-family:'JetBrains Mono',monospace; font-size:10px;
+    color:#505A6E; text-transform:uppercase; letter-spacing:3px; margin-bottom:16px; }
+  #gate .gate-error { color:#EF4444; font-size:12px; margin-top:12px;
+    font-family:'JetBrains Mono',monospace; opacity:0; transition:opacity .3s; }
+  #gate .gate-error.show { opacity:1; }
+  .locked { overflow:hidden !important; }
+</style>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  /* === VIEWPORT FITTING: MANDATORY BASE === */
+  html, body { height:100%; overflow-x:hidden; margin:0; padding:0; }
+  html { scroll-snap-type:y mandatory; scroll-behavior:smooth; }
+  * { box-sizing:border-box; }
+
+  :root {
+    --bg:#07090D; --raised:#0C0F16; --overlay:#111620; --border:#1A1F2E;
+    --otto:#7C5CFC; --accent:#00D1FF; --gold:#F5A623; --success:#22C55E;
+    --warning:#EAB308; --error:#EF4444; --pareto:#FF6B35;
+    --text:#E8ECF2; --text2:#8B95A8; --text3:#505A6E;
+    --otto-glow:rgba(124,92,252,0.25); --accent-glow:rgba(0,209,255,0.2);
+    --title-size:clamp(2rem,5.5vw,4.5rem);
+    --h2-size:clamp(1.4rem,3.5vw,2.8rem);
+    --h3-size:clamp(1rem,2.2vw,1.6rem);
+    --body-size:clamp(0.8rem,1.4vw,1.1rem);
+    --small-size:clamp(0.65rem,1vw,0.85rem);
+    --mono:'JetBrains Mono',monospace;
+    --sans:'Inter',system-ui,sans-serif;
+    --slide-padding:clamp(2rem,5vw,5rem);
+  }
+
+  body { background:var(--bg); color:var(--text); font-family:var(--sans); -webkit-font-smoothing:antialiased; }
+
+  .slide {
+    width:100vw; height:100vh; height:100dvh; overflow:hidden;
+    scroll-snap-align:start; display:flex; flex-direction:column;
+    position:relative; justify-content:center; align-items:center;
+    padding:var(--slide-padding);
+  }
+
+  /* Subtle grid bg */
+  .slide::before {
+    content:''; position:absolute; inset:0; opacity:0.03;
+    background-image:
+      linear-gradient(rgba(124,92,252,0.3) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(124,92,252,0.3) 1px, transparent 1px);
+    background-size:60px 60px; pointer-events:none;
+  }
+
+  /* === Typography === */
+  .tag { font-family:var(--mono); font-size:var(--small-size); font-weight:600;
+    text-transform:uppercase; letter-spacing:3px; color:var(--otto); margin-bottom:20px; }
+  .hero { font-size:var(--title-size); font-weight:900; line-height:1.05;
+    text-align:center; letter-spacing:-2px; max-width:900px; }
+  .headline { font-size:var(--h2-size); font-weight:800; line-height:1.15;
+    text-align:center; letter-spacing:-1px; max-width:800px; }
+  .sub { font-size:var(--body-size); color:var(--text2); text-align:center;
+    margin-top:16px; max-width:650px; line-height:1.6; }
+  .mono { font-family:var(--mono); }
+  .gradient { background:linear-gradient(135deg,#E8ECF2,var(--otto));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .accent-gradient { background:linear-gradient(135deg,var(--otto),var(--accent));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .gold-gradient { background:linear-gradient(135deg,var(--gold),var(--pareto));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .quote { font-size:clamp(1.1rem,2.2vw,1.5rem); font-style:italic; color:var(--text);
+    text-align:center; max-width:700px; line-height:1.6; }
+  .quote-attr { font-family:var(--mono); font-size:var(--small-size); color:var(--text3);
+    margin-top:16px; text-transform:uppercase; letter-spacing:2px; }
+
+  /* === Stat Cards === */
+  .stats { display:flex; gap:clamp(12px,2vw,24px); margin-top:clamp(24px,4vh,48px);
+    flex-wrap:wrap; justify-content:center; }
+  .stat { background:var(--raised); border:1px solid var(--border); border-radius:12px;
+    padding:clamp(16px,2vw,32px) clamp(20px,3vw,40px); text-align:center; min-width:140px; }
+  .stat-num { font-family:var(--mono); font-size:clamp(1.5rem,3.5vw,3rem);
+    font-weight:700; line-height:1; }
+  .stat-num.otto-c { color:var(--accent); }
+  .stat-num.gold { color:var(--gold); }
+  .stat-num.green { color:var(--success); }
+  .stat-num.pareto-c { color:var(--pareto); }
+  .stat-label { font-size:var(--small-size); color:var(--text3); margin-top:8px;
+    text-transform:uppercase; letter-spacing:1px; font-weight:600; }
+
+  /* === Equation Table === */
+  .eq-table { width:100%; max-width:800px; border-collapse:collapse; margin-top:clamp(20px,3vh,40px); }
+  .eq-table th { text-align:center; font-family:var(--mono); font-size:var(--small-size);
+    font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--otto);
+    padding:12px 16px; border-bottom:2px solid var(--otto); }
+  .eq-table td { padding:14px 20px; border-bottom:1px solid rgba(26,31,46,0.5);
+    font-size:var(--body-size); text-align:center; }
+  .eq-table td:first-child { color:var(--gold); font-weight:600; }
+  .eq-table td:nth-child(2) { color:var(--text3); font-size:clamp(1rem,2vw,1.5rem); }
+  .eq-table td:last-child { color:var(--accent); font-weight:600; }
+  .eq-table tr:last-child td { border-bottom:2px solid var(--border); font-weight:800;
+    font-size:clamp(0.9rem,1.6vw,1.2rem); }
+
+  /* === Role Cards === */
+  .role-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:clamp(12px,1.5vw,20px); margin-top:clamp(20px,3vh,40px);
+    width:100%; max-width:950px; }
+  .role-card { background:var(--raised); border:1px solid var(--border); border-radius:12px;
+    padding:clamp(20px,2.5vw,32px); text-align:left; }
+  .role-card .role-icon { font-size:clamp(1.5rem,3vw,2.5rem); margin-bottom:12px; }
+  .role-card h3 { font-family:var(--mono); font-size:var(--small-size); font-weight:700;
+    text-transform:uppercase; letter-spacing:2px; color:var(--otto); margin-bottom:10px; }
+  .role-card p { font-size:var(--small-size); color:var(--text2); line-height:1.6; }
+
+  /* === Nav === */
+  .nav { position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    display:flex; gap:6px; z-index:100; background:var(--raised);
+    border:1px solid var(--border); border-radius:20px; padding:6px 14px; }
+  .nav-dot { width:7px; height:7px; border-radius:50%; background:var(--border);
+    cursor:pointer; transition:all .3s; }
+  .nav-dot.active { background:var(--otto); box-shadow:0 0 8px var(--otto-glow); }
+  .nav-dot:hover { background:var(--text3); }
+  .counter { position:fixed; top:24px; right:32px; font-family:var(--mono);
+    font-size:10px; color:var(--text3); z-index:100; }
+  .logo { position:fixed; top:24px; left:32px; font-family:var(--mono);
+    font-size:11px; font-weight:700; color:var(--text3); letter-spacing:3px;
+    text-transform:uppercase; z-index:100; }
+
+  /* === Animations === */
+  @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes pulseGlow { 0%,100%{box-shadow:0 0 20px rgba(124,92,252,0)} 50%{box-shadow:0 0 40px rgba(124,92,252,0.15)} }
+  .fade-up { animation:fadeUp .8s ease both; }
+  .fade-up-2 { animation:fadeUp .8s ease .15s both; }
+  .fade-up-3 { animation:fadeUp .8s ease .3s both; }
+  .fade-up-4 { animation:fadeUp .8s ease .45s both; }
+
+  /* === Signal Slide === */
+  .signal-text { font-size:clamp(2.5rem,7vw,6rem); font-weight:900; letter-spacing:-3px;
+    text-align:center; line-height:1; }
+  .signal-sub { font-family:var(--mono); font-size:var(--small-size); color:var(--text3);
+    margin-top:32px; text-transform:uppercase; letter-spacing:3px; text-align:center; }
+
+  /* === Threat border === */
+  .threat-border { border:1px solid rgba(239,68,68,0.2); border-radius:16px;
+    padding:clamp(24px,4vw,48px); max-width:700px; text-align:center;
+    background:rgba(239,68,68,0.02); }
+
+  /* === Employee #1 glow === */
+  .glow-card { background:var(--raised); border:2px solid var(--otto);
+    border-radius:16px; padding:clamp(32px,5vw,64px); text-align:center;
+    max-width:600px; animation:pulseGlow 3s ease infinite; }
+</style>
+</head>
+<body class="locked">
+
+<!-- Password Gate -->
+<div id="gate">
+  <div class="gate-label">Enter Access Code</div>
+  <input type="password" id="gate-input" placeholder="&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;" autofocus>
+  <div class="gate-error" id="gate-error">Wrong code.</div>
+</div>
+
+<!-- Fixed elements -->
+<div class="logo">Maverick Industries</div>
+<div class="counter"><span id="current">1</span> / 9</div>
+<nav class="nav" id="nav"></nav>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SLIDE 1: BYRON CENTER BULLDOGS             -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="slide" id="s1">
+  <div class="tag fade-up">Est. 7th Grade Football Camp</div>
+  <h1 class="hero fade-up-2">
+    <span class="gradient">Byron Center<br>Bulldogs</span>
+  </h1>
+  <p class="sub fade-up-3">Two kids. One equation. One engine.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SLIDE 2: THE GRADUATION WALK               -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="slide" id="s2">
+  <div class="tag fade-up">The Foundation</div>
+  <p class="quote fade-up-2">
+    "You didn't have the money.<br>
+    I paid for both of us.<br>
+    We walked together."
+  </p>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SLIDE 3: YOUR EQUATION IS RUNNING          -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="slide" id="s3">
+  <div class="tag fade-up">Convergence</div>
+  <h2 class="headline fade-up-2">
+    Your Equation Is <span class="accent-gradient">Running</span>
+  </h2>
+  <table class="eq-table fade-up-3">
+    <thead>
+      <tr>
+        <th>Sovereign Equation of Peace</th>
+        <th></th>
+        <th>Semantic Sovereignty</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Disciplined alignment</td>
+        <td>&harr;</td>
+        <td>Governed truth</td>
+      </tr>
+      <tr>
+        <td>Forward momentum</td>
+        <td>&harr;</td>
+        <td>Repeatable proof</td>
+      </tr>
+      <tr>
+        <td>Ego + friction</td>
+        <td>&harr;</td>
+        <td>Drift + exceptions</td>
+      </tr>
+      <tr>
+        <td>Consciousness amplifies</td>
+        <td>&harr;</td>
+        <td>Observability amplifies</td>
+      </tr>
+      <tr>
+        <td>Personal sovereignty</td>
+        <td>=</td>
+        <td>Enterprise sovereignty</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="sub fade-up-4">You wrote the doctrine. We built the engine.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SLIDE 4: WHAT GOT BUILT                    -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="slide" id="s4">
+  <div class="tag fade-up">Progress Report</div>
+  <h2 class="headline fade-up-2">
+    What Got <span class="gold-gradient">Built</span>
+  </h2>
+  <div class="stats fade-up-3">
+    <div class="stat">
+      <div class="stat-num green">100%</div>
+      <div class="stat-label">Success Rate</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num otto-c">10x</div>
+      <div class="stat-label">Cheaper</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num gold">4</div>
+      <div class="stat-label">Patents Filed</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num pareto-c">17</div>
+      <div class="stat-label">Behavioral Profiles</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num otto-c">725+</div>
+      <div class="stat-label">Commits</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num gold">68</div>
+      <div class="stat-label">Days</div>
+    </div>
+  </div>
+  <p class="sub fade-up-4">This isn't a pitch. This is a progress report.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SLIDE 5: THE GUARDIAN'S MISSION            -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="slide" id="s5">
+  <div class="tag fade-up">Chief of Staff</div>
+  <h2 class="headline fade-up-2">
+    The Guardian's <span class="accent-gradient">Mission</span>
+  </h2>
+  <div class="role-grid fade-up-3">
+    <div class="role-card">
+      <div class="role-icon">&cross;</div>
+      <h3>Protect</h3>
+      <p>Personal security for the founder. You've done this for Beyonc&eacute; and The Rock. Special Forces trained. Now do it for your brother.</p>
+    </div>
+    <div class="role-card">
+      <div class="role-icon">&target;</div>
+      <h3>Hire</h3>
+      <p>Recruit and supervise every person who enters the organization. You assess threats for a living&mdash;assess talent the same way.</p>
+    </div>
+    <div class="role-card">
+      <div class="role-icon">&dtri;</div>
+      <h3>Govern</h3>
+      <p>Your equation IS the governance model. Sovereignty isn't just a word in this company&mdash;it's the architecture. You wrote the playbook before the company existed.</p>
+    </div>
+    <div class="role-card">
+      <div class="role-icon">&oplus;</div>
+      <h3>Operate</h3>
+      <p>Chief of Staff means nothing happens without your awareness. Transportation, logistics, access control. The spinal cord of the organization.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SLIDE 6: THE THREAT                        -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="slide" id="s6">
+  <div class="tag fade-up">Eyes Open</div>
+  <div class="threat-border fade-up-2">
+    <h2 class="headline" style="margin-bottom:24px;">
+      The <span style="color:var(--error);">Threat</span>
+    </h2>
+    <p class="sub" style="margin-top:0; text-align:center;">
+      What we built is valuable. 4 patents. A routing engine that beats billion-dollar models. A behavioral intelligence layer no one else has. This attracts attention&mdash;the good kind and the kind that requires someone standing post.
+    </p>
+  </div>
+  <p class="quote fade-up-3" style="margin-top:clamp(24px,4vh,48px); max-width:600px; font-size:clamp(0.9rem,1.6vw,1.2rem);">
+    "It's my duty to protect you, just like it's your duty to protect me. And it's going to be James's duty to protect us both."
+  </p>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SLIDE 7: EMPLOYEE NUMBER ONE               -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="slide" id="s7">
+  <div class="tag fade-up">Maverick Industries</div>
+  <div class="glow-card fade-up-2">
+    <h2 class="headline" style="margin-bottom:16px;">
+      Employee <span class="accent-gradient">#1</span>
+    </h2>
+    <p class="sub" style="margin-top:0;">
+      No one's been hired yet.<br>
+      This is your seat.<br>
+      Not <em>a</em> seat&mdash;<strong>THE</strong> seat.
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SLIDE 8: I KNOW YOU HATE MICHIGAN          -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="slide" id="s8">
+  <div class="tag fade-up">The Ask</div>
+  <h2 class="headline fade-up-2">
+    I know you hate <span class="gradient">Michigan.</span>
+  </h2>
+  <p class="quote fade-up-3" style="margin-top:clamp(20px,3vh,36px);">
+    I need you here anyway.
+  </p>
+  <p class="sub fade-up-4" style="margin-top:clamp(20px,3vh,32px); max-width:500px; font-weight:600; color:var(--text);">
+    Read this. Call me. Then we figure out when you're getting here for the debrief.
+  </p>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SLIDE 9: THE SIGNAL                        -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="slide" id="s9">
+  <div class="signal-text fade-up">
+    <span class="accent-gradient">Let's fuck shit up.</span>
+  </div>
+  <p class="signal-sub fade-up-2">Maverick Industries &middot; Your seat is here</p>
+</section>
+
+<script>
+// Password gate — password: Bulldogs
+(function() {
+  const gate = document.getElementById('gate');
+  const input = document.getElementById('gate-input');
+  const error = document.getElementById('gate-error');
+
+  // SHA-256 hash of "Bulldogs"
+  const EXPECTED = '3da1ed24c30a7b8d27163a51680b6d5dc79e8478c1e719c9e0b06130be9bdb46';
+
+  async function sha256(str) {
+    const data = new TextEncoder().encode(str);
+    const buf = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+  }
+
+  input.addEventListener('keydown', async function(e) {
+    if (e.key === 'Enter') {
+      const hash = await sha256(input.value);
+      if (hash === EXPECTED) {
+        gate.classList.add('unlocked');
+        document.body.classList.remove('locked');
+      } else {
+        error.classList.add('show');
+        input.value = '';
+        setTimeout(() => error.classList.remove('show'), 2000);
+      }
+    }
+  });
+})();
+
+// Nav dots
+const slides = document.querySelectorAll('.slide');
+const nav = document.getElementById('nav');
+const counter = document.getElementById('current');
+slides.forEach((_, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+  dot.onclick = () => slides[i].scrollIntoView({ behavior: 'smooth' });
+  nav.appendChild(dot);
+});
+
+// Intersection observer for active state
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const idx = [...slides].indexOf(e.target);
+      counter.textContent = idx + 1;
+      document.querySelectorAll('.nav-dot').forEach((d, i) =>
+        d.classList.toggle('active', i === idx));
+    }
+  });
+}, { threshold: 0.6 });
+slides.forEach(s => observer.observe(s));
+
+// Keyboard nav
+document.addEventListener('keydown', e => {
+  const active = [...slides].findIndex(s => {
+    const r = s.getBoundingClientRect();
+    return r.top >= -100 && r.top < window.innerHeight / 2;
+  });
+  if (e.key === 'ArrowDown' || e.key === ' ') {
+    e.preventDefault();
+    if (active < slides.length - 1) slides[active + 1].scrollIntoView({ behavior: 'smooth' });
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    if (active > 0) slides[active - 1].scrollIntoView({ behavior: 'smooth' });
+  }
+});
+</script>
+</body>
+</html>
